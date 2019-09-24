@@ -60,6 +60,41 @@ get_uptime() {
     log 1 uptime " " "${uptime:-0m}"
 }
 
+get_memory() {
+    case $os in
+
+        # Used memory is calculated using the following "formula" (Linux):
+        # MemUsed = MemTotal + Shmem - MemFree - Buffers - Cached - SReclaimable
+        # Source: https://github.com/KittyKatt/screenFetch/issues/386
+        linux)
+            # Parse the '/proc/meminfo' file splitting on ':' and 'k'.
+            # The format of the file is 'key:   000kB' and an additional
+            # split is used on 'k' to filter out 'kB'.
+            while IFS=:k read -r key val _; do
+                case $key in
+                    MemTotal)
+                        mem_used=$((mem_used + val))
+                        mem_total=$val
+                    ;;
+
+                    Shmem)
+                        mem_used=$((mem_used + val))
+                    ;;
+
+                    MemFree|Buffers|Cached|SReclaimable)
+                        mem_used=$((mem_used - val))
+                    ;;
+                esac
+            done < /proc/meminfo
+
+            mem_used=$((mem_used / 1024))
+            mem_total=$((mem_total / 1024))
+        ;;
+    esac
+
+    log 1 memory " " "${mem_used}MiB / ${mem_total}MiB"
+}
+
 main() {
     # Hide 'stderr' unless the first argument is '-v'. This saves
     # polluting the script with '2>/dev/null'.
@@ -76,6 +111,7 @@ EOF
     get_distro
     get_kernel
     get_uptime
+    get_memory
 }
 
 main "$@"
