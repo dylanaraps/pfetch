@@ -12,8 +12,11 @@ log() {
     # PF_COLOR1: Control color of info name.
     # PF_SEP:    Control the separator between info name and info data.
     # PF_COLOR2: Control color of info data.
-    printf '\033[3%s;1m%s\033[m%s\033[3%sm%s\033[m\n' \
+    printf '\033[15C\033[3%s;1m%s\033[m%s\033[3%sm%s\033[m\n' \
            "${PF_COLOR1:-1}" "$1" "${PF_SEP:- }" "${PF_COLOR2:-7}" "${2:-?}"
+
+    # Keep track of the number of times 'log()' has been run.
+    log=$((log + 1))
 }
 
 get_os() {
@@ -121,7 +124,46 @@ get_memory() {
     log memory "${mem_used}MiB / ${mem_total}MiB"
 }
 
+get_ascii() {
+    case $os in
+        linux)
+            ascii="\
+${c4}    ___
+   (${c7}.· ${c4}|
+   (${c5}<> ${c4}|
+  / ${c7}__  ${c4}\\
+ ( ${c3}/  \\ ${c4}/|
+${c5}_${c4}/\\ ${c7}__)${c4}/${c5}_${c4})
+${c5}\/${c4}-____${c5}\/
+"
+        ;;
+    esac
+
+    # Store the height of the ascii art for cursor positioning.
+    # This script prints to the screen *almost* like a TUI does.
+    # It uses escape sequences to allow dynamic printing of the
+    # information through user configuration.
+    ascii_height=$(printf %s "$ascii" | wc -l)
+
+    # Print the ascii art and position the cursor back where we
+    # started prior to printing it.
+    # '\033[1m': Print the ascii in bold.
+    # '\033[m':  Clear bold.
+    # '\033[%sA: Move the cursor up '$ascii_height' amount of lines.
+    printf '\033[1m%s\033[m\033[%sA' "$ascii" "$ascii_height"
+}
+
 main() {
+    # Generic color list.
+    # Disable warning about unused variables.
+    # shellcheck disable=2034
+    {
+        c1=[31m; c2=[32m
+        c3=[33m; c4=[34m
+        c5=[35m; c6=[36m
+        c7=[37m; c8=[38m
+    }
+
     # Hide 'stderr' unless the first argument is '-v'. This saves
     # polluting the script with '2>/dev/null'.
     [ "$1" = -v ] || exec 2>/dev/null
@@ -129,16 +171,22 @@ main() {
     # Store the output of 'uname' to avoid calling it multiple times
     # throughout the script. 'read <<EOF' is the simplest way of reading
     # a command into a list of variables.
-    read -r kernel_name kernel_version kernel_machine <<EOF
-        $(uname -srm)
+    read -r kernel_name kernel_version <<EOF
+        $(uname -sr)
 EOF
 
     get_os
+    get_ascii
     get_title
     get_distro
     get_kernel
     get_uptime
     get_memory
+
+    # Position the cursor below both the ascii art and information lines.
+    # 'log' contains the amount of 'get_' info lines that were printed.
+    # '\033[%sB': Move the cursor down N lines.
+    printf '\033[%sB\n' "$((ascii_height - log))"
 }
 
 main "$@"
