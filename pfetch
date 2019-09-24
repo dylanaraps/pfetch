@@ -1,5 +1,4 @@
 #!/bin/sh
-# shellcheck source=/dev/null
 #
 # pfetch - Simple POSIX sh fetch script.
 
@@ -114,6 +113,9 @@ get_title() {
 get_distro() {
     case $os in
         Linux*|GNU*)
+            # Disable warning about shellcheck not being able
+            # to read '/etc/os-release'. This is fine.
+            # shellcheck source=/dev/null
             . /etc/os-release && distro=$PRETTY_NAME
         ;;
     esac
