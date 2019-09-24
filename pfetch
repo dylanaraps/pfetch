@@ -63,12 +63,9 @@ main() {
     # Store the output of 'uname' to avoid calling it multiple times
     # throughout the script. 'read <<EOF' is the simplest way of reading
     # a command into a list of variables.
-    #
-    # NOTE: To avoid breaking indentation with 'EOF', '-EOF' is used.
-    #       This has the caveat that the lines be TAB indented.
-    read -r kernel_name kernel_version kernel_machine <<-EOF
-		$(uname -srm)
-	EOF
+    read -r kernel_name kernel_version kernel_machine <<EOF
+        $(uname -srm)
+EOF
 
     get_os
     get_distro
