@@ -418,6 +418,17 @@ get_ascii() {
 			EOF
         ;;
 
+        [Ee]lementary*)
+            read_ascii <<-EOF
+				${c7}  _______
+				 / ____  \\
+				/  |  /  /\\
+				|__\\ /  / |
+				\\   /__/  /
+				 \\_______/
+			EOF
+        ;;
+
         [Ff]edora*)
             read_ascii 4 <<-EOF
 				${c7}      _____
