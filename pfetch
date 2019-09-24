@@ -72,7 +72,6 @@ log() {
     #
     # '[6C':   Move cursor 6 characters to the right.
     #              This aligns the info.
-    #
     printf '[%sC[3%s;1m%s[m%s[3%sm[%sD[%sC%s[m\n' \
            "${ascii_width--1}" "${PF_COL1-4}" "$1" \
            "$PF_SEP"           "${PF_COL2-7}" "${#1}" \
