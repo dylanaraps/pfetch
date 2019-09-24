@@ -262,9 +262,9 @@ ${c5}\/${c4}-____${c5}\/
     while read -r line || [ -n "$line" ]; do
         ascii_height=$((ascii_height + 1))
         ascii_width=$((${#line} > ascii_width ? ${#line} : ascii_width))
-    done <<-EOF
+    done <<EOF
         $(printf %s "$ascii" | sed 's/\[3.m//g')
-	EOF
+EOF
 
     # Add a gap between the ascii art and the information.
     ascii_width=$((ascii_width + 4))
@@ -297,9 +297,9 @@ main() {
     # Store the output of 'uname' to avoid calling it multiple times
     # throughout the script. 'read <<EOF' is the simplest way of reading
     # a command into a list of variables.
-    read -r os kernel <<-EOF
-		$(uname -sr)
-	EOF
+    read -r os kernel <<EOF
+        $(uname -sr)
+EOF
 
     # Allow the user to specify the order and inclusion of information
     # functions through the 'PF_INFO' environment variable.
