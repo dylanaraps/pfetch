@@ -449,6 +449,18 @@ get_ascii() {
 			EOF
         ;;
 
+        [Hh]yperbola*)
+            read_ascii <<-EOF
+				${c7}    |\`__.\`/
+				    \____/
+				    .--.
+				   /    \\
+				  /  ___ \\
+				 / .\`   \`.\\
+				/.\`      \`.\\
+			EOF
+        ;;
+
         [Ll]inux*[Mm]int*|[Mm]int)
             read_ascii 2 <<-EOF
 				${c2} ___________
