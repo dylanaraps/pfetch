@@ -109,10 +109,16 @@ get_os() {
 
     case $os in
         Linux*)
+            # TODO: Some distributions don't support '/etc/os-release'.
+            #       Bedrock support is something I'd like to add for example.
+
             # Disable warning about shellcheck not being able
             # to read '/etc/os-release'. This is fine.
             # shellcheck source=/dev/null
             . /etc/os-release && distro=$PRETTY_NAME
+
+            # CRUX does its own thing entirely, go CRUX!
+            command -v crux >/dev/null && distro=$(crux)
         ;;
 
         Darwin*)
