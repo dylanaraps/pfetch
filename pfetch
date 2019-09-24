@@ -88,7 +88,8 @@ get_title() {
     # to the 'hostname' command.
     #
     # Disable the warning about '$HOSTNAME' being undefined in POSIX sh as
-    # it is intended for allowing the user to overwrite the value on invocation.
+    # the intention for using it is allowing the user to overwrite the
+    # value on invocation.
     # shellcheck disable=SC2039
     host=${HOSTNAME:-${hostname:-$(hostname)}}
 
@@ -109,9 +110,6 @@ get_os() {
 
     case $os in
         Linux*)
-            # TODO: Some distributions don't support '/etc/os-release'.
-            #       Bedrock support is something I'd like to add for example.
-
             # Disable warning about shellcheck not being able
             # to read '/etc/os-release'. This is fine.
             # shellcheck source=/dev/null
