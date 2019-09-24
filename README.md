@@ -46,13 +46,10 @@ PF_COL2=7
 PF_ALIGN=""
 ```
 
-## TODO
+## Make `pfetch` update on an interval
 
-- [x] Store ascii "width" for dynamic padding.
-- [ ] OS support.
-    - [x] Linux
-    - [ ] OpenBSD
-    - [ ] FreeBSD
-    - [ ] macOS
-    - [ ] ???????
-- [x] Add an environment variable for setting info.
+This makes `pfetch` display interactively like `htop`/`top`.
+
+```sh
+watch -tn1 pfetch
+```
