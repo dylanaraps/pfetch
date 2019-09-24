@@ -121,13 +121,13 @@ get_kernel() {
 get_host() {
     case $os in
         Linux*|GNU*)
-            read -r model < /sys/devices/virtual/dmi/id/product_name
-            read -r model < /sys/devices/virtual/dmi/id/product_version
-            read -r model < /sys/firmware/devicetree/base/model
+            read -r host < /sys/devices/virtual/dmi/id/product_name
+            read -r host < /sys/devices/virtual/dmi/id/product_version
+            read -r host < /sys/firmware/devicetree/base/model
         ;;
     esac
 
-    log host "$model"
+    log host "$host"
 }
 
 get_uptime() {
