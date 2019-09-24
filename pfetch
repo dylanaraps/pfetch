@@ -117,8 +117,10 @@ get_os() {
             # shellcheck source=/dev/null
             . /etc/os-release && distro=$PRETTY_NAME
 
-            # CRUX does its own thing entirely, go CRUX!
+            # Special cases for distributions which don't follow.
+            # the '/etc/os-release' "standard".
             command -v crux >/dev/null && distro=$(crux)
+            command -v guix >/dev/null && distro='Guix System'
         ;;
 
         Darwin*)
@@ -236,6 +238,10 @@ get_pkgs() {
                 # Directories containing packages.
                 has brew       && printf '%s\n' "$(brew --cellar)/"*
                 has emerge     && printf '%s\n' /var/db/pkg/*/*/
+
+                # GUIX requires two commands.
+                has guix       && guix package -p /run/current-system/profile -I
+                has guix       && guix package -I
             ;;
 
             Darwin*)
@@ -446,6 +452,18 @@ get_ascii() {
 				 /      _/
 				(     _-
 				\\____-
+			EOF
+        ;;
+
+        [Gg]uix[Ss][Dd]*|guix*)
+            read_ascii 3 <<-EOF
+				${c3}|.__          __.|
+				|__ \\        / __|
+				   \\ \\      / /
+				    \\ \\    / /
+				     \\ \\  / /
+				      \\ \\/ /
+				       \\__/
 			EOF
         ;;
 
