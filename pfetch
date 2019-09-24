@@ -365,6 +365,18 @@ get_ascii() {
 			EOF
         ;;
 
+        [Aa]rtix*)
+            read_ascii 6 <<-EOF
+				${c4}      /\\
+				     /  \\
+				    /\`'.,\\
+				   /     ',
+				  /      ,\`\\
+				 /   ,.'\`.  \\
+				/.,'\`     \`'.\\
+			EOF
+        ;;
+
         [Cc]ent[Oo][Ss]*)
             read_ascii 5 <<-EOF
 				${c2} ____${c3}^${c5}____
