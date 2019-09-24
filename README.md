@@ -13,6 +13,39 @@ _/\ __)/_)    pkgs   130
 \/-____\/     memory 1721MiB / 7942MiB
 ```
 
+## Configuration
+
+`pfetch` is configured through environment variables.
+
+```sh
+# Which information to display.
+# NOTE: If 'ascii' will be used, it must come first.
+# Valid: space separated string
+PF_INFO="ascii title distro host kernel uptime pkgs memory"
+
+# Example: Only ASCII.
+PF_INFO="ascii"
+
+# Example: Only Information.
+PF_INFO="title distro host kernel uptime pkgs memory"
+
+# Separator between info name and info data.
+# Valid: string
+PF_SEP=":"
+
+# Color of info names:
+# Valid: 0-9
+PF_COL1=4
+
+# Color of info data:
+# Valid: 0-9
+PF_COL2=7
+
+# Alignment padding.
+# Valid: int
+PF_ALIGN=""
+```
+
 ## TODO
 
 - [x] Store ascii "width" for dynamic padding.

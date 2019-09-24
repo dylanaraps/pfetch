@@ -54,9 +54,10 @@ log() {
     #
     # $[6] /home/goldie $
     #
-    # PF_COL1: Control color of info name.
-    # PF_SEP:  Control the separator between info name and info data.
-    # PF_COL2: Control color of info data.
+    # PF_COL1:  Control color of info name.
+    # PF_SEP:   Control the separator between info name and info data.
+    # PF_COL2:  Control color of info data.
+    # PF_ALIGN: Control the alignment amount.
     #
     # '\033[14C': Move cursor 14 characters to the right.
     #             TODO: Base this on ASCII art width.
@@ -75,10 +76,10 @@ log() {
            "${ascii_width:--1}" \
            "${PF_COL1:-5}" \
            "$1" \
-           "${PF_SEP:- }" \
+           "$PF_SEP" \
            "${PF_COL2:-7}" \
            "${#1}" \
-           "${PF_ALIGN:-$info_length}" \
+           "${PF_ALIGN:-$((info_length + 1))}" \
            "$2"
 
     # Keep track of the number of times 'log()' has been run.
