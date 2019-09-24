@@ -12,3 +12,14 @@ A pretty system information tool written in POSIX `sh`.
 _/\ __)/_)    pkgs   130
 \/-____\/     memory 1721MiB / 7942MiB
 ```
+
+## TODO
+
+- [ ] Store ascii "width" for dynamic padding.
+- [ ] OS support.
+    - [x] Linux
+    - [ ] OpenBSD
+    - [ ] FreeBSD
+    - [ ] macOS
+    - [ ] ???????
+- [ ] Add an environment variable for setting info.
