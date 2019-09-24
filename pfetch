@@ -1,0 +1,55 @@
+#!/bin/sh
+# shellcheck source=/dev/null
+#
+# pfetch - Simple POSIX sh fetch script.
+
+die() {
+    printf '\033[31;1merror\033[m: %s.\n' "$@" >&2
+    exit 1
+}
+
+log() {
+    printf '\033[3%s;1m%s\033[m%s%s\n' "$1" "$2" "$3" "${4:-unknown}"
+}
+
+get_os() {
+    case $kernel_name in
+        Linux|GNU*) os=linux ;;
+
+        *)
+            die "Unknown OS detected '$kernel_name'" \
+                "Open an issue on GitHub to add support for your OS"
+        ;;
+    esac
+}
+
+get_distro() {
+    case $os in
+        linux)
+            . /etc/os-release && distro=$PRETTY_NAME
+        ;;
+    esac
+
+    log 1 os " " "$distro"
+}
+
+main() {
+    # Hide 'stderr' unless the first argument is '-v'. This saves
+    # polluting the script with '2>/dev/null'.
+    [ "$1" = -v ] || exec 2>/dev/null
+
+    # Store the output of 'uname' to avoid calling it multiple times
+    # throughout the script. 'read <<EOF' is the simplest way of reading
+    # a command into a list of variables.
+    #
+    # NOTE: To avoid breaking indentation with 'EOF', '-EOF' is used.
+    #       This has the caveat that the lines be TAB indented.
+    read -r kernel_name kernel_version kernel_machine <<-EOF
+		$(uname -srm)
+	EOF
+
+    get_os
+    get_distro
+}
+
+main "$@"
