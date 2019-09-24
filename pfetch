@@ -3,11 +3,6 @@
 #
 # pfetch - Simple POSIX sh fetch script.
 
-die() {
-    printf '\033[31;1merror\033[m: %s.\n' "$@" >&2
-    exit 1
-}
-
 log() {
     # The 'log()' function handles the printing of information.
     # In 'pfetch' (and 'neofetch'!) the printing of the ascii art and info
@@ -45,9 +40,8 @@ log() {
     # Once the cursor is at marker $[6], the script exits. This is the gist
     # of how this "dynamic" printing and layout works.
     #
-    # This method allows ascii art to be stored without markers for
-    # information and it allows for easy swapping of information order and
-    # amount.
+    # This method allows ascii art to be stored without markers for info
+    # and it allows for easy swapping of info order and amount.
     #
     # $[2] ___      $[3] goldie@KISS
     # $[4](.· |     $[5] os KISS Linux
@@ -80,6 +74,11 @@ log() {
 
     # Keep track of the number of times 'log()' has been run.
     log=$((log + 1))
+}
+
+die() {
+    printf '\033[31;1merror\033[m: %s.\n' "$@" >&2
+    exit 1
 }
 
 get_title() {
