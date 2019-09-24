@@ -82,20 +82,9 @@ log() {
     log=$((log + 1))
 }
 
-get_os() {
-    case $kernel_name in
-        Linux|GNU*) os=linux ;;
-
-        *)
-            die "Unknown OS detected '$kernel_name'" \
-                "Open an issue on GitHub to add support for your OS"
-        ;;
-    esac
-}
-
 get_title() {
-    case $os in
-        linux)
+    case $kernel_name in
+        Linux*|GNU*)
             read -r hostname < /proc/sys/kernel/hostname
         ;;
     esac
@@ -117,8 +106,8 @@ get_title() {
 }
 
 get_distro() {
-    case $os in
-        linux)
+    case $kernel_name in
+        Linux*|GNU*)
             . /etc/os-release && distro=$PRETTY_NAME
         ;;
     esac
@@ -134,8 +123,8 @@ get_uptime() {
     # Uptime works by retrieving the data in total seconds and then
     # converting that data into days, hours and minutes using simple
     # math.
-    case $os in
-        linux)
+    case $kernel_name in
+        Linux*|GNU*)
             IFS=. read -r s _ < /proc/uptime
         ;;
     esac
@@ -154,11 +143,11 @@ get_uptime() {
 }
 
 get_memory() {
-    case $os in
+    case $kernel_name in
         # Used memory is calculated using the following "formula" (Linux):
         # MemUsed = MemTotal + Shmem - MemFree - Buffers - Cached - SReclaimable
         # Source: https://github.com/KittyKatt/screenFetch/issues/386
-        linux)
+        Linux*|GNU*)
             # Parse the '/proc/meminfo' file splitting on ':' and 'k'.
             # The format of the file is 'key:   000kB' and an additional
             # split is used on 'k' to filter out 'kB'.
@@ -188,8 +177,8 @@ get_memory() {
 }
 
 get_ascii() {
-    case $os in
-        linux)
+    case $kernel_name in
+        Linux*|GNU*)
             ascii="\
 ${c4}    ___
    (${c7}.· ${c4}|
@@ -239,7 +228,6 @@ main() {
         $(uname -sr)
 EOF
 
-    get_os
     get_ascii
     get_title
     get_distro
