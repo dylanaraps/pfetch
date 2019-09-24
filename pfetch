@@ -150,6 +150,10 @@ get_kernel() {
    esac
 }
 
+get_shell() {
+    log shell "${SHELL##*/}"
+}
+
 get_host() {
     case $os in
         Linux*)
@@ -262,6 +266,7 @@ get_pkgs() {
                 # Commands which print packages one per line.
                 has pkginfo    && pkginfo -i
                 has pkg        && pkg list
+                has pkg_info   && pkg_info
             ;;
         esac | wc -l
     )
