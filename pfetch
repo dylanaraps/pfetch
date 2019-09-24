@@ -241,7 +241,7 @@ get_pkgs() {
                 has brew       && printf '%s\n' /usr/local/Cellar/*
             ;;
 
-            FreeBSD*|Dragonfly*)
+            FreeBSD*)
                 # Commands which print packages one per line.
                 has pkg        && pkg info
             ;;
@@ -293,27 +293,14 @@ get_memory() {
             mem_full=$(($(sysctl -n hw.memsize) / 1024 / 1024))
         ;;
 
-        NetBSD*)
-            mem_full=$(($(sysctl -n hw.physmem64) / 1024 / 1024))
-
-            # NetBSD emulates a lot of the linux '/proc' filesystem.
-            # This is a simple loop adapted from the Linux memory
-            # detection.
-            while IFS=:kh read -r key val; do
-                [ "$key" = MemFree ] && mem_free=$val
-            done < /proc/meminfo
-
-            mem_used=$((mem_full - (mem_free / 1024)))
-        ;;
-
         OpenBSD*)
             # If you run OpenBSD and can send me the full output of
             # 'vm_stat' I'll be able to add full support here.
             mem_full=$(($(sysctl -n hw.physmem) / 1024 / 1024))
         ;;
 
-        FreeBSD*|Dragonfly*)
-            # If you run FreeBSD or Dragonfly and can help me get
+        FreeBSD*)
+            # If you run FreeBSD and can help me get
             # the used memory amount, I'll be able to add support here.
             mem_full=$(($(sysctl -n hw.physmem) / 1024 / 1024))
         ;;

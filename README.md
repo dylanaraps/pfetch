@@ -13,6 +13,16 @@ _/\ __)/_)    pkgs   130
 \/-____\/     memory 1721MiB / 7942MiB
 ```
 
+## OS support
+
+- [x] Linux
+- [x] MacOS
+    - [ ] Needs OS name detection.
+- [x] OpenBSD
+    - [ ] Needs used memory detection.
+- [x] FreeBSD
+    - [ ] Needs used memory detection.
+
 ## Configuration
 
 `pfetch` is configured through environment variables.
