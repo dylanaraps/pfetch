@@ -323,8 +323,8 @@ get_ascii() {
     read_ascii() {
         # 'PF_COL1': Set the info name color according to ascii color.
         # 'PF_COL3': Set the title color to some other color. ¯\_(ツ)_/¯
-        PF_COL1=${PF_COL1:-${1:-4}}
-        PF_COL3=${PF_COL3:-$((${1:-4}%6+1))}
+        PF_COL1=${PF_COL1:-${1:-7}}
+        PF_COL3=${PF_COL3:-$((${1:-7}%8+1))}
 
         while IFS= read -r line; do
             ascii="$ascii$line
@@ -509,6 +509,18 @@ get_ascii() {
 			EOF
         ;;
 
+        [Mm][Xx]*)
+            read_ascii <<-EOF
+				${c7}    \\\\  /
+				     \\\\/
+				      \\\\
+				   /\\/ \\\\
+				  /  \\  /\\
+				 /    \\/  \\
+				/__________\\
+			EOF
+        ;;
+
         [Nn]et[Bb][Ss][Dd]*)
             read_ascii 3 <<-EOF
 				${c7}\\\\${c3}\`-______,----__
@@ -582,7 +594,7 @@ get_ascii() {
         ;;
 
         [Pp]ure[Oo][Ss]*)
-            read_ascii 6 <<-EOF
+            read_ascii <<-EOF
 				${c7} _____________
 				|  _________  |
 				| |         | |
