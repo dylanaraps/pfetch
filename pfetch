@@ -118,6 +118,16 @@ get_kernel() {
     log kernel "$kernel_version"
 }
 
+get_host() {
+    case $kernel_name in
+        Linux*|GNU*)
+            read -r model < /sys/devices/virtual/dmi/id/product_version
+        ;;
+    esac
+
+    log host "$model"
+}
+
 get_uptime() {
     # Uptime works by retrieving the data in total seconds and then
     # converting that data into days, hours and minutes using simple
@@ -139,6 +149,16 @@ get_uptime() {
     [ "$m" = 0 ] || uptime="${uptime}${m}m "
 
     log uptime "${uptime:-0m}"
+}
+
+get_packages() {
+    case $kernel_name in
+        Linux*|GNU*)
+            command -v kiss && packages=$(kiss l | wc -l)
+        ;;
+    esac >/dev/null
+
+    log pkgs "$packages"
 }
 
 get_memory() {
@@ -230,8 +250,10 @@ EOF
     get_ascii
     get_title
     get_distro
+    get_host
     get_kernel
     get_uptime
+    get_packages
     get_memory
 
     # Position the cursor below both the ascii art and information lines.
