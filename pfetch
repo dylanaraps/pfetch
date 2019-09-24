@@ -61,20 +61,20 @@ log() {
     # '$PF_COL2':  Control color of info data.
     # '$PF_ALIGN': Control the alignment amount.
     #
-    # '\033[14C':  Move cursor 14 characters to the right.
+    # '[14C':  Move cursor 14 characters to the right.
     #              TODO: Base this on ASCII art width.
     #
-    # '\033[3%s':  Color formatting.
-    # '\033[m':    Reset formatting.
+    # '[3%s':  Color formatting.
+    # '[m':    Reset formatting.
     #
-    # '\033[%sD':  Move cursor '${#1}' characters to the left.
+    # '[%sD':  Move cursor '${#1}' characters to the left.
     #              This allows for aligned info names and data.
     #
-    # '\033[6C':   Move cursor 6 characters to the right.
+    # '[6C':   Move cursor 6 characters to the right.
     #              This aligns the info.
     #
     # This is ugly, I know!
-    printf '\033[%sC\033[3%s;1m%s\033[m%s\033[3%sm\033[%sD\033[%sC%s\033[m\n' \
+    printf '[%sC[3%s;1m%s[m%s[3%sm[%sD[%sC%s[m\n' \
            "${ascii_width:--1}" "${PF_COL1:-4}" "$1" "$PF_SEP" \
            "${PF_COL2:-7}" "${#1}" "${PF_ALIGN:-$info_length}" "$2"
 
@@ -418,7 +418,7 @@ get_ascii() {
     # printing of the information through user configuration.
     #
     # Iterate over each line of the ascii art to retrieve the above
-    # information. The 'sed' is used to strip '\033[3Xm' color codes from
+    # information. The 'sed' is used to strip '[3Xm' color codes from
     # the ascii art so they don't affect the width variable.
     #
     # The "   " acts as the padding between the ascii art and the text as
@@ -435,12 +435,12 @@ get_ascii() {
 
     # Print the ascii art and position the cursor back where we
     # started prior to printing it.
-    # '\033[?7l':  Disable line-wrapping.
-    # '\033[?25l': Hide the cursor.
-    # '\033[1m':   Print the ascii in bold.
-    # '\033[m':    Clear bold.
-    # '\033[%sA:   Move the cursor up '$ascii_height' amount of lines.
-    printf '\033[?7l\033[?25l\033[1m%s\033[m\033[%sA' "$ascii" "$ascii_height"
+    # '[?7l':  Disable line-wrapping.
+    # '[?25l': Hide the cursor.
+    # '[1m':   Print the ascii in bold.
+    # '[m':    Clear bold.
+    # '[%sA:   Move the cursor up '$ascii_height' amount of lines.
+    printf '[?7l[?25l[1m%s[m[%sA' "$ascii" "$ascii_height"
 }
 
 main() {
@@ -501,10 +501,10 @@ main() {
     #
     # 'log' contains the amount of 'get_' info lines that were printed.
     #
-    # '\033[?7h':  Enable line-wrapping.
-    # '\033[%sB':  Move the cursor down N lines.
-    # '\033[?25h': Un-hide the cursor.
-    printf '\033[?7h\033[%sB\n\033[?25h' \
+    # '[?7h':  Enable line-wrapping.
+    # '[%sB':  Move the cursor down N lines.
+    # '[?25h': Un-hide the cursor.
+    printf '[?7h[%sB\n[?25h' \
            "$((info_height > ascii_height ? 0 : ascii_height - info_height))"
 }
 
