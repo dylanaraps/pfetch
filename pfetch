@@ -33,6 +33,28 @@ get_distro() {
     log 1 os " " "$distro"
 }
 
+get_kernel() {
+    log 1 kernel " " "$kernel_version"
+}
+
+get_uptime() {
+    case $os in
+        linux)
+            IFS=. read -r s _ < /proc/uptime
+        ;;
+    esac
+
+    d=$((s / 60 / 60 / 24))
+    h=$((s / 60 / 60 % 24))
+    m=$((s / 60 % 60))
+
+    [ "$d" = 0 ] || uptime="${uptime}${d}d "
+    [ "$h" = 0 ] || uptime="${uptime}${h}h "
+    [ "$m" = 0 ] || uptime="${uptime}${m}m "
+
+    log 1 uptime " " "${uptime:-0m}"
+}
+
 main() {
     # Hide 'stderr' unless the first argument is '-v'. This saves
     # polluting the script with '2>/dev/null'.
@@ -50,6 +72,8 @@ main() {
 
     get_os
     get_distro
+    get_kernel
+    get_uptime
 }
 
 main "$@"
