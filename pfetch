@@ -258,10 +258,10 @@ main() {
     # Disable warning about unused variables.
     # shellcheck disable=2034
     {
-        c1=[31m; c2=[32m
-        c3=[33m; c4=[34m
-        c5=[35m; c6=[36m
-        c7=[37m; c8=[38m
+        c1='[31m'; c2='[32m'
+        c3='[33m'; c4='[34m'
+        c5='[35m'; c6='[36m'
+        c7='[37m'; c8='[38m'
     }
 
     # Store the output of 'uname' to avoid calling it multiple times
