@@ -249,11 +249,12 @@ ${c5}\/${c4}-____${c5}\/
 
     # Print the ascii art and position the cursor back where we
     # started prior to printing it.
+    # '\033[?7l':  Disable line-wrapping.
     # '\033[?25l': Hide the cursor.
     # '\033[1m':   Print the ascii in bold.
     # '\033[m':    Clear bold.
     # '\033[%sA:   Move the cursor up '$ascii_height' amount of lines.
-    printf '\033[?25l\033[1m%s\033[m\033[%sA' "$ascii" "$ascii_height"
+    printf '\033[?7l\033[?25l\033[1m%s\033[m\033[%sA' "$ascii" "$ascii_height"
 }
 
 main() {
@@ -293,9 +294,10 @@ EOF
     #
     # 'log' contains the amount of 'get_' info lines that were printed.
     #
+    # '\033[?7h':  Enable line-wrapping.
     # '\033[%sB':  Move the cursor down N lines.
     # '\033[?25h': Un-hide the cursor.
-    printf '\033[%sB\n\033[?25h' \
+    printf '\033[?7h\033[%sB\n\033[?25h' \
            "$((info_height > ascii_height ? 0 : ascii_height - info_height))"
 }
 
