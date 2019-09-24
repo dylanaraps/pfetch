@@ -239,137 +239,157 @@ get_memory() {
 }
 
 get_ascii() {
+    # This is a simple function to read the contents of
+    # an ascii file from 'stdin'. It allows for the use
+    # of '<<-EOF' to prevent the break in indentation in
+    # this source code.
+    read_ascii() {
+        while IFS= read -r line; do
+            ascii="$ascii$line
+"
+        done
+    }
+
+    # This checks for ascii art in the following order:
+    # '$1':        Argument given to 'get_ascii()' directly.
+    # '$PF_ASCII': Environment variable set by user.
+    # '$distro':   The detected distribution name.
+    # '$os':       The name of the operating system/kernel.
+    #
+    # NOTE: Each ascii art below is indented using tabs, this
+    #       allows indentation to continue naturally despite
+    #       the use of '<<-EOF'.
     case ${1:-${PF_ASCII:-${distro:-$os}}} in
         [Aa]lpine*)
-            ascii="\
-${c4}   /\\ /\\
-  /${c7}/ ${c4}\\  \\
- /${c7}/   ${c4}\\  \\
-/${c7}//    ${c4}\\  \\
-${c7}//      ${c4}\\  \\
-         \\
-"
+            read_ascii <<-EOF
+				${c4}   /\\ /\\
+				  /${c7}/ ${c4}\\  \\
+				 /${c7}/   ${c4}\\  \\
+				/${c7}//    ${c4}\\  \\
+				${c7}//      ${c4}\\  \\
+				         \\
+			EOF
         ;;
 
         [Aa]rch*)
-            ascii="\
-${c6}      /\\
-     /^^\\
-    /\\   \\
-   /${c7}  __  \\
-  /  (  )  \\
- / __|  |__\\\\
-///        \\\\\\
-"
+            read_ascii <<-EOF
+				${c6}      /\\
+				     /^^\\
+				    /\\   \\
+				   /${c7}  __  \\
+				  /  (  )  \\
+				 / __|  |__\\\\
+				///        \\\\\\
+			EOF
         ;;
 
         [Dd]ebian*)
-            ascii="\
-${c1}  _____
- /  __ \\
-|  /    |
-|  \\___-
--_
-  --_
-"
+            read_ascii <<-EOF
+				${c1}  _____
+				 /  __ \\
+				|  /    |
+				|  \\___-
+				-_
+				  --_
+			EOF
         ;;
 
         [Ff]edora*)
-            ascii="\
-${c7}      _____
-     /   __)${c4}\\${c7}
-     |  /  ${c4}\\ \\${c7}
-  ${c4}__${c7}_|  |_${c4}_/ /${c7}
- ${c4}/ ${c7}(_    _)${c4}_/${c7}
-${c4}/ /${c7}  |  |
-${c4}\\ \\${c7}__/  |
- ${c4}\\${c7}(_____/
-"
+            read_ascii <<-EOF
+				${c7}      _____
+				     /   __)${c4}\\${c7}
+				     |  /  ${c4}\\ \\${c7}
+				  ${c4}__${c7}_|  |_${c4}_/ /${c7}
+				 ${c4}/ ${c7}(_    _)${c4}_/${c7}
+				${c4}/ /${c7}  |  |
+				${c4}\\ \\${c7}__/  |
+				 ${c4}\\${c7}(_____/
+			EOF
         ;;
 
         [Ff]ree[Bb][Ss][Dd]*)
-            ascii="\
-${c1} /\\ _____ /\\
- \\_)     (_/
- /         \\
-|           |
-|           |
- \         /
-  --_____--
-"
+            read_ascii <<-EOF
+				${c1} /\\ _____ /\\
+				 \\_)     (_/
+				 /         \\
+				|           |
+				|           |
+				 \         /
+				  --_____--
+			EOF
         ;;
 
         [Gg]entoo*)
-            ascii="\
-${c5} _-----_
-(       \\
-\\    0   \\
-${c7} \\        )
- /      _/
-(     _-
-\\____-
-"
+            read_ascii <<-EOF
+				${c5} _-----_
+				(       \\
+				\\    0   \\
+				${c7} \\        )
+				 /      _/
+				(     _-
+				\\____-
+			EOF
         ;;
 
         [Ll]inux*)
-            ascii="\
-${c4}    ___
-   (${c7}.· ${c4}|
-   (${c5}<> ${c4}|
-  / ${c7}__  ${c4}\\
- ( ${c7}/  \\ ${c4}/|
-${c5}_${c4}/\\ ${c7}__)${c4}/${c5}_${c4})
-${c5}\/${c4}-____${c5}\/
-"
+            read_ascii <<-EOF
+				${c4}    ___
+				   (${c7}.· ${c4}|
+				   (${c5}<> ${c4}|
+				  / ${c7}__  ${c4}\\
+				 ( ${c7}/  \\ ${c4}/|
+				${c5}_${c4}/\\ ${c7}__)${c4}/${c5}_${c4})
+				${c5}\/${c4}-____${c5}\/
+			EOF
         ;;
 
         [Mm]ac[Oo][Ss]*)
-            ascii="\
-${c1}       .:'
-    _ :'_
-${c2} .'\`_\`-'_\`\`.
-:________.-'
-${c3}:_______:
-:_______:
-${c4} :_______\`-;
-${c5}  \`._.-._.'
-"
+            read_ascii <<-EOF
+				${c1}       .:'
+				    _ :'_
+				${c2} .'\`_\`-'_\`\`.
+				:________.-'
+				${c3}:_______:
+				:_______:
+				${c4} :_______\`-;
+				${c5}  \`._.-._.'
+			EOF
         ;;
 
         [Nn]ix[Oo][Ss]*)
-            ascii="\
-${c4}  \\\\  \\\\ //
- ==\\\\__\\\\/ //
-   //   \\\\//
-==//     //==
- //\\\\___//
-// /\\\\  \\\\==
-  // \\\\  \\\\
-"
+            read_ascii <<-EOF
+				${c4}  \\\\  \\\\ //
+				 ==\\\\__\\\\/ //
+				   //   \\\\//
+				==//     //==
+				 //\\\\___//
+				// /\\\\  \\\\==
+				  // \\\\  \\\\
+			EOF
         ;;
 
         [Oo]pen[Bb][Ss][Dd]*)
-            ascii="\
-${c3}      _____
-    \\-     -/
- \\_/         \\
- |        ${c7}O O${c3} |
- |_  <   )  3 )
- / \\         /
-    /-_____-\\
-"
+            read_ascii <<-EOF
+				${c3}      _____
+				    \\-     -/
+				 \\_/         \\
+				 |        ${c7}O O${c3} |
+				 |_  <   )  3 )
+				 / \\         /
+				    /-_____-\\
+			EOF
         ;;
 
         [Vv]oid*)
-            ascii="\
-${c2}    _______
- _ \\______ -
-| \\  ___  \\ |
-| | /   \ | |
-| | \___/ | |
-| \\______ \\_|
- -_______\\
-"
+            read_ascii <<-EOF
+				${c2}    _______
+				 _ \\______ -
+				| \\  ___  \\ |
+				| | /   \ | |
+				| | \___/ | |
+				| \\______ \\_|
+				 -_______\\
+			EOF
         ;;
 
         *)
