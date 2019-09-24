@@ -16,9 +16,7 @@ log() {
     # '\033[14C': Move cursor 14 characters to the right.
     #             TODO: Base this on ASCII art width.
     #
-    # '\033[3%s': Color info name.
-    # '\033[m':   Reset formatting.
-    # '\033[3%s': Color info data.
+    # '\033[3%s': Color formatting.
     # '\033[m':   Reset formatting.
     #
     # '\033[%sD': Move cursor '${#1}' characters to the left.
@@ -26,8 +24,6 @@ log() {
     #
     # '\033[6C':  Move cursor 6 characters to the right.
     #             This aligns the info.
-    #
-    # '\033[m':   Reset formatting.
     printf '\033[14C\033[3%s;1m%s\033[m%s\033[3%sm\033[%sD\033[6C%s\033[m\n' \
            "${PF_COLOR1:-5}" \
            "$1" \
