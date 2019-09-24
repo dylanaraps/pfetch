@@ -55,27 +55,25 @@ log() {
     # $[1]
     #
     # $[6] /home/goldie $
-    #
-    # '$PF_COL1':  Control color of info name.
-    # '$PF_SEP':   Control the separator between info name and info data.
-    # '$PF_COL2':  Control color of info data.
-    # '$PF_ALIGN': Control the alignment amount.
-    #
-    # '[14C':  Move cursor 14 characters to the right.
-    #              TODO: Base this on ASCII art width.
-    #
-    # '[3%s':  Color formatting.
-    # '[m':    Reset formatting.
-    #
-    # '[%sD':  Move cursor '${#1}' characters to the left.
-    #              This allows for aligned info names and data.
-    #
-    # '[6C':   Move cursor 6 characters to the right.
-    #              This aligns the info.
-    printf '[%sC[3%s;1m%s[m%s[3%sm[%sD[%sC%s[m\n' \
-           "${ascii_width--1}" "${PF_COL1-4}" "$1" \
-           "$PF_SEP"           "${PF_COL2-7}" "${#1}" \
-           "${PF_ALIGN-$info_length}"         "$2"
+
+    # Move the cursor to the right, the width of the ascii art with an
+    # additional gap for text spacing.
+    printf '[%sC' "${ascii_width--1}"
+
+    # Print the info name and color the text.
+    printf '[3%s;1m%s[m' "${PF_COL1-4}" "$1"
+
+    # Print the info name and info data separator.
+    printf '%s' "$PF_SEP"
+
+    # Move the cursor backward the length of the *current* info name and
+    # then move it forwards the length of the *longest* info name. This
+    # aligns each info data line.
+    printf '[%sD[%sC' "${#1}" "${PF_ALIGN-$info_length}"
+
+    # Print the info data, color it and strip all leading whitespace
+    # from the string.
+    printf '[3%sm%s[m\n' "${PF_COL2-7}" "${2#${2%%[![:space:]]*}}"
 
     # Keep track of the number of times 'log()' has been run.
     : $((info_height+=1))
@@ -443,6 +441,11 @@ get_ascii() {
 }
 
 main() {
+    # Leave the terminal how we found it on exit or Ctrl+C.
+    # '[?7h':  Enable line-wrapping.
+    # '[?25h': Un-hide the cursor.
+    trap 'printf [?7h[?25h' EXIT INT
+
     # Hide 'stderr' unless the first argument is '-v'. This saves
     # polluting the script with '2>/dev/null'.
     [ "$1" = -v ] || exec 2>/dev/null
@@ -497,14 +500,12 @@ main() {
     # Position the cursor below both the ascii art and information lines
     # according to the height of both. If the information exceeds the ascii
     # art in height, don't touch the cursor, else move it down N lines.
-    #
-    # 'log' contains the amount of 'get_' info lines that were printed.
-    #
-    # '[?7h':  Enable line-wrapping.
-    # '[%sB':  Move the cursor down N lines.
-    # '[?25h': Un-hide the cursor.
-    printf '[?7h[%sB\n[?25h' \
-           "$((info_height > ascii_height ? 0 : ascii_height - info_height))"
+    cursor_pos=$((info_height > ascii_height ? 0 : ascii_height - info_height))
+
+    # Print '$cursor_pos' amount of newlines. Using cursor down doesn't scroll
+    # the screen correctly if this causes the cursor to hit the bottom of the
+    # window. Using '0' gives us an extra iteration, adding a bottom line gap.
+    printf '%0.s\n' $(seq 0 "$cursor_pos")
 }
 
 main "$@"
