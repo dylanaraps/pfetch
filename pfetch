@@ -82,7 +82,7 @@ die() {
 }
 
 get_title() {
-    case $kernel_name in
+    case $os in
         Linux*|GNU*)
             read -r hostname < /proc/sys/kernel/hostname
         ;;
@@ -105,7 +105,7 @@ get_title() {
 }
 
 get_distro() {
-    case $kernel_name in
+    case $os in
         Linux*|GNU*)
             . /etc/os-release && distro=$PRETTY_NAME
         ;;
@@ -115,11 +115,11 @@ get_distro() {
 }
 
 get_kernel() {
-    log kernel "$kernel_version"
+    log kernel "$kernel"
 }
 
 get_host() {
-    case $kernel_name in
+    case $os in
         Linux*|GNU*)
             read -r model < /sys/devices/virtual/dmi/id/product_version
         ;;
@@ -132,7 +132,7 @@ get_uptime() {
     # Uptime works by retrieving the data in total seconds and then
     # converting that data into days, hours and minutes using simple
     # math.
-    case $kernel_name in
+    case $os in
         Linux*|GNU*)
             IFS=. read -r s _ < /proc/uptime
         ;;
@@ -164,7 +164,7 @@ get_packages() {
     # line, giving us the total package count of whatever package
     # managers are installed.
     packages=$(
-        case $kernel_name in
+        case $os in
             Linux*|GNU*)
                 # Commands which print packages one per line.
                 has kiss       && kiss l
@@ -186,7 +186,7 @@ get_packages() {
 }
 
 get_memory() {
-    case $kernel_name in
+    case $os in
         # Used memory is calculated using the following "formula" (Linux):
         # MemUsed = MemTotal + Shmem - MemFree - Buffers - Cached - SReclaimable
         # Source: https://github.com/KittyKatt/screenFetch/issues/386
@@ -220,7 +220,7 @@ get_memory() {
 }
 
 get_ascii() {
-    case $kernel_name in
+    case $os in
         Linux*|GNU*)
             ascii="\
 ${c4}    ___
@@ -267,7 +267,7 @@ main() {
     # Store the output of 'uname' to avoid calling it multiple times
     # throughout the script. 'read <<EOF' is the simplest way of reading
     # a command into a list of variables.
-    read -r kernel_name kernel_version <<EOF
+    read -r os kernel <<EOF
         $(uname -sr)
 EOF
 
