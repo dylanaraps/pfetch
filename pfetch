@@ -9,9 +9,9 @@ die() {
 }
 
 log() {
-    # PF_COLOR1: Control color of info name.
-    # PF_SEP:    Control the separator between info name and info data.
-    # PF_COLOR2: Control color of info data.
+    # PF_COL1: Control color of info name.
+    # PF_SEP:  Control the separator between info name and info data.
+    # PF_COL2: Control color of info data.
     #
     # '\033[14C': Move cursor 14 characters to the right.
     #             TODO: Base this on ASCII art width.
@@ -25,12 +25,7 @@ log() {
     # '\033[6C':  Move cursor 6 characters to the right.
     #             This aligns the info.
     printf '\033[14C\033[3%s;1m%s\033[m%s\033[3%sm\033[%sD\033[6C%s\033[m\n' \
-           "${PF_COLOR1:-5}" \
-           "$1" \
-           "${PF_SEP:- }" \
-           "${PF_COLOR2:-7}" \
-           "${#1}" \
-           "${2:-?}"
+           "${PF_COL1:-5}" "$1" "${PF_SEP:- }" "${PF_COL2:-7}" "${#1}" "${2:-?}"
 
     # Keep track of the number of times 'log()' has been run.
     log=$((log + 1))
@@ -61,12 +56,12 @@ get_title() {
     # to the OS specific detection above and finally an additional fallback
     # to the 'hostname' command.
     #
-    # PF_SEP and PF_COLOR{1,2} change printing options in the 'log()' function.
+    # PF_SEP and PF_COL{1,2} change printing options in the 'log()' function.
     #
     # Disable the warning about '$HOSTNAME' being undefined in POSIX sh as
     # it is intended for allowing the user to overwrite the value on invocation.
     # shellcheck disable=SC2039
-    PF_SEP=@ PF_COLOR1=1 PF_COLOR2='3;1' \
+    PF_SEP=@ PF_COL1=1 PF_COL2='3;1' \
         log "${USER:-$(whoami)}" "${HOSTNAME:-${hostname:-$(hostname)}}"
 }
 
