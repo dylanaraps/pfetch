@@ -85,11 +85,6 @@ log() {
     info_height=$((info_height + 1))
 }
 
-die() {
-    printf '\033[31;1merror\033[m: %s.\n' "$@" >&2
-    exit 1
-}
-
 get_title() {
     case $os in
         Linux*|GNU*)
@@ -247,6 +242,12 @@ ${c4}    ___
 ${c5}_${c4}/\\ ${c7}__)${c4}/${c5}_${c4})
 ${c5}\/${c4}-____${c5}\/
 "
+        ;;
+
+        *)
+            printf 'error: %s is not currently supported.\n' "$os"
+            printf 'error: Open an issue on GitHub for support to be added.\n'
+            exit 1
         ;;
     esac
 
