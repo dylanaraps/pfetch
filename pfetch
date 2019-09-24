@@ -473,6 +473,18 @@ get_ascii() {
 			EOF
         ;;
 
+        [Ss]lackware*)
+            read_ascii 4 <<-EOF
+				${c4}   ________
+				  /  ______|
+				  | |______
+				  \\______  \\
+				   ______| |
+				| |________/
+				|____________
+			EOF
+        ;;
+
         [Oo]pen[Bb][Ss][Dd]*)
             read_ascii 3 <<-EOF
 				${c3}      _____
