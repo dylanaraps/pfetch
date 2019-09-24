@@ -497,6 +497,18 @@ get_ascii() {
 			EOF
         ;;
 
+        openSUSE*|open*SUSE*|[SUSE*|suse*)
+            read_ascii 2 <<-EOF
+				${c2}  _______
+				__|   __ \\
+				     / .\\ \\
+				     \\__/ |
+				   _______|
+				   \\_______
+				__________/
+			EOF
+        ;;
+
         [Vv]oid*)
             read_ascii 2 <<-EOF
 				${c2}    _______
