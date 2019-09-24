@@ -87,7 +87,7 @@ log() {
 
 get_title() {
     case $os in
-        Linux*|GNU*)
+        Linux*)
             read -r hostname < /proc/sys/kernel/hostname
         ;;
     esac
@@ -107,7 +107,7 @@ get_title() {
 
 get_distro() {
     case $os in
-        Linux*|GNU*)
+        Linux*)
             # Disable warning about shellcheck not being able
             # to read '/etc/os-release'. This is fine.
             # shellcheck source=/dev/null
@@ -124,7 +124,7 @@ get_kernel() {
 
 get_host() {
     case $os in
-        Linux*|GNU*)
+        Linux*)
             # Despite what these files are called, version doesn't
             # always contain the version nor does name always contain
             # the name.
@@ -144,7 +144,7 @@ get_uptime() {
     # converting that data into days, hours and minutes using simple
     # math.
     case $os in
-        Linux*|GNU*)
+        Linux*)
             IFS=. read -r s _ < /proc/uptime
         ;;
     esac
@@ -176,7 +176,7 @@ get_pkgs() {
     # managers are installed.
     packages=$(
         case $os in
-            Linux*|GNU*)
+            Linux*)
                 # Commands which print packages one per line.
                 has kiss       && kiss l
                 has bonsai     && bonsai list
@@ -201,7 +201,7 @@ get_memory() {
         # Used memory is calculated using the following "formula" (Linux):
         # MemUsed = MemTotal + Shmem - MemFree - Buffers - Cached - SReclaimable
         # Source: https://github.com/KittyKatt/screenFetch/issues/386
-        Linux*|GNU*)
+        Linux*)
             # Parse the '/proc/meminfo' file splitting on ':' and 'k'.
             # The format of the file is 'key:   000kB' and an additional
             # split is used on 'k' to filter out 'kB'.
@@ -231,8 +231,8 @@ get_memory() {
 }
 
 get_ascii() {
-    case $os in
-        Linux*|GNU*)
+    case ${PF_ASCII:-$os} in
+        [lL]inux*)
             ascii="\
 ${c4}    ___
    (${c7}.· ${c4}|
@@ -244,7 +244,7 @@ ${c5}\/${c4}-____${c5}\/
 "
         ;;
 
-        OpenBSD*)
+        [Oo]pen[Bb][Ss][Dd]*)
             ascii="\
 ${c3}      _____
     \\-     -/

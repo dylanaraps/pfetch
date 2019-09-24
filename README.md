@@ -20,6 +20,7 @@ _/\ __)/_)    pkgs   130
 ```sh
 # Which information to display.
 # NOTE: If 'ascii' will be used, it must come first.
+# Default: first example below
 # Valid: space separated string
 PF_INFO="ascii title distro host kernel uptime pkgs memory"
 
@@ -30,20 +31,29 @@ PF_INFO="ascii"
 PF_INFO="title distro host kernel uptime pkgs memory"
 
 # Separator between info name and info data.
+# Default: unset
 # Valid: string
 PF_SEP=":"
 
 # Color of info names:
+# Default: unset (auto)
 # Valid: 0-9
 PF_COL1=4
 
 # Color of info data:
+# Default: unset (auto)
 # Valid: 0-9
 PF_COL2=7
 
 # Alignment padding.
+# Default: unset (auto)
 # Valid: int
 PF_ALIGN=""
+
+# Which ascii art to use.
+# Default: unset (auto)
+# Valid: string
+PF_ASCII="openbsd"
 ```
 
 ## Make `pfetch` update on an interval
