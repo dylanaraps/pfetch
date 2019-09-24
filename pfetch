@@ -152,11 +152,35 @@ get_uptime() {
 }
 
 get_packages() {
-    case $kernel_name in
-        Linux*|GNU*)
-            command -v kiss && packages=$(kiss l | wc -l)
-        ;;
-    esac >/dev/null
+    # Simple function to avoid '>/dev/null' spam.
+    # This checks to see if a command is in '$PATH'.
+    has() { command -v "$1" >/dev/null; }
+
+    # This works by first checking for which package managers are
+    # isntalled and finally by printing each package manager's
+    # package list with each package one per line.
+    #
+    # The output from this is then piped to 'wc -l' to count each
+    # line, giving us the total package count of whatever package
+    # managers are installed.
+    packages=$(
+        case $kernel_name in
+            Linux*|GNU*)
+                # Commands which print packages one per line.
+                has kiss       && kiss l
+                has bonsai     && bonsai list
+                has pacman-key && pacman -Qq
+                has dpkg       && dpkg-query -f '.\n' -W
+                has rpm        && rpm -qa
+                has xbps-query && xbps-query -l
+                has apk        && apk info
+
+                # Directories containing packages.
+                has brew       && printf '%s\n' "$(brew --cellar)/"*
+                has emerge     && printf '%s\n' /var/db/pkg/*/*/
+            ;;
+        esac | wc -l
+    )
 
     log pkgs "$packages"
 }
@@ -218,11 +242,11 @@ ${c5}\/${c4}-____${c5}\/
 
     # Print the ascii art and position the cursor back where we
     # started prior to printing it.
-    # '\e[?25l': Hide the cursor.
-    # '\033[1m': Print the ascii in bold.
-    # '\033[m':  Clear bold.
-    # '\033[%sA: Move the cursor up '$ascii_height' amount of lines.
-    printf '\e[?25l\033[1m%s\033[m\033[%sA' "$ascii" "$ascii_height"
+    # '\033[?25l': Hide the cursor.
+    # '\033[1m':   Print the ascii in bold.
+    # '\033[m':    Clear bold.
+    # '\033[%sA:   Move the cursor up '$ascii_height' amount of lines.
+    printf '\033[?25l\033[1m%s\033[m\033[%sA' "$ascii" "$ascii_height"
 }
 
 main() {
@@ -258,9 +282,9 @@ EOF
 
     # Position the cursor below both the ascii art and information lines.
     # 'log' contains the amount of 'get_' info lines that were printed.
-    # '\033[%sB': Move the cursor down N lines.
-    # '\e[?25h' : Un-hide the cursor.
-    printf '\033[%sB\n\e[?25h' "$((ascii_height - log))"
+    # '\033[%sB':   Move the cursor down N lines.
+    # '\033[?25h' : Un-hide the cursor.
+    printf '\033[%sB\n\033[?25h' "$((ascii_height - log))"
 }
 
 main "$@"
