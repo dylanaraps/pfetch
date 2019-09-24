@@ -36,6 +36,9 @@ log() {
     # plus the ascii height is 8 while the info height is 2 it'd be a move
     # of 6 lines downwards.
     #
+    # However, if the information printed is "taller" (takes up more lines)
+    # than the ascii art, the cursor isn't moved at all!
+    #
     # Once the cursor is at marker $[6], the script exits. This is the gist
     # of how this "dynamic" printing and layout works.
     #
