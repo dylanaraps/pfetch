@@ -121,6 +121,10 @@ get_kernel() {
 get_host() {
     case $os in
         Linux*|GNU*)
+            # This works by using the *last* valid file containing
+            # hardware/host information. Despite what these files are
+            # called, version doesn't always contain the version nor
+            # does name always contain the name.
             read -r host < /sys/devices/virtual/dmi/id/product_name
             read -r host < /sys/devices/virtual/dmi/id/product_version
             read -r host < /sys/firmware/devicetree/base/model
