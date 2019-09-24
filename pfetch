@@ -23,6 +23,27 @@ get_os() {
     esac
 }
 
+get_title() {
+    case $os in
+        linux)
+            read -r hostname < /proc/sys/kernel/hostname
+        ;;
+    esac
+
+    # Username is retrieved by first checking '$USER' with a fallback
+    # to the 'whoami' command.
+    #
+    # Hostname is retrieved by first checking '$HOSTNAME' with a fallback
+    # to the OS specific detection above and finally an additional fallback
+    # to the 'hostname' command.
+    #
+    # Disable the warning about '$HOSTNAME' being undefined
+    # in POSIX sh as it is intended for allowing the user to
+    # overwrite the value on invocation.
+    # shellcheck disable=SC2039
+    log 1 "${USER:-$(whoami)}" @ "${HOSTNAME:-${hostname:-$(hostname)}}"
+}
+
 get_distro() {
     case $os in
         linux)
@@ -107,6 +128,7 @@ main() {
 EOF
 
     get_os
+    get_title
     get_distro
     get_kernel
     get_uptime
