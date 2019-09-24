@@ -76,7 +76,7 @@ log() {
     # This is ugly, I know!
     printf '\033[%sC\033[3%s;1m%s\033[m%s\033[3%sm\033[%sD\033[%sC%s\033[m\n' \
            "${ascii_width:--1}" \
-           "${PF_COL1:-5}" \
+           "${PF_COL1:-4}" \
            "$1" \
            "$PF_SEP" \
            "${PF_COL2:-7}" \
@@ -101,10 +101,10 @@ get_title() {
     # shellcheck disable=SC2039
     host=${HOSTNAME:-${hostname:-$(hostname)}}
 
-    log "${c4}${user}${c7}@${host}${c4}"
+    log "[3${PF_COL3:-1}m${user}${c7}@[3${PF_COL3:-1}m${host}"
 }
 
-get_distro() {
+get_os() {
     # This function is called twice, once to detect the distribution name
     # for the purposes of picking an ascii art early and secondly to display
     # the distribution name in the info output (if enabled).
@@ -250,6 +250,11 @@ get_ascii() {
     # of '<<-EOF' to prevent the break in indentation in
     # this source code.
     read_ascii() {
+        # 'PF_COL1': Set the info name color according to ascii color.
+        # 'PF_COL3': Set the title color to some other color. ¯\_(ツ)_/¯
+        PF_COL1=${PF_COL1:-${1:-4}}
+        PF_COL3=${PF_COL3:-$((${1:-4}%6+1))}
+
         while IFS= read -r line; do
             ascii="$ascii$line
 "
@@ -267,7 +272,7 @@ get_ascii() {
     #       the use of '<<-EOF'.
     case ${1:-${PF_ASCII:-${distro:-$os}}} in
         [Aa]lpine*)
-            read_ascii <<-EOF
+            read_ascii 4 <<-EOF
 				${c4}   /\\ /\\
 				  /${c7}/ ${c4}\\  \\
 				 /${c7}/   ${c4}\\  \\
@@ -278,7 +283,7 @@ get_ascii() {
         ;;
 
         [Aa]rch*)
-            read_ascii <<-EOF
+            read_ascii 6 <<-EOF
 				${c6}      /\\
 				     /^^\\
 				    /\\   \\
@@ -290,7 +295,7 @@ get_ascii() {
         ;;
 
         [Dd]ebian*)
-            read_ascii <<-EOF
+            read_ascii 1 <<-EOF
 				${c1}  _____
 				 /  __ \\
 				|  /    |
@@ -301,7 +306,7 @@ get_ascii() {
         ;;
 
         [Ff]edora*)
-            read_ascii <<-EOF
+            read_ascii 4 <<-EOF
 				${c7}      _____
 				     /   __)${c4}\\${c7}
 				     |  /  ${c4}\\ \\${c7}
@@ -314,7 +319,7 @@ get_ascii() {
         ;;
 
         [Ff]ree[Bb][Ss][Dd]*)
-            read_ascii <<-EOF
+            read_ascii 1 <<-EOF
 				${c1} /\\ _____ /\\
 				 \\_)     (_/
 				 /         \\
@@ -326,7 +331,7 @@ get_ascii() {
         ;;
 
         [Gg]entoo*)
-            read_ascii <<-EOF
+            read_ascii 5 <<-EOF
 				${c5} _-----_
 				(       \\
 				\\    0   \\
@@ -338,7 +343,7 @@ get_ascii() {
         ;;
 
         [Ll]inux*)
-            read_ascii <<-EOF
+            read_ascii 4 <<-EOF
 				${c4}    ___
 				   (${c7}.· ${c4}|
 				   (${c5}<> ${c4}|
@@ -350,7 +355,7 @@ get_ascii() {
         ;;
 
         [Mm]ac[Oo][Ss]*)
-            read_ascii <<-EOF
+            read_ascii 1 <<-EOF
 				${c1}       .:'
 				    _ :'_
 				${c2} .'\`_\`-'_\`\`.
@@ -363,7 +368,7 @@ get_ascii() {
         ;;
 
         [Nn]ix[Oo][Ss]*)
-            read_ascii <<-EOF
+            read_ascii 4 <<-EOF
 				${c4}  \\\\  \\\\ //
 				 ==\\\\__\\\\/ //
 				   //   \\\\//
@@ -375,7 +380,7 @@ get_ascii() {
         ;;
 
         [Oo]pen[Bb][Ss][Dd]*)
-            read_ascii <<-EOF
+            read_ascii 3 <<-EOF
 				${c3}      _____
 				    \\-     -/
 				 \\_/         \\
@@ -387,7 +392,7 @@ get_ascii() {
         ;;
 
         [Vv]oid*)
-            read_ascii <<-EOF
+            read_ascii 2 <<-EOF
 				${c2}    _______
 				 _ \\______ -
 				| \\  ___  \\ |
@@ -466,9 +471,9 @@ main() {
 		$(uname -sr)
 	EOF
 
-    # Always run 'get_distro' for the purposes of detecting which ascii
+    # Always run 'get_os' for the purposes of detecting which ascii
     # art to display.
-    get_distro
+    get_os
 
     # Allow the user to specify the order and inclusion of information
     # functions through the 'PF_INFO' environment variable.
@@ -477,7 +482,7 @@ main() {
         # Disable globbing and set the positional parameters to the
         # contents of 'PF_INFO'.
         set -f
-        set +f ${PF_INFO-ascii title distro host kernel uptime pkgs memory}
+        set +f ${PF_INFO-ascii title os host kernel uptime pkgs memory}
 
         # Iterate over the info functions to determine the lengths of the
         # "info names" for output alignment. The option names and subtitles
