@@ -45,7 +45,7 @@ main() {
     # NOTE: To avoid breaking indentation with 'EOF', '-EOF' is used.
     #       This has the caveat that the lines be TAB indented.
     read -r kernel_name kernel_version kernel_machine <<-EOF
-		$(uname -srm)
+	$(uname -srm)
 	EOF
 
     get_os
