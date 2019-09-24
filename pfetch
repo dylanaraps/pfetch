@@ -88,14 +88,17 @@ log() {
 get_title() {
     # Username is retrieved by first checking '$USER' with a fallback
     # to the 'whoami' command.
-    #
+    user=${USER:-$(whoami)}
+
     # Hostname is retrieved by first checking '$HOSTNAME' with a fallback
     # to the 'hostname' command.
     #
     # Disable the warning about '$HOSTNAME' being undefined in POSIX sh as
     # it is intended for allowing the user to overwrite the value on invocation.
     # shellcheck disable=SC2039
-    log "$c4${USER:-$(whoami)}$c7@$c4${HOSTNAME:-${hostname:-$(hostname)}}"
+    host=${HOSTNAME:-${hostname:-$(hostname)}}
+
+    log "${c4}${user}${c7}@${host}${c4}"
 }
 
 get_distro() {
