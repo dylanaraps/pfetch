@@ -279,14 +279,18 @@ main() {
         $(uname -sr)
 EOF
 
-    get_ascii
-    get_title
-    get_distro
-    get_host
-    get_kernel
-    get_uptime
-    get_packages
-    get_memory
+    # Allow the user to specify the order and inclusion of information
+    # functions through the 'PF_INFO' environment variable.
+    # shellcheck disable=2086
+    {
+        # Disable globbing and set the positional parameters to the
+        # contents of 'PF_INFO'.
+        set -f
+        set +f ${PF_INFO-ascii title distro host kernel uptime packages memory}
+
+        # Iterate over the above list and run any existing "get_" functions.
+        for info; do "get_$info"; done
+    }
 
     # Position the cursor below both the ascii art and information lines
     # according to the height of both. If the information exceeds the ascii
