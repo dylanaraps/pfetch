@@ -82,7 +82,7 @@ log() {
            "$2"
 
     # Keep track of the number of times 'log()' has been run.
-    info_height=$((info_height + 1))
+    : $((info_height+=1))
 }
 
 get_title() {
