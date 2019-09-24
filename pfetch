@@ -121,7 +121,9 @@ get_kernel() {
 get_host() {
     case $os in
         Linux*|GNU*)
+            read -r model < /sys/devices/virtual/dmi/id/product_name
             read -r model < /sys/devices/virtual/dmi/id/product_version
+            read -r model < /sys/firmware/devicetree/base/model
         ;;
     esac
 
