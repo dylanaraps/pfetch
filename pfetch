@@ -418,7 +418,7 @@ get_ascii() {
     #
     # The "   " acts as the padding between the ascii art and the text as
     # it appends 3 spaces to the end of each line.
-    while read -r line || [ -n "$line" ]; do
+    while read -r line; do
         ascii_height=$((ascii_height + 1))
         ascii_width=$((${#line} > ascii_width ? ${#line} : ascii_width))
     done <<-EOF
@@ -426,7 +426,7 @@ get_ascii() {
 	EOF
 
     # Add a gap between the ascii art and the information.
-    ascii_width=$((ascii_width + 4))
+    : $((ascii_width+=4))
 
     # Print the ascii art and position the cursor back where we
     # started prior to printing it.
