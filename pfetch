@@ -73,7 +73,7 @@ log() {
            "${PF_COL1:-5}" "$1" "${PF_SEP:- }" "${PF_COL2:-7}" "${#1}" "${2:-?}"
 
     # Keep track of the number of times 'log()' has been run.
-    log=$((log + 1))
+    info_height=$((info_height + 1))
 }
 
 die() {
@@ -280,11 +280,16 @@ EOF
     get_packages
     get_memory
 
-    # Position the cursor below both the ascii art and information lines.
+    # Position the cursor below both the ascii art and information lines
+    # according to the height of both. If the information exceeds the ascii
+    # art in height, don't touch the cursor, else move it down N lines.
+    #
     # 'log' contains the amount of 'get_' info lines that were printed.
-    # '\033[%sB':   Move the cursor down N lines.
-    # '\033[?25h' : Un-hide the cursor.
-    printf '\033[%sB\n\033[?25h' "$((ascii_height - log))"
+    #
+    # '\033[%sB':  Move the cursor down N lines.
+    # '\033[?25h': Un-hide the cursor.
+    printf '\033[%sB\n\033[?25h' \
+           "$((info_height > ascii_height ? 0 : ascii_height - info_height))"
 }
 
 main "$@"
