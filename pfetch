@@ -232,6 +232,17 @@ get_pkgs() {
                 # Directories containing packages.
                 has brew       && printf '%s\n' /usr/local/Cellar/*
             ;;
+
+            FreeBSD*|Dragonfly*)
+                # Commands which print packages one per line.
+                has pkg        && pkg info
+            ;;
+
+            BSD*)
+                # Commands which print packages one per line.
+                has pkginfo    && pkginfo -i
+                has pkg        && pkg list
+            ;;
         esac | wc -l
     )
 
