@@ -262,7 +262,7 @@ get_memory() {
                 case $key in
                     MemTotal)
                         mem_used=$((mem_used + val))
-                        mem_total=$val
+                        mem_full=$val
                     ;;
 
                     Shmem)
@@ -276,11 +276,11 @@ get_memory() {
             done < /proc/meminfo
 
             mem_used=$((mem_used / 1024))
-            mem_total=$((mem_total / 1024))
+            mem_full=$((mem_full / 1024))
         ;;
     esac
 
-    log memory "${mem_used}MiB / ${mem_total}MiB"
+    log memory "${mem_used}MiB / ${mem_full}MiB"
 }
 
 get_ascii() {
