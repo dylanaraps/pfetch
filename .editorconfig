@@ -1,0 +1,7 @@
+root = true
+
+# Force GitHub to display tabs
+# mixed with [4] spaces properly.
+[pfetch]
+indent_style = tab
+indent_size  = 4
