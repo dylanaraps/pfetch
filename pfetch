@@ -115,9 +115,15 @@ get_os() {
             . /etc/os-release && distro=$PRETTY_NAME
         ;;
 
+        Darwin*)
+            # TODO: Parse '/System/Library/CoreServices/SystemVersion.plist'
+            #       to grab the full distribution name, version and build.
+            distro=macOS
+        ;;
+
         *)
             # Catch all to ensure '$distro' is never blank.
-            # This should also handle the BSDs, macOS etc.
+            # This also handles the BSDs.
             distro="$os $kernel"
         ;;
     esac
@@ -160,6 +166,19 @@ get_uptime() {
     case $os in
         Linux*)
             IFS=. read -r s _ < /proc/uptime
+        ;;
+
+        Darwin*|BSD*)
+            s=$(sysctl kern.boottime)
+
+            # Extract the uptime in seconds from the following output:
+            # [...] { sec = 1271934886, usec = 667779 } Thu Apr 22 12:14:46 2010
+            s=${s#*=}
+            s=${s%,*}
+
+            # The uptime format from 'sysctl' needs to be subtracted from
+            # the current time in seconds.
+            s="$(($(date +%s) - s))"
         ;;
     esac
 
@@ -354,7 +373,7 @@ get_ascii() {
 			EOF
         ;;
 
-        [Mm]ac[Oo][Ss]*)
+        [Mm]ac[Oo][Ss]*|[Dd]arwin*)
             read_ascii 1 <<-EOF
 				${c1}       .:'
 				    _ :'_
