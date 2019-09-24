@@ -86,17 +86,10 @@ log() {
 }
 
 get_title() {
-    case $os in
-        Linux*)
-            read -r hostname < /proc/sys/kernel/hostname
-        ;;
-    esac
-
     # Username is retrieved by first checking '$USER' with a fallback
     # to the 'whoami' command.
     #
     # Hostname is retrieved by first checking '$HOSTNAME' with a fallback
-    # to the OS specific detection above and finally an additional fallback
     # to the 'hostname' command.
     #
     # Disable the warning about '$HOSTNAME' being undefined in POSIX sh as
