@@ -106,6 +106,17 @@ get_title() {
 }
 
 get_distro() {
+    # This function is called twice, once to detect the distribution name
+    # for the purposes of picking an ascii art early and secondly to display
+    # the distribution name in the info output (if enabled).
+    #
+    # On first run, this function displays _nothing_, only on the second
+    # invocation is 'log()' called.
+    [ "$distro" ] && {
+        log os "$distro"
+        return
+    }
+
     case $os in
         Linux*)
             # Disable warning about shellcheck not being able
@@ -114,8 +125,6 @@ get_distro() {
             . /etc/os-release && distro=$PRETTY_NAME
         ;;
     esac
-
-    log os "$distro"
 }
 
 get_kernel() {
@@ -231,8 +240,79 @@ get_memory() {
 }
 
 get_ascii() {
-    case ${PF_ASCII:-$os} in
-        [lL]inux*)
+    case ${1:-${PF_ASCII:-${distro:-$os}}} in
+        [Aa]lpine*)
+            ascii="\
+${c4}   /\\ /\\
+  /${c7}/ ${c4}\\  \\
+ /${c7}/   ${c4}\\  \\
+/${c7}//    ${c4}\\  \\
+${c7}//      ${c4}\\  \\
+         \\
+"
+        ;;
+
+        [Aa]rch*)
+            ascii="\
+${c6}      /\\
+     /^^\\
+    /\\   \\
+   /${c7}  __  \\
+  /  (  )  \\
+ / __|  |__\\\\
+///        \\\\\\
+"
+        ;;
+
+        [Dd]ebian*)
+            ascii="\
+${c1}  _____
+ /  __ \\
+|  /    |
+|  \\___-
+-_
+  --_
+"
+        ;;
+
+        [Ff]edora*)
+            ascii="\
+${c7}      _____
+     /   __)${c4}\\${c7}
+     |  /  ${c4}\\ \\${c7}
+  ${c4}__${c7}_|  |_${c4}_/ /${c7}
+ ${c4}/ ${c7}(_    _)${c4}_/${c7}
+${c4}/ /${c7}  |  |
+${c4}\\ \\${c7}__/  |
+ ${c4}\\${c7}(_____/
+"
+        ;;
+
+        [Ff]ree[Bb][Ss][Dd]*)
+            ascii="\
+${c1} /\\ _____ /\\
+ \\_)     (_/
+ /         \\
+|           |
+|           |
+ \         /
+  --_____--
+"
+        ;;
+
+        [Gg]entoo*)
+            ascii="\
+${c5} _-----_
+(       \\
+\\    0   \\
+${c7} \\        )
+ /      _/
+(     _-
+\\____-
+"
+        ;;
+
+        [Ll]inux*)
             ascii="\
 ${c4}    ___
    (${c7}.· ${c4}|
@@ -241,6 +321,31 @@ ${c4}    ___
  ( ${c7}/  \\ ${c4}/|
 ${c5}_${c4}/\\ ${c7}__)${c4}/${c5}_${c4})
 ${c5}\/${c4}-____${c5}\/
+"
+        ;;
+
+        [Mm]ac[Oo][Ss]*)
+            ascii="\
+${c1}       .:'
+    _ :'_
+${c2} .'\`_\`-'_\`\`.
+:________.-'
+${c3}:_______:
+:_______:
+${c4} :_______\`-;
+${c5}  \`._.-._.'
+"
+        ;;
+
+        [Nn]ix[Oo][Ss]*)
+            ascii="\
+${c4}  \\\\  \\\\ //
+ ==\\\\__\\\\/ //
+   //   \\\\//
+==//     //==
+ //\\\\___//
+// /\\\\  \\\\==
+  // \\\\  \\\\
 "
         ;;
 
@@ -256,7 +361,27 @@ ${c3}      _____
 "
         ;;
 
+        [Vv]oid*)
+            ascii="\
+${c2}    _______
+ _ \\______ -
+| \\  ___  \\ |
+| | /   \ | |
+| | \___/ | |
+| \\______ \\_|
+ -_______\\
+"
+        ;;
+
         *)
+            # On no match of a distribution ascii art, this function calls
+            # itself again, this time to look for a more generic OS related
+            # ascii art (KISS Linux -> Linux).
+            [ "$1" ] || {
+                get_ascii "$os"
+                return
+            }
+
             printf 'error: %s is not currently supported.\n' "$os"
             printf 'error: Open an issue on GitHub for support to be added.\n'
             exit 1
@@ -315,6 +440,10 @@ main() {
     read -r os kernel <<-EOF
 		$(uname -sr)
 	EOF
+
+    # Always run 'get_distro' for the purposes of detecting which ascii
+    # art to display.
+    get_distro
 
     # Allow the user to specify the order and inclusion of information
     # functions through the 'PF_INFO' environment variable.
