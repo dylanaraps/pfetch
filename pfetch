@@ -178,7 +178,7 @@ get_uptime() {
 
             # The uptime format from 'sysctl' needs to be subtracted from
             # the current time in seconds.
-            s="$(($(date +%s) - s))"
+            s=$(($(date +%s) - s))
         ;;
     esac
 
