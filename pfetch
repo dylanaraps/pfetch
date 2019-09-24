@@ -75,9 +75,9 @@ log() {
     #
     # This is ugly, I know!
     printf '[%sC[3%s;1m%s[m%s[3%sm[%sD[%sC%s[m\n' \
-           "${ascii_width:--1}" "${PF_COL1:-4}" "$1" "$PF_SEP" \
-           "${PF_COL2:-7}"      "${#1}"         "${PF_ALIGN:-$info_length}" \
-           "$2"
+           "${ascii_width--1}" "${PF_COL1-4}" "$1" \
+           "$PF_SEP"           "${PF_COL2-7}" "${#1}" \
+           "${PF_ALIGN-$info_length}"         "$2"
 
     # Keep track of the number of times 'log()' has been run.
     : $((info_height+=1))
