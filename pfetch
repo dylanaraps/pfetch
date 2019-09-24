@@ -12,8 +12,29 @@ log() {
     # PF_COLOR1: Control color of info name.
     # PF_SEP:    Control the separator between info name and info data.
     # PF_COLOR2: Control color of info data.
-    printf '\033[15C\033[3%s;1m%s\033[m%s\033[3%sm%s\033[m\n' \
-           "${PF_COLOR1:-1}" "$1" "${PF_SEP:- }" "${PF_COLOR2:-7}" "${2:-?}"
+    #
+    # '\033[14C': Move cursor 14 characters to the right.
+    #             TODO: Base this on ASCII art width.
+    #
+    # '\033[3%s': Color info name.
+    # '\033[m':   Reset formatting.
+    # '\033[3%s': Color info data.
+    # '\033[m':   Reset formatting.
+    #
+    # '\033[%sD': Move cursor '${#1}' characters to the left.
+    #             This allows for aligned info names and data.
+    #
+    # '\033[6C':  Move cursor 6 characters to the right.
+    #             This aligns the info.
+    #
+    # '\033[m':   Reset formatting.
+    printf '\033[14C\033[3%s;1m%s\033[m%s\033[3%sm\033[%sD\033[6C%s\033[m\n' \
+           "${PF_COLOR1:-5}" \
+           "$1" \
+           "${PF_SEP:- }" \
+           "${PF_COLOR2:-7}" \
+           "${#1}" \
+           "${2:-?}"
 
     # Keep track of the number of times 'log()' has been run.
     log=$((log + 1))
@@ -44,12 +65,12 @@ get_title() {
     # to the OS specific detection above and finally an additional fallback
     # to the 'hostname' command.
     #
-    # PF_SEP and PF_COLOR2 change printing options in the 'log()' function.
+    # PF_SEP and PF_COLOR{1,2} change printing options in the 'log()' function.
     #
     # Disable the warning about '$HOSTNAME' being undefined in POSIX sh as
     # it is intended for allowing the user to overwrite the value on invocation.
     # shellcheck disable=SC2039
-    PF_SEP=@ PF_COLOR2='3;1' \
+    PF_SEP=@ PF_COLOR1=1 PF_COLOR2='3;1' \
         log "${USER:-$(whoami)}" "${HOSTNAME:-${hostname:-$(hostname)}}"
 }
 
@@ -132,7 +153,7 @@ ${c4}    ___
    (${c7}.· ${c4}|
    (${c5}<> ${c4}|
   / ${c7}__  ${c4}\\
- ( ${c3}/  \\ ${c4}/|
+ ( ${c7}/  \\ ${c4}/|
 ${c5}_${c4}/\\ ${c7}__)${c4}/${c5}_${c4})
 ${c5}\/${c4}-____${c5}\/
 "
@@ -155,6 +176,10 @@ ${c5}\/${c4}-____${c5}\/
 }
 
 main() {
+    # Hide 'stderr' unless the first argument is '-v'. This saves
+    # polluting the script with '2>/dev/null'.
+    [ "$1" = -v ] || exec 2>/dev/null
+
     # Generic color list.
     # Disable warning about unused variables.
     # shellcheck disable=2034
@@ -164,10 +189,6 @@ main() {
         c5=[35m; c6=[36m
         c7=[37m; c8=[38m
     }
-
-    # Hide 'stderr' unless the first argument is '-v'. This saves
-    # polluting the script with '2>/dev/null'.
-    [ "$1" = -v ] || exec 2>/dev/null
 
     # Store the output of 'uname' to avoid calling it multiple times
     # throughout the script. 'read <<EOF' is the simplest way of reading
