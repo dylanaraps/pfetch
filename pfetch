@@ -62,7 +62,6 @@ get_uptime() {
 
 get_memory() {
     case $os in
-
         # Used memory is calculated using the following "formula" (Linux):
         # MemUsed = MemTotal + Shmem - MemFree - Buffers - Cached - SReclaimable
         # Source: https://github.com/KittyKatt/screenFetch/issues/386
