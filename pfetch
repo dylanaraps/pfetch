@@ -134,7 +134,7 @@ get_kernel() {
     case $os in
         # Don't print kernel output on BSD systems as the
         # OS name includes it.
-        *BSD) ;;
+        *BSD*) ;;
 
         *)
             log kernel "$kernel"
@@ -154,6 +154,14 @@ get_host() {
 
             host="$name $version $model"
         ;;
+
+        Darwin*)
+            host=$(sysctl -n hw.model)
+        ;;
+
+        *BSD*)
+            host=$(sysctl -n hw.vendor hw.product)
+        ;;
     esac
 
     log host "$host"
@@ -168,7 +176,7 @@ get_uptime() {
             IFS=. read -r s _ < /proc/uptime
         ;;
 
-        Darwin*|BSD*)
+        Darwin*|*BSD*)
             s=$(sysctl -n kern.boottime)
 
             # Extract the uptime in seconds from the following output:
@@ -238,7 +246,7 @@ get_pkgs() {
                 has pkg        && pkg info
             ;;
 
-            BSD*)
+            *BSD*)
                 # Commands which print packages one per line.
                 has pkginfo    && pkginfo -i
                 has pkg        && pkg list
