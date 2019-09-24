@@ -9,6 +9,57 @@ die() {
 }
 
 log() {
+    # The 'log()' function handles the printing of information.
+    # In 'pfetch' (and 'neofetch'!) the printing of the ascii art and info
+    # happen independently of each other.
+    #
+    # The size of the ascii art is stored and the ascii is printed first.
+    # Once the ascii is printed, the cursor is located right below the art
+    # (See marker $[1]).
+    #
+    # Using the stored ascii size, the cursor is then moved to marker $[2].
+    # This is simply a cursor up escape sequence using the "height" of the
+    # ascii art.
+    #
+    # 'log()' then moves the cursor to the right the "width" of the ascii art
+    # with an additional amount of padding to add a gap between the art and
+    # the information (See marker $[3]).
+    #
+    # When 'log()' has executed the cursor is then located at marker $[4].
+    # When 'log()' is run a second time, the next line of information is
+    # printed, moving the cursor to marker $[5].
+    #
+    # Markers $[4] and $[5] repeat all the way down through the ascii art
+    # until there is no more information left to print.
+    #
+    # Every time 'log()' is called the script keeps track of how many lines
+    # were printed. When printing is complete the cursor is then manually
+    # placed below the information and the art according to the "heights"
+    # of both.
+    #
+    # The math is simple: move cursor down $((ascii_height - info_height)).
+    # If the aim is to move the cursor from marker $[5] to marker $[6],
+    # plus the ascii height is 8 while the info height is 2 it'd be a move
+    # of 6 lines downwards.
+    #
+    # Once the cursor is at marker $[6], the script exits. This is the gist
+    # of how this "dynamic" printing and layout works.
+    #
+    # This method allows ascii art to be stored without markers for
+    # information and it allows for easy swapping of information order and
+    # amount.
+    #
+    # $[2] ___      $[3] goldie@KISS
+    # $[4](.· |     $[5] os KISS Linux
+    #     (<> |
+    #    / __  \
+    #   ( /  \ /|
+    #  _/\ __)/_)
+    #  \/-____\/
+    # $[1]
+    #
+    # $[6] /home/goldie $
+    #
     # PF_COL1: Control color of info name.
     # PF_SEP:  Control the separator between info name and info data.
     # PF_COL2: Control color of info data.
