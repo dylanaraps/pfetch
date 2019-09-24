@@ -566,9 +566,7 @@ main() {
         : $((info_length+=1))
 
         # Iterate over the above list and run any existing "get_" functions.
-        for info; do
-            "get_$info"
-        done
+        for info; do "get_$info"; done
     }
 
     # Position the cursor below both the ascii art and information lines
