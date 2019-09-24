@@ -118,13 +118,22 @@ get_os() {
         *)
             # Catch all to ensure '$distro' is never blank.
             # This should also handle the BSDs, macOS etc.
-            distro=$os
+            distro="$os $kernel"
         ;;
     esac
 }
 
 get_kernel() {
-    log kernel "$kernel"
+    # '$kernel' is the cached output of 'uname -r'.
+    case $os in
+        # Don't print kernel output on BSD system as the
+        # OS name includes it.
+        *BSD) ;;
+
+        *)
+            log kernel "$kernel"
+        ;;
+   esac
 }
 
 get_host() {
