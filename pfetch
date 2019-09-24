@@ -169,7 +169,7 @@ get_uptime() {
         ;;
 
         Darwin*|BSD*)
-            s=$(sysctl kern.boottime)
+            s=$(sysctl -n kern.boottime)
 
             # Extract the uptime in seconds from the following output:
             # [...] { sec = 1271934886, usec = 667779 } Thu Apr 22 12:14:46 2010
@@ -278,9 +278,28 @@ get_memory() {
             mem_used=$((mem_used / 1024))
             mem_full=$((mem_full / 1024))
         ;;
+
+        Darwin*)
+            # If you run macOS and can send me the full output of
+            # 'vm_stat' I'll be able to add full support here.
+            mem_full=$(($(sysctl -n hw.memsize) / 1024 / 1024))
+        ;;
+
+        NetBSD*)
+            mem_full=$(($(sysctl -n hw.physmem64) / 1024 / 1024))
+
+            # NetBSD emulates a lot of the linux '/proc' filesystem.
+            # This is a simple loop adapted from the Linux memory
+            # detection.
+            while IFS=:kh read -r key val; do
+                [ "$key" = MemFree ] && mem_free=$val
+            done < /proc/meminfo
+
+            mem_used=$((mem_full - (mem_free / 1024)))
+        ;;
     esac
 
-    log memory "${mem_used}MiB / ${mem_full}MiB"
+    log memory "${mem_used:-?}MiB / ${mem_full:-?}MiB"
 }
 
 get_ascii() {
