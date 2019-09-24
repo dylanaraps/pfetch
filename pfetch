@@ -223,6 +223,15 @@ get_pkgs() {
                 has brew       && printf '%s\n' "$(brew --cellar)/"*
                 has emerge     && printf '%s\n' /var/db/pkg/*/*/
             ;;
+
+            Darwin*)
+                # Commands which print packages one per line.
+                has pkgin      && pkgin list
+                has port       && port installed
+
+                # Directories containing packages.
+                has brew       && printf '%s\n' /usr/local/Cellar/*
+            ;;
         esac | wc -l
     )
 
