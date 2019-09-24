@@ -15,11 +15,11 @@ _/\ __)/_)    pkgs   130
 
 ## TODO
 
-- [ ] Store ascii "width" for dynamic padding.
+- [x] Store ascii "width" for dynamic padding.
 - [ ] OS support.
     - [x] Linux
     - [ ] OpenBSD
     - [ ] FreeBSD
     - [ ] macOS
     - [ ] ???????
-- [ ] Add an environment variable for setting info.
+- [x] Add an environment variable for setting info.
