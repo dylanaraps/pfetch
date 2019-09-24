@@ -557,6 +557,17 @@ get_ascii() {
 			EOF
         ;;
 
+        [Pp]arabola*)
+            read_ascii 5 <<-EOF
+				${c5}  __ __ __  _
+				.\`_//_//_/ / \`.
+				          /  .\`
+				         / .\`
+				        /.\`
+				       /\`
+			EOF
+        ;;
+
         [Pp]op!_[Oo][Ss]*)
             read_ascii 6 <<-EOF
 				${c6}______
