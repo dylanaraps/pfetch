@@ -19,7 +19,7 @@ log() {
     # with an additional amount of padding to add a gap between the art and
     # the information (See marker $[3]).
     #
-    # When 'log()' has executed the cursor is then located at marker $[4].
+    # When 'log()' has executed, the cursor is then located at marker $[4].
     # When 'log()' is run a second time, the next line of information is
     # printed, moving the cursor to marker $[5].
     #
