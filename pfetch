@@ -53,22 +53,22 @@ log() {
     #
     # $[6] /home/goldie $
     #
-    # PF_COL1:  Control color of info name.
-    # PF_SEP:   Control the separator between info name and info data.
-    # PF_COL2:  Control color of info data.
-    # PF_ALIGN: Control the alignment amount.
+    # '$PF_COL1':  Control color of info name.
+    # '$PF_SEP':   Control the separator between info name and info data.
+    # '$PF_COL2':  Control color of info data.
+    # '$PF_ALIGN': Control the alignment amount.
     #
-    # '\033[14C': Move cursor 14 characters to the right.
-    #             TODO: Base this on ASCII art width.
+    # '\033[14C':  Move cursor 14 characters to the right.
+    #              TODO: Base this on ASCII art width.
     #
-    # '\033[3%s': Color formatting.
-    # '\033[m':   Reset formatting.
+    # '\033[3%s':  Color formatting.
+    # '\033[m':    Reset formatting.
     #
-    # '\033[%sD': Move cursor '${#1}' characters to the left.
-    #             This allows for aligned info names and data.
+    # '\033[%sD':  Move cursor '${#1}' characters to the left.
+    #              This allows for aligned info names and data.
     #
-    # '\033[6C':  Move cursor 6 characters to the right.
-    #             This aligns the info.
+    # '\033[6C':   Move cursor 6 characters to the right.
+    #              This aligns the info.
     #
     # This is ugly, I know!
     printf '\033[%sC\033[3%s;1m%s\033[m%s\033[3%sm\033[%sD\033[%sC%s\033[m\n' \
