@@ -9,7 +9,11 @@ die() {
 }
 
 log() {
-    printf '\033[3%s;1m%s\033[m%s%s\n' "$1" "$2" "$3" "${4:-unknown}"
+    # PF_COLOR1: Control color of info name.
+    # PF_SEP:    Control the separator between info name and info data.
+    # PF_COLOR2: Control color of info data.
+    printf '\033[3%s;1m%s\033[m%s\033[3%sm%s\033[m\n' \
+           "${PF_COLOR1:-1}" "$1" "${PF_SEP:- }" "${PF_COLOR2:-7}" "${2:-?}"
 }
 
 get_os() {
@@ -37,11 +41,13 @@ get_title() {
     # to the OS specific detection above and finally an additional fallback
     # to the 'hostname' command.
     #
-    # Disable the warning about '$HOSTNAME' being undefined
-    # in POSIX sh as it is intended for allowing the user to
-    # overwrite the value on invocation.
+    # PF_SEP and PF_COLOR2 change printing options in the 'log()' function.
+    #
+    # Disable the warning about '$HOSTNAME' being undefined in POSIX sh as
+    # it is intended for allowing the user to overwrite the value on invocation.
     # shellcheck disable=SC2039
-    log 1 "${USER:-$(whoami)}" @ "${HOSTNAME:-${hostname:-$(hostname)}}"
+    PF_SEP=@ PF_COLOR2='3;1' \
+        log "${USER:-$(whoami)}" "${HOSTNAME:-${hostname:-$(hostname)}}"
 }
 
 get_distro() {
@@ -51,11 +57,11 @@ get_distro() {
         ;;
     esac
 
-    log 1 os " " "$distro"
+    log os "$distro"
 }
 
 get_kernel() {
-    log 1 kernel " " "$kernel_version"
+    log kernel "$kernel_version"
 }
 
 get_uptime() {
@@ -78,7 +84,7 @@ get_uptime() {
     [ "$h" = 0 ] || uptime="${uptime}${h}h "
     [ "$m" = 0 ] || uptime="${uptime}${m}m "
 
-    log 1 uptime " " "${uptime:-0m}"
+    log uptime "${uptime:-0m}"
 }
 
 get_memory() {
@@ -112,7 +118,7 @@ get_memory() {
         ;;
     esac
 
-    log 1 memory " " "${mem_used}MiB / ${mem_total}MiB"
+    log memory "${mem_used}MiB / ${mem_total}MiB"
 }
 
 main() {
