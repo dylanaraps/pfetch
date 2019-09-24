@@ -244,6 +244,18 @@ ${c5}\/${c4}-____${c5}\/
 "
         ;;
 
+        OpenBSD*)
+            ascii="\
+${c3}      _____
+    \\-     -/
+ \\_/         \\
+ |        ${c7}O O${c3} |
+ |_  <   )  3 )
+ / \\         /
+    /-_____-\\
+"
+        ;;
+
         *)
             printf 'error: %s is not currently supported.\n' "$os"
             printf 'error: Open an issue on GitHub for support to be added.\n'
