@@ -38,16 +38,21 @@ get_kernel() {
 }
 
 get_uptime() {
+    # Uptime works by retrieving the data in total seconds and then
+    # converting that data into days, hours and minutes using simple
+    # math.
     case $os in
         linux)
             IFS=. read -r s _ < /proc/uptime
         ;;
     esac
 
+    # Convert the uptime from seconds into days, hours and minutes.
     d=$((s / 60 / 60 / 24))
     h=$((s / 60 / 60 % 24))
     m=$((s / 60 % 60))
 
+    # Only append days, hours and minutes if they're non-zero.
     [ "$d" = 0 ] || uptime="${uptime}${d}d "
     [ "$h" = 0 ] || uptime="${uptime}${h}h "
     [ "$m" = 0 ] || uptime="${uptime}${m}m "
