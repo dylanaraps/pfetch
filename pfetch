@@ -124,6 +124,12 @@ get_distro() {
             # shellcheck source=/dev/null
             . /etc/os-release && distro=$PRETTY_NAME
         ;;
+
+        *)
+            # Catch all to ensure '$distro' is never blank.
+            # This should also handle the BSDs, macOS etc.
+            distro=$os
+        ;;
     esac
 }
 
