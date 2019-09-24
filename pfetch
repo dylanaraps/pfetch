@@ -314,7 +314,8 @@ EOF
         # "info names" for output alignment. The option names and subtitles
         # match 1:1 so this is thankfully simple.
         for info; do
-            info_length=$((${#info} > info_length ? ${#info} : info_length))
+            type "get_$info" >/dev/null &&
+                info_length=$((${#info} > info_length ? ${#info} : info_length))
         done
 
         # Iterate over the above list and run any existing "get_" functions.
