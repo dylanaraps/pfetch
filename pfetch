@@ -139,7 +139,7 @@ get_os() {
             while IFS='<>' read -r _ _ line _; do
                 case $line in
                     # To avoid duplicating code, we use the name of
-                    # they key (eg ProductVersion) as the name of the
+                    # the key (eg ProductVersion) as the name of the
                     # shell variable containing the value.
                     ProductVersion|ProductBuildVersion)
                         IFS='<>' read -r _ _ "${line?}" _
