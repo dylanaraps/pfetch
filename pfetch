@@ -142,6 +142,7 @@ get_os() {
                     # directly as it contains the key's value.
                     ProductVersion)
                         IFS='<>' read -r _ _ mac_version _
+                        break
                     ;;
                 esac
             done < /System/Library/CoreServices/SystemVersion.plist
