@@ -787,8 +787,6 @@ main() {
 		$(uname -sr)
 	EOF
 
-    os=Darwin
-
     # Always run 'get_os' for the purposes of detecting which ascii
     # art to display.
     get_os
