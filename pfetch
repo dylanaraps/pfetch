@@ -242,7 +242,8 @@ get_host() {
         ;;
     esac
 
-    log host "$host" >&6
+    # '$arch' is the cached output from 'uname -m'.
+    log host "${host:-$arch}" >&6
 }
 
 get_uptime() {
@@ -924,8 +925,8 @@ main() {
     # Store the output of 'uname' to avoid calling it multiple times
     # throughout the script. 'read <<EOF' is the simplest way of reading
     # a command into a list of variables.
-    read -r os kernel <<-EOF
-		$(uname -sr)
+    read -r os kernel arch <<-EOF
+		$(uname -srm)
 	EOF
 
     # Always run 'get_os' for the purposes of detecting which ascii
