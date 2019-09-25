@@ -59,12 +59,28 @@ log() {
     # End here if no data was found.
     [ "$2" ] || return
 
+    # Store the value of '$1' as we reset the argument list below.
+    name=$1
+
+    # Use 'set --' as a means of stripping all leading and trailing
+    # white-space from the info string. This also normalizes all
+    # whitespace inside of the string.
+    #
+    # Disable the shellcheck warning for word-splitting
+    # as it's safe and intended ('set -f' disables globbing).
+    # shellcheck disable=2046,2086
+    {
+        set -f
+        set +f -- $2
+        info=$*
+    }
+
     # Move the cursor to the right, the width of the ascii art with an
     # additional gap for text spacing.
     printf '[%sC' "${ascii_width--1}"
 
     # Print the info name and color the text.
-    printf '[3%s;1m%s[m' "${PF_COL1-4}" "$1"
+    printf '[3%s;1m%s[m' "${PF_COL1-4}" "$name"
 
     # Print the info name and info data separator.
     printf '%s' "$PF_SEP"
@@ -72,11 +88,11 @@ log() {
     # Move the cursor backward the length of the *current* info name and
     # then move it forwards the length of the *longest* info name. This
     # aligns each info data line.
-    printf '[%sD[%sC' "${#1}" "${PF_ALIGN-$info_length}"
+    printf '[%sD[%sC' "${#name}" "${PF_ALIGN-$info_length}"
 
     # Print the info data, color it and strip all leading whitespace
     # from the string.
-    printf '[3%sm%s[m\n' "${PF_COL2-7}" "${2#${2%%[![:space:]]*}}"
+    printf '[3%sm%s[m\n' "${PF_COL2-7}" "$info"
 
     # Keep track of the number of times 'log()' has been run.
     : $((info_height+=1))
@@ -217,34 +233,12 @@ get_host() {
         ;;
 
         NetBSD*)
-            # Use 'set --' to store the output of the command
-            # as it normalizes whitespace and strips newlines.
-            #
-            # Disable the shellcheck warning for word-splitting
-            # as it's safe and intended ('set -f' disables globbing).
-            # shellcheck disable=2046
-            {
-                set -f
-                set +f -- $(sysctl -n machdep.dmi.system-vendor \
-                                      machdep.dmi.system-product)
-            }
-
-            host=$*
+            host=$(sysctl -n machdep.dmi.system-vendor \
+                             machdep.dmi.system-product)
         ;;
 
         *BSD*)
-            # Use 'set --' to store the output of the command
-            # as it normalizes whitespace and strips newlines.
-            #
-            # Disable the shellcheck warning for word-splitting
-            # as it's safe and intended ('set -f' disables globbing).
-            # shellcheck disable=2046
-            {
-                set -f
-                set +f -- $(sysctl -n hw.vendor hw.product)
-            }
-
-            host=$*
+            host=$(sysctl -n hw.vendor hw.product)
         ;;
     esac
 
