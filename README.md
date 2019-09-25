@@ -23,8 +23,8 @@ _/\ __)/_)    pkgs   130
     - [x] Needs used memory detection.
     - [x] Needs testing.
 - [x] FreeBSD
-    - [ ] Needs used memory detection.
-    - [ ] Needs testing.
+    - [x] Needs used memory detection.
+    - [x] Needs testing.
 - [x] NetBSD
     - [x] Needs used memory detection.
     - [x] Needs testing.
