@@ -110,6 +110,8 @@ get_os() {
 
     case $os in
         Linux*)
+            # The value of '$distro' is determined by the *last*
+            # evaluated match in this command list.
             command -v lsb_release && distro=$(lsb_release -sd)
 
             # Disable warning about shellcheck not being able
