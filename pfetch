@@ -223,7 +223,16 @@ get_pkgs() {
     # The output from this is then piped to 'wc -l' to count each
     # line, giving us the total package count of whatever package
     # managers are installed.
-    packages=$(
+    #
+    # Backticks are *required* here as '/bin/sh' on macOS is
+    # 'bash 3.2' and it can't handle the following:
+    #
+    # var=$(
+    #    code here
+    # )
+    #
+    # shellcheck disable=2006
+    packages=`
         case $os in
             Linux*)
                 # Commands which print packages one per line.
@@ -267,7 +276,7 @@ get_pkgs() {
                 command -v pkg_info   && pkg_info
             ;;
         esac | wc -l
-    )
+    `
 
     log pkgs "$packages" >&6
 }
