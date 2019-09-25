@@ -10,24 +10,16 @@ A pretty system information tool written in POSIX `sh`.
   / __  \     kernel 5.3.1-coffee
  ( /  \ /|    uptime 6h 20m
 _/\ __)/_)    pkgs   130
-\/-____\/     memory 1721MiB / 7942MiB
+\/-____\/     memory 1721M / 7942M
 ```
 
 ## OS support
 
-- [x] Linux
+- [x] Linux (A myriad of distributions)
 - [x] MacOS
-    - [x] ~~Needs OS name detection.~~
-    - [x] ~~Needs testing.~~
 - [x] OpenBSD
-    - [x] Needs used memory detection.
-    - [x] Needs testing.
 - [x] FreeBSD
-    - [x] Needs used memory detection.
-    - [x] Needs testing.
 - [x] NetBSD
-    - [x] Needs used memory detection.
-    - [x] Needs testing.
 
 ## Configuration
 
