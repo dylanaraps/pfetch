@@ -302,10 +302,30 @@ get_memory() {
             mem_full=$((mem_full / 1024))
         ;;
 
+        # Used memory is calculated using the following "formula" (MacOS):
+        # wired + active + occupied * 4 / 1024
         Darwin*)
-            # If you run macOS and can send me the full output of
-            # 'vm_stat' I'll be able to add full support here.
             mem_full=$(($(sysctl -n hw.memsize) / 1024 / 1024))
+
+            # Parse the 'vmstat' file splitting on ':' and '.'.
+            # The format of the file is 'key:   000.' and an additional
+            # split is used on '.' to filter it out.
+            while IFS=:. read -r key val; do
+                case $key in
+                    *wired*|*active*|*occupied*)
+                        mem_used=$((mem_used + ${val:-0}))
+                    ;;
+                esac
+
+            # Using '<<-EOF' is the only way to loop over a command's
+            # output without the use of a pipe ('|') or subshell.
+            # This ensures that any variables defined in the while loop
+            # are still accessible in the script.
+            done <<-EOF
+                $(vmstat)
+			EOF
+
+            mem_used=$((mem_used * 4 / 1024))
         ;;
 
         OpenBSD*)
@@ -714,6 +734,11 @@ get_ascii() {
     while read -r line; do
         ascii_height=$((ascii_height + 1))
         ascii_width=$((${#line} > ascii_width ? ${#line} : ascii_width))
+
+    # Using '<<-EOF' is the only way to loop over a command's
+    # output without the use of a pipe ('|') or subshell.
+    # This ensures that any variables defined in the while loop
+    # are still accessible in the script.
     done <<-EOF
 		$(printf %s "$ascii" | sed 's/\[3.m//g')
 	EOF
@@ -757,6 +782,8 @@ main() {
     read -r os kernel <<-EOF
 		$(uname -sr)
 	EOF
+
+    os=Darwin
 
     # Always run 'get_os' for the purposes of detecting which ascii
     # art to display.
