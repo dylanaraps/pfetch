@@ -178,13 +178,13 @@ get_os() {
 }
 
 get_kernel() {
-    # '$kernel' is the cached output of 'uname -r'.
     case $os in
         # Don't print kernel output on BSD systems as the
         # OS name includes it.
         *BSD*) ;;
 
         *)
+            # '$kernel' is the cached output of 'uname -r'.
             log kernel "$kernel" >&6
         ;;
    esac
