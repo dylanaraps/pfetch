@@ -331,7 +331,7 @@ get_memory() {
             # This ensures that any variables defined in the while loop
             # are still accessible in the script.
             done <<-EOF
-                $(vmstat)
+                $(vm_stat)
 			EOF
 
             mem_used=$((mem_used * 4 / 1024))
