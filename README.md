@@ -17,12 +17,15 @@ _/\ __)/_)    pkgs   130
 
 - [x] Linux
 - [x] MacOS
-    - [ ] Needs OS name detection.
-    - [ ] Needs testing.
+    - [x] ~~Needs OS name detection.~~
+    - [x] ~~Needs testing.~~
 - [x] OpenBSD
     - [ ] Needs used memory detection.
     - [ ] Needs testing.
 - [x] FreeBSD
+    - [ ] Needs used memory detection.
+    - [ ] Needs testing.
+- [x] NetBSD
     - [ ] Needs used memory detection.
     - [ ] Needs testing.
 
