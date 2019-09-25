@@ -289,7 +289,7 @@ get_pkgs() {
                 command -v emerge     && printf '%s\n' /var/db/pkg/*/*/
 
                 # GUIX requires two commands.
-                command -v guix && {
+                command -v guix       && {
                     guix package -p /run/current-system/profile -I
                     guix package -I
                 }
