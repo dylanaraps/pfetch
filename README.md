@@ -26,8 +26,8 @@ _/\ __)/_)    pkgs   130
     - [ ] Needs used memory detection.
     - [ ] Needs testing.
 - [x] NetBSD
-    - [ ] Needs used memory detection.
-    - [ ] Needs testing.
+    - [x] Needs used memory detection.
+    - [x] Needs testing.
 
 ## Configuration
 
