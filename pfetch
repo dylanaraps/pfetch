@@ -293,6 +293,12 @@ get_pkgs() {
                     guix package -p /run/current-system/profile -I
                     guix package -I
                 }
+
+                # NIX requires two commands.
+                command -v nix-store  && {
+                    nix-store -q --requisites /run/current-system/sw
+                    nix-store -q --requisites ~.nix-profile
+                }
             ;;
 
             Darwin*)
