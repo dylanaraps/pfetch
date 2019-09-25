@@ -151,19 +151,19 @@ get_os() {
             # the system has. As far as I'm aware there's no "dynamic" way
             # of grabbing this information.
             case $mac_version in
-                10.4*)  distro="Mac OS X Tiger" ;;
-                10.5*)  distro="Mac OS X Leopard" ;;
-                10.6*)  distro="Mac OS X Snow Leopard" ;;
-                10.7*)  distro="Mac OS X Lion" ;;
-                10.8*)  distro="OS X Mountain Lion" ;;
-                10.9*)  distro="OS X Mavericks" ;;
-                10.10*) distro="OS X Yosemite" ;;
-                10.11*) distro="OS X El Capitan" ;;
-                10.12*) distro="macOS Sierra" ;;
-                10.13*) distro="macOS High Sierra" ;;
-                10.14*) distro="macOS Mojave" ;;
-                10.15*) distro="macOS Catalina" ;;
-                *)      distro="macOS" ;;
+                10.4*)  distro='Mac OS X Tiger' ;;
+                10.5*)  distro='Mac OS X Leopard' ;;
+                10.6*)  distro='Mac OS X Snow Leopard' ;;
+                10.7*)  distro='Mac OS X Lion' ;;
+                10.8*)  distro='OS X Mountain Lion' ;;
+                10.9*)  distro='OS X Mavericks' ;;
+                10.10*) distro='OS X Yosemite' ;;
+                10.11*) distro='OS X El Capitan' ;;
+                10.12*) distro='macOS Sierra' ;;
+                10.13*) distro='macOS High Sierra' ;;
+                10.14*) distro='macOS Mojave' ;;
+                10.15*) distro='macOS Catalina' ;;
+                *)      distro='macOS' ;;
             esac
 
             distro="$distro $mac_version"
