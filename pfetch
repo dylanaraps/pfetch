@@ -311,20 +311,20 @@ get_pkgs() {
             ;;
 
             FreeBSD*)
-                # Commands which print packages one per line.
-                command -v pkg        && pkg info
+                pkg info
             ;;
 
-            *BSD*)
-                # Commands which print packages one per line.
-                command -v pkginfo    && pkginfo -i
-                command -v pkg        && pkg list
-                command -v pkg_info   && pkg_info
+            OpenBSD*)
+                printf '%s\n' /var/db/pkg/*/
+            ;;
+
+            NetBSD*)
+                pkg_info
             ;;
         esac | wc -l
     `
 
-    log pkgs "$packages" >&6
+    log pkgs "${packages:-?}" >&6
 }
 
 get_memory() {
