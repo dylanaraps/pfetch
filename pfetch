@@ -125,7 +125,7 @@ get_os() {
 
         Darwin*)
             # Parse the SystemVersion.plist file to grab the macOS
-            # versions. The file is in the following format:
+            # version. The file is in the following format:
             #
             # <key>ProductVersion</key>
             # <string>10.14.6</string>
