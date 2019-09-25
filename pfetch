@@ -358,7 +358,7 @@ get_memory() {
         ;;
 
         # Used memory is calculated using the following "formula" (MacOS):
-        # wired + active + occupied * 4 / 1024
+        # (wired + active + occupied) * 4 / 1024
         Darwin*)
             mem_full=$(($(sysctl -n hw.memsize) / 1024 / 1024))
 
