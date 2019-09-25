@@ -760,7 +760,7 @@ main() {
     # Leave the terminal how we found it on exit or Ctrl+C.
     # '[?7h':  Enable line-wrapping.
     # '[?25h': Un-hide the cursor.
-    trap 'printf [?7h[?25h' EXIT INT
+    trap 'printf [?7h[?25h' EXIT
 
     # Hide 'stderr' unless the first argument is '-v'. This saves
     # polluting the script with '2>/dev/null'.
