@@ -367,7 +367,7 @@ get_memory() {
                 esac
 
             # Using '<<-EOF' is the only way to loop over a command's
-            # output without the use of a pipe ('|') or subshell.
+            # output without the use of a pipe ('|').
             # This ensures that any variables defined in the while loop
             # are still accessible in the script.
             done <<-EOF
@@ -788,7 +788,7 @@ get_ascii() {
         ascii_width=$((${#line} > ascii_width ? ${#line} : ascii_width))
 
     # Using '<<-EOF' is the only way to loop over a command's
-    # output without the use of a pipe ('|') or subshell.
+    # output without the use of a pipe ('|').
     # This ensures that any variables defined in the while loop
     # are still accessible in the script.
     done <<-EOF
