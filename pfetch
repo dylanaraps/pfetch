@@ -807,7 +807,7 @@ get_ascii() {
     # The "   " acts as the padding between the ascii art and the text as
     # it appends 3 spaces to the end of each line.
     while read -r line; do
-        ascii_height=$((ascii_height + 1))
+        : $((ascii_height+=1))
         ascii_width=$((${#line} > ascii_width ? ${#line} : ascii_width))
 
     # Using '<<-EOF' is the only way to loop over a command's
