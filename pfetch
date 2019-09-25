@@ -443,12 +443,12 @@ get_memory() {
                                       vm.stats.vm.v_cache_count)
             }
 
-            # Calculate the amount of free memory.
+            # Calculate the amount of used memory.
             # $1: hw.pagesize
             # $2: vm.stats.vm.v_inactive_count
             # $3: vm.stats.vm.v_free_count
             # $4: vm.stats.vm.v_cache_count
-            mem_free=$((($2 + $3 + $4) * $1 / 1024 / 1024))
+            mem_used=$((($2 + $3 + $4) * $1 / 1024 / 1024))
         ;;
 
         NetBSD*)
