@@ -216,6 +216,22 @@ get_host() {
             host=$(sysctl -n hw.model)
         ;;
 
+        NetBSD*)
+            # Use 'set --' to store the output of the command
+            # as it normalizes whitespace and strips newlines.
+            #
+            # Disable the shellcheck warning for word-splitting
+            # as it's safe and intended ('set -f' disables globbing).
+            # shellcheck disable=2046
+            {
+                set -f
+                set +f -- $(sysctl -n machdep.dmi.system-vendor \
+                                      machdep.dmi.system-product)
+            }
+
+            host=$*
+        ;;
+
         *BSD*)
             # Use 'set --' to store the output of the command
             # as it normalizes whitespace and strips newlines.
