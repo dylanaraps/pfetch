@@ -79,12 +79,6 @@ log() {
     : $((info_height+=1))
 }
 
-# Simple function to avoid '>/dev/null' spam.
-# This checks to see if a command is in '$PATH'.
-has() {
-    command -v "$1" >/dev/null
-}
-
 get_title() {
     # Username is retrieved by first checking '$USER' with a fallback
     # to the 'whoami' command.
@@ -99,7 +93,7 @@ get_title() {
     # shellcheck disable=SC2039
     host=${HOSTNAME:-${hostname:-$(hostname)}}
 
-    log "[3${PF_COL3:-1}m${user}${c7}@[3${PF_COL3:-1}m${host}"
+    log "[3${PF_COL3:-1}m${user}${c7}@[3${PF_COL3:-1}m${host}" >&6
 }
 
 get_os() {
@@ -110,23 +104,23 @@ get_os() {
     # On first run, this function displays _nothing_, only on the second
     # invocation is 'log()' called.
     [ "$distro" ] && {
-        log os "$distro"
+        log os "$distro" >&6
         return
     }
 
     case $os in
         Linux*)
-            has lsb_release && distro=$(lsb_release -sd)
+            command -v lsb_release && distro=$(lsb_release -sd)
 
             # Disable warning about shellcheck not being able
             # to read '/etc/os-release'. This is fine.
             # shellcheck source=/dev/null
-            . /etc/os-release && distro=$PRETTY_NAME
+            . /etc/os-release      && distro=$PRETTY_NAME
 
             # Special cases for distributions which don't follow.
             # the '/etc/os-release' "standard".
-            has crux && distro=$(crux)
-            has guix && distro='Guix System'
+            command -v crux        && distro=$(crux)
+            command -v guix        && distro='Guix System'
         ;;
 
         Darwin*)
@@ -151,13 +145,13 @@ get_kernel() {
         *BSD*) ;;
 
         *)
-            log kernel "$kernel"
+            log kernel "$kernel" >&6
         ;;
    esac
 }
 
 get_shell() {
-    log shell "${SHELL##*/}"
+    log shell "${SHELL##*/}" >&6
 }
 
 get_host() {
@@ -182,7 +176,7 @@ get_host() {
         ;;
     esac
 
-    log host "$host"
+    log host "$host" >&6
 }
 
 get_uptime() {
@@ -218,7 +212,7 @@ get_uptime() {
     [ "$h" = 0 ] || uptime="${uptime}${h}h "
     [ "$m" = 0 ] || uptime="${uptime}${m}m "
 
-    log uptime "${uptime:-0m}"
+    log uptime "${uptime:-0m}" >&6
 }
 
 get_pkgs() {
@@ -233,47 +227,49 @@ get_pkgs() {
         case $os in
             Linux*)
                 # Commands which print packages one per line.
-                has kiss       && kiss l
-                has bonsai     && bonsai list
-                has pacman-key && pacman -Qq
-                has dpkg       && dpkg-query -f '.\n' -W
-                has rpm        && rpm -qa
-                has xbps-query && xbps-query -l
-                has apk        && apk info
+                command -v kiss       && kiss l
+                command -v bonsai     && bonsai list
+                command -v pacman-key && pacman -Qq
+                command -v dpkg       && dpkg-query -f '.\n' -W
+                command -v rpm        && rpm -qa
+                command -v xbps-query && xbps-query -l
+                command -v apk        && apk info
 
                 # Directories containing packages.
-                has brew       && printf '%s\n' "$(brew --cellar)/"*
-                has emerge     && printf '%s\n' /var/db/pkg/*/*/
+                command -v brew       && printf '%s\n' "$(brew --cellar)/"*
+                command -v emerge     && printf '%s\n' /var/db/pkg/*/*/
 
                 # GUIX requires two commands.
-                has guix       && guix package -p /run/current-system/profile -I
-                has guix       && guix package -I
+                command -v guix && {
+                    guix package -p /run/current-system/profile -I
+                    guix package -I
+                }
             ;;
 
             Darwin*)
                 # Commands which print packages one per line.
-                has pkgin      && pkgin list
-                has port       && port installed
+                command -v pkgin      && pkgin list
+                command -v port       && port installed
 
                 # Directories containing packages.
-                has brew       && printf '%s\n' /usr/local/Cellar/*
+                command -v brew       && printf '%s\n' /usr/local/Cellar/*
             ;;
 
             FreeBSD*)
                 # Commands which print packages one per line.
-                has pkg        && pkg info
+                command -v pkg        && pkg info
             ;;
 
             *BSD*)
                 # Commands which print packages one per line.
-                has pkginfo    && pkginfo -i
-                has pkg        && pkg list
-                has pkg_info   && pkg_info
+                command -v pkginfo    && pkginfo -i
+                command -v pkg        && pkg list
+                command -v pkg_info   && pkg_info
             ;;
         esac | wc -l
     )
 
-    log pkgs "$packages"
+    log pkgs "$packages" >&6
 }
 
 get_memory() {
@@ -345,7 +341,7 @@ get_memory() {
         ;;
     esac
 
-    log memory "${mem_used:-?}MiB / ${mem_full:-?}MiB"
+    log memory "${mem_used:-?}MiB / ${mem_full:-?}MiB" >&6
 }
 
 get_ascii() {
@@ -718,8 +714,8 @@ get_ascii() {
                 return
             }
 
-            printf 'error: %s is not currently supported.\n' "$os"
-            printf 'error: Open an issue on GitHub for support to be added.\n'
+            printf 'error: %s is not currently supported.\n' "$os" >&6
+            printf 'error: Open an issue for support to be added.\n' >&6
             exit 1
         ;;
     esac
@@ -757,18 +753,22 @@ get_ascii() {
     # '[1m':   Print the ascii in bold.
     # '[m':    Clear bold.
     # '[%sA:   Move the cursor up '$ascii_height' amount of lines.
-    printf '[?7l[?25l[1m%s[m[%sA' "$ascii" "$ascii_height"
+    printf '[?7l[?25l[1m%s[m[%sA' "$ascii" "$ascii_height" >&6
 }
 
 main() {
     # Leave the terminal how we found it on exit or Ctrl+C.
     # '[?7h':  Enable line-wrapping.
     # '[?25h': Un-hide the cursor.
-    trap 'printf [?7h[?25h' EXIT
+    trap 'printf [?7h[?25h >&6' EXIT
 
     # Hide 'stderr' unless the first argument is '-v'. This saves
     # polluting the script with '2>/dev/null'.
     [ "$1" = -v ] || exec 2>/dev/null
+
+    # Hide 'stdout' and selectively print to it using '>&6'.
+    # This gives full control over what it displayed on the screen.
+    exec 6>&1 >/dev/null
 
     # Generic color list.
     # Disable warning about unused variables.
@@ -823,7 +823,7 @@ main() {
     # Print '$cursor_pos' amount of newlines. Using cursor down doesn't scroll
     # the screen correctly if this causes the cursor to hit the bottom of the
     # window. Using '0' gives us an extra iteration, adding a bottom line gap.
-    printf '%0.s\n' $(seq 0 "$cursor_pos")
+    printf '%0.s\n' $(seq 0 "$cursor_pos") >&6
 }
 
 main "$@"
