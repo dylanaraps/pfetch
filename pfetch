@@ -289,6 +289,7 @@ get_pkgs() {
                 # Directories containing packages.
                 command -v brew       && printf '%s\n' "$(brew --cellar)/"*
                 command -v emerge     && printf '%s\n' /var/db/pkg/*/*/
+                command -v pkgtool    && printf '%s\n' /var/log/packages/*
 
                 # GUIX requires two commands.
                 command -v guix       && {
