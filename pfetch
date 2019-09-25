@@ -133,6 +133,9 @@ get_os() {
             # 'IFS' is set to '<>' to enable splitting between the
             # keys and a second 'read' is used to operate on the
             # next line directly after a match.
+            #
+            # '_' is used to nullify a field. '_ _ line _' basically
+            # says "populate $line with the third field's contents".
             while IFS='<>' read -r _ _ line _; do
                 case $line in
                     # To avoid duplicating code, we use the name of
