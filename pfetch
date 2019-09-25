@@ -124,9 +124,45 @@ get_os() {
         ;;
 
         Darwin*)
-            # TODO: Parse '/System/Library/CoreServices/SystemVersion.plist'
-            #       to grab the full distribution name, version and build.
-            distro=macOS
+            # Parse the SystemVersion.plist file to grab the macOS
+            # versions. The file is in the following format:
+            #
+            # <key>ProductVersion</key>
+            # <string>10.14.6</string>
+            #
+            # 'IFS' is set to '<>' to enable splitting between the
+            # keys and a second 'read' is used to operate on the
+            # next line directly after a match.
+            while IFS='<>' read -r _ _ line _; do
+                case $line in
+                    # To avoid duplicating code, we use the name of
+                    # they key (eg ProductVersion) as the name of the
+                    # shell variable containing the value.
+                    ProductVersion|ProductBuildVersion)
+                        IFS='<>' read -r _ _ "${line?}" _
+                    ;;
+                esac
+            done < /System/Library/CoreServices/SystemVersion.plist
+
+            # Use the ProductVersion to determine which macOS/OS X codename
+            # the system has. As far as I'm aware there's no "dynamic" way
+            # of grabbing this information.
+            case ${ProductVersion?} in
+                10.4*)  distro="Mac OS X Tiger" ;;
+                10.5*)  distro="Mac OS X Leopard" ;;
+                10.6*)  distro="Mac OS X Snow Leopard" ;;
+                10.7*)  distro="Mac OS X Lion" ;;
+                10.8*)  distro="OS X Mountain Lion" ;;
+                10.9*)  distro="OS X Mavericks" ;;
+                10.10*) distro="OS X Yosemite" ;;
+                10.11*) distro="OS X El Capitan" ;;
+                10.12*) distro="macOS Sierra" ;;
+                10.13*) distro="macOS High Sierra" ;;
+                10.14*) distro="macOS Mojave" ;;
+                *)      distro="macOS" ;;
+            esac
+
+            distro="$distro ${ProductVersion?} ${ProductBuildVersion?}"
         ;;
 
         *)
