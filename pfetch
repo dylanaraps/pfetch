@@ -159,6 +159,7 @@ get_os() {
                 10.12*) distro="macOS Sierra" ;;
                 10.13*) distro="macOS High Sierra" ;;
                 10.14*) distro="macOS Mojave" ;;
+                10.15*) distro="macOS Catalina" ;;
                 *)      distro="macOS" ;;
             esac
 
@@ -797,7 +798,7 @@ get_ascii() {
     # '[?25l': Hide the cursor.
     # '[1m':   Print the ascii in bold.
     # '[m':    Clear bold.
-    # '[%sA:   Move the cursor up '$ascii_height' amount of lines.
+    # '[%sA':  Move the cursor up '$ascii_height' amount of lines.
     printf '[?7l[?25l[1m%s[m[%sA' "$ascii" "$ascii_height" >&6
 }
 
