@@ -932,10 +932,13 @@ main() {
     # art in height, don't touch the cursor, else move it down N lines.
     cursor_pos=$((info_height > ascii_height ? 0 : ascii_height - info_height))
 
-    # Print '$cursor_pos' amount of newlines. Using cursor down doesn't scroll
-    # the screen correctly if this causes the cursor to hit the bottom of the
-    # window. Using '0' gives us an extra iteration, adding a bottom line gap.
-    printf '%0.s\n' $(seq 0 "$cursor_pos") >&6
+    # Print '$cursor_pos' amount of newlines to correctly position the
+    # cursor. This used to be a 'printf $(seq X X)' however 'seq' is only
+    # typically available (by default) on GNU based systems!
+    while [ "${i:-0}" -le "$cursor_pos" ]; do
+        printf '\n'
+        : $((i+=1))
+    done >&6
 }
 
 main "$@"
