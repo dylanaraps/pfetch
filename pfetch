@@ -56,6 +56,9 @@ log() {
     #
     # $[6] /home/goldie $
 
+    # End here if no data was found.
+    [ "$2" ] || return
+
     # Move the cursor to the right, the width of the ascii art with an
     # additional gap for text spacing.
     printf '[%sC' "${ascii_width--1}"
@@ -93,7 +96,7 @@ get_title() {
     # shellcheck disable=SC2039
     host=${HOSTNAME:-${hostname:-$(hostname)}}
 
-    log "[3${PF_COL3:-1}m${user}${c7}@[3${PF_COL3:-1}m${host}" >&6
+    log "[3${PF_COL3:-1}m${user}${c7}@[3${PF_COL3:-1}m${host}" " " >&6
 }
 
 get_os() {
