@@ -63,6 +63,11 @@ PF_COL1=4
 # Valid: 0-9
 PF_COL2=7
 
+# Color of title data:
+# Default: unset (auto)
+# Valid: 0-9
+PF_COL3=1
+
 # Alignment padding.
 # Default: unset (auto)
 # Valid: int
