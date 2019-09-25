@@ -20,8 +20,8 @@ _/\ __)/_)    pkgs   130
     - [x] ~~Needs OS name detection.~~
     - [x] ~~Needs testing.~~
 - [x] OpenBSD
-    - [ ] Needs used memory detection.
-    - [ ] Needs testing.
+    - [x] Needs used memory detection.
+    - [x] Needs testing.
 - [x] FreeBSD
     - [ ] Needs used memory detection.
     - [ ] Needs testing.
