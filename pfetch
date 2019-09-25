@@ -138,11 +138,10 @@ get_os() {
             # says "populate $line with the third field's contents".
             while IFS='<>' read -r _ _ line _; do
                 case $line in
-                    # To avoid duplicating code, we use the name of
-                    # the key (eg ProductVersion) as the name of the
-                    # shell variable containing the value.
-                    ProductVersion|ProductBuildVersion)
-                        IFS='<>' read -r _ _ "${line?}" _
+                    # Match 'ProductVersion' and read the next line
+                    # directly as it contains the key's value.
+                    ProductVersion)
+                        IFS='<>' read -r _ _ mac_version _
                     ;;
                 esac
             done < /System/Library/CoreServices/SystemVersion.plist
@@ -150,7 +149,7 @@ get_os() {
             # Use the ProductVersion to determine which macOS/OS X codename
             # the system has. As far as I'm aware there's no "dynamic" way
             # of grabbing this information.
-            case ${ProductVersion?} in
+            case $mac_version in
                 10.4*)  distro="Mac OS X Tiger" ;;
                 10.5*)  distro="Mac OS X Leopard" ;;
                 10.6*)  distro="Mac OS X Snow Leopard" ;;
@@ -166,7 +165,7 @@ get_os() {
                 *)      distro="macOS" ;;
             esac
 
-            distro="$distro ${ProductVersion?} ${ProductBuildVersion?}"
+            distro="$distro $mac_version"
         ;;
 
         *)
