@@ -398,6 +398,9 @@ get_ascii() {
     # an ascii file from 'stdin'. It allows for the use
     # of '<<-EOF' to prevent the break in indentation in
     # this source code.
+    #
+    # This function also sets the text colors according
+    # to the ascii color.
     read_ascii() {
         # 'PF_COL1': Set the info name color according to ascii color.
         # 'PF_COL3': Set the title color to some other color. ¯\_(ツ)_/¯
