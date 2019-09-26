@@ -98,14 +98,6 @@ PF_ALIGN=""
 PF_ASCII="openbsd"
 ```
 
-## Make `pfetch` update on an interval
-
-This makes `pfetch` display interactively like `htop`/`top`.
-
-```sh
-watch -tn1 pfetch
-```
-
 ## Credit
 
 - [ufetch](https://gitlab.com/jschx/ufetch): Lots of ASCII logos.
