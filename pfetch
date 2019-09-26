@@ -498,7 +498,7 @@ get_memory() {
         Haiku)
             # Read the first line of 'sysinfo -mem' splitting on
             # '(', ' ', and ')'. The needed information is then
-            # sotred in the 5th and 7th elements. Using '_' "consumes"
+            # stored in the 5th and 7th elements. Using '_' "consumes"
             # an element allowing us to proceed to the next one.
             #
             # The parsed format is as follows:
