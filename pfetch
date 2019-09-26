@@ -675,6 +675,17 @@ get_ascii() {
 			EOF
         ;;
 
+        [Hh]aiku*)
+            read_ascii 5 <<-EOF
+				${c5}      ,',
+				;--.,/   \\,.--;
+				'.  '     '  .'
+				.-''       ''-.
+				 '-,__, ,__,-'
+				      |_|
+			EOF
+        ;;
+
         [Hh]yperbola*)
             read_ascii <<-EOF
 				${c7}    |\`__.\`/
