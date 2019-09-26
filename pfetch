@@ -302,7 +302,7 @@ get_uptime() {
 
 get_pkgs() {
     # This works by first checking for which package managers are
-    # isntalled and finally by printing each package manager's
+    # installed and finally by printing each package manager's
     # package list with each package one per line.
     #
     # The output from this is then piped to 'wc -l' to count each
