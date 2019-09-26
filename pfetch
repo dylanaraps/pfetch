@@ -928,9 +928,6 @@ get_ascii() {
     # Iterate over each line of the ascii art to retrieve the above
     # information. The 'sed' is used to strip '[3Xm' color codes from
     # the ascii art so they don't affect the width variable.
-    #
-    # The "   " acts as the padding between the ascii art and the text as
-    # it appends 3 spaces to the end of each line.
     while read -r line; do
         : $((ascii_height+=1))
         ascii_width=$((${#line} > ascii_width ? ${#line} : ascii_width))
