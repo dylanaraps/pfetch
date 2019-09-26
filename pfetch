@@ -246,6 +246,12 @@ get_host() {
         *BSD*)
             host=$(sysctl -n hw.vendor hw.product)
         ;;
+
+        Haiku)
+            # '$arch' ends up being the hostname(?) on Haiku and
+            # there is no other way to get host information.
+            return
+        ;;
     esac
 
     # '$arch' is the cached output from 'uname -m'.
