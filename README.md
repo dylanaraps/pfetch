@@ -2,6 +2,12 @@
 
 A pretty system information tool written in POSIX `sh`.
 
+The goal of this project is to implement a simple system information tool in POSIX `sh` using features built into the language itself (*where possible*).
+
+The source code is highly documented and I hope it will act as a learning resource for POSIX `sh` and simple information detection across various different operating systems.
+
+If anything in the source code is unclear or is lacking in its explanation, open an issue. Sometimes you get too close to something and you fail to see the "bigger picture"!
+
 ```sh
 ➜ pfetch
     ___       goldie@KISS
@@ -21,6 +27,26 @@ _/\ __)/_)    pkgs   130
 - [x] FreeBSD
 - [x] NetBSD
 - [x] Haiku
+
+## TODO
+
+- [ ] Add optional and additional information detection.
+    - [ ] CPU
+    - [ ] Terminal Emulator
+        - The way I implement this in `neofetch` is interesting.
+    - [ ] Terminal colors
+    - [ ] ???
+- [ ] Expand operating system support.
+    - [ ] Solaris
+    - [ ] MINIX
+    - [ ] AIX
+    - [ ] IRIX
+    - [ ] FreeMiNT
+    - [ ] Windows
+        - [ ] CYGWIN
+        - [ ] MSYS
+        - [ ] MINGW
+        - [ ] WSL (*this is fairly simple*)
 
 ## Configuration
 
