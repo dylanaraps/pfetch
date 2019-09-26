@@ -439,12 +439,12 @@ get_memory() {
             # This is a really simpler parser for 'vmstat' which grabs
             # the used memory amount in a lazy way. 'vmstat' prints 3
             # lines of output with the needed value being stored in the
-            # third and last line.
+            # final line.
             #
             # This loop simply grabs the 3rd element of each line until
             # the EOF is reached. Each line overwrites the value of the
-            # previous so we're left with what we wanted. This isn't
-            # slow as only 3 lines are parsed!
+            # previous one so we're left with what we wanted. This isn't
+            # slow as only 3 lines are parsed.
             while read -r _ _ line _; do
                 mem_used=${line%%M}
 
