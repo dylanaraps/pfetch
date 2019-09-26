@@ -37,12 +37,12 @@ _/\ __)/_)    pkgs   130
     - [ ] Terminal colors
     - [ ] ???
 - [ ] Expand operating system support.
-    - [ ] Solaris
-    - [ ] MINIX
-    - [ ] AIX
-    - [ ] IRIX
-    - [ ] FreeMiNT
-    - [ ] Windows
+    - [ ] Solaris (#5)
+    - [ ] MINIX (#6)
+    - [ ] AIX (#7)
+    - [ ] IRIX (#8)
+    - [ ] FreeMiNT (#9)
+    - [ ] Windows (#10)
         - [ ] CYGWIN
         - [ ] MSYS
         - [ ] MINGW
