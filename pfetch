@@ -190,6 +190,12 @@ get_os() {
             distro="$distro $mac_version"
         ;;
 
+        Haiku)
+            # Haiku uses 'uname -v' for version information
+            # instead of 'uname -r'.
+            distro="Haiku $(uname -v)"
+        ;;
+
         *)
             # Catch all to ensure '$distro' is never blank.
             # This also handles the BSDs.
@@ -200,9 +206,9 @@ get_os() {
 
 get_kernel() {
     case $os in
-        # Don't print kernel output on BSD systems as the
+        # Don't print kernel output on some systems as the
         # OS name includes it.
-        *BSD*) ;;
+        *BSD*|Haiku) ;;
 
         *)
             # '$kernel' is the cached output of 'uname -r'.
@@ -266,6 +272,12 @@ get_uptime() {
             # The uptime format from 'sysctl' needs to be subtracted from
             # the current time in seconds.
             s=$(($(date +%s) - s))
+        ;;
+
+        Haiku)
+            # The boot time is returned in microseconds, convert it to
+            # regular seconds.
+            s=$(($(system_time) / 1000000))
         ;;
     esac
 
@@ -348,6 +360,10 @@ get_pkgs() {
 
             NetBSD*)
                 pkg_info
+            ;;
+
+            Haiku)
+                printf '%s\n' /boot/system/package-links/*
             ;;
         esac | wc -l
     `
