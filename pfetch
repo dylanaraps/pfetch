@@ -676,8 +676,8 @@ get_ascii() {
         ;;
 
         [Hh]aiku*)
-            read_ascii 5 <<-EOF
-				${c5}      ,',
+            read_ascii 3 <<-EOF
+				${c3}      ,',
 				;--.,/   \\,.--;
 				'.  '     '  .'
 				.-''       ''-.
