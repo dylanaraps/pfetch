@@ -20,6 +20,8 @@ _/\ __)/_)    pkgs   130
 - [x] OpenBSD
 - [x] FreeBSD
 - [x] NetBSD
+- [x] Haiku
+    - [ ] Needs testing.
 
 ## Configuration
 
