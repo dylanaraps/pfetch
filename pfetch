@@ -576,6 +576,21 @@ get_memory() {
     log memory "${mem_used:-?}M / ${mem_full:-?}M" >&6
 }
 
+get_palette() {
+    # Print the first 8 terminal colors. This uses the existing
+    # sequences to change text color with a sequence prepended
+    # to reverse the foreground and background colors.
+    #
+    # This allows us to save hardcoding a second set of sequences
+    # for background colors.
+    palette="  [7m$c1  $c2  $c3  $c4  $c5  $c6  $c7  "
+
+    # Print the palette with a newline before and after.
+    # The '\033[%sC' moves the text to the right, the
+    # length of the ascii art.
+    printf '\n[%sC%s[m\n' "${ascii_width-1}" "$palette" >&6
+}
+
 get_ascii() {
     # This is a simple function to read the contents of
     # an ascii file from 'stdin'. It allows for the use
