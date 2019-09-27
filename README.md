@@ -32,7 +32,7 @@ _/\ __)/_)    pkgs   130
 
 - [ ] Add optional and additional information detection.
     - [ ] CPU
-    - [ ] Terminal Emulator
+    - [ ] Terminal Emulator ([#12](https://github.com/dylanaraps/pfetch/pull/12))
         - The way I implement this in `neofetch` is interesting.
     - [ ] Terminal colors
     - [ ] ???
