@@ -129,17 +129,31 @@ get_os() {
 
     case $os in
         Linux*)
-            # The value of '$distro' is determined by the *last*
-            # evaluated match in this command list.
-            command -v lsb_release && distro=$(lsb_release -sd)
+            # Some Linux disttributions (which are based on others)
+            # fail to identify as they **do not** change the upstream
+            # distributions identification packages or files.
+            #
+            # It is senseless to add a special case in the code for
+            # each and every distribution (which _is_ technically no
+            # different from what it is based on) as they're either too
+            # lazy to modify upstream's identification files or they
+            # don't have the know-how ship their own lsb-release package.
+            #
+            # This causes users to think there's a bug in system detection
+            # tools like neofetch or pfetch when they technically *do*
+            # function correctly.
+            if command -v lsb_release; then
+                distro=$(lsb_release -sd)
 
-            # Disable warning about shellcheck not being able
-            # to read '/etc/os-release'. This is fine.
-            # shellcheck source=/dev/null
-            . /etc/os-release      && distro=$PRETTY_NAME
+            else
+                # Disable warning about shellcheck not being able
+                # to read '/etc/os-release'. This is fine.
+                # shellcheck source=/dev/null
+                . /etc/os-release && distro=$PRETTY_NAME
+            fi
 
-            # Special cases for distributions which don't follow.
-            # the '/etc/os-release' "standard".
+            # Special cases for distributions which don't follow
+            # any os-release/lsb standards whatsoever.
             command -v crux        && distro=$(crux)
             command -v guix        && distro='Guix System'
         ;;
