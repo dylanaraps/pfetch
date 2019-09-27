@@ -110,9 +110,9 @@ get_title() {
     # the intention for using it is allowing the user to overwrite the
     # value on invocation.
     # shellcheck disable=SC2039
-    host=${HOSTNAME:-${hostname:-$(hostname)}}
+    hostname=${HOSTNAME:-${hostname:-$(hostname)}}
 
-    log "[3${PF_COL3:-1}m${user}${c7}@[3${PF_COL3:-1}m${host}" " " >&6
+    log "[3${PF_COL3:-1}m${user}${c7}@[3${PF_COL3:-1}m${hostname}" " " >&6
 }
 
 get_os() {
@@ -268,11 +268,6 @@ get_host() {
 
         *BSD*)
             host=$(sysctl -n hw.vendor hw.product)
-        ;;
-
-        Haiku)
-            # There is no way to get host information on Haiku(?).
-            return
         ;;
     esac
 
