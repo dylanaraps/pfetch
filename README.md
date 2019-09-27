@@ -35,6 +35,7 @@ _/\ __)/_)    pkgs   130
     - [ ] Terminal Emulator ([#12](https://github.com/dylanaraps/pfetch/pull/12))
         - The way I implement this in `neofetch` is interesting.
     - [x] Terminal colors ([commit](https://github.com/dylanaraps/pfetch/commit/ba03cb3cf4dfbc767abce6acd53c07ab5568e23d))
+    - [ ] Window manager ([#13](https://github.com/dylanaraps/pfetch/pull/13))
     - [ ] ???
 - [ ] Expand operating system support.
     - [ ] Solaris ([#5](https://github.com/dylanaraps/pfetch/issues/5))
