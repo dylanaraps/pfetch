@@ -309,6 +309,7 @@ get_host() {
             Not     | Applicable | Specified | System | Product | Name |\
             Version | Undefined  | Default   | string | INVALID | �    )
                 continue
+            ;;
         esac
 
         host="$host$word "
