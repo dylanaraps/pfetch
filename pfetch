@@ -271,8 +271,7 @@ get_host() {
         ;;
 
         Haiku)
-            # '$arch' ends up being the hostname(?) on Haiku and
-            # there is no other way to get host information.
+            # There is no way to get host information on Haiku(?).
             return
         ;;
     esac
