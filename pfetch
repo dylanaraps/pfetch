@@ -137,11 +137,20 @@ get_os() {
             # each and every distribution (which _is_ technically no
             # different from what it is based on) as they're either too
             # lazy to modify upstream's identification files or they
-            # don't have the know-how ship their own lsb-release package.
+            # don't have the know-how (or means) to ship their own
+            # lsb-release package.
             #
             # This causes users to think there's a bug in system detection
             # tools like neofetch or pfetch when they technically *do*
             # function correctly.
+            #
+            # Exceptions are made for distributions which are independent,
+            # not based on another distribution or follow different
+            # standards.
+            #
+            # This applies only to distributions which follow the standard
+            # by shipping unmodified identification files and packages
+            # from their respective upstreams.
             if command -v lsb_release; then
                 distro=$(lsb_release -sd)
 
@@ -152,8 +161,8 @@ get_os() {
                 . /etc/os-release && distro=$PRETTY_NAME
             fi
 
-            # Special cases for distributions which don't follow
-            # any os-release/lsb standards whatsoever.
+            # Special cases for (independent) distributions which
+            # don't follow any os-release/lsb standards whatsoever.
             command -v crux        && distro=$(crux)
             command -v guix        && distro='Guix System'
         ;;
