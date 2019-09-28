@@ -1046,7 +1046,11 @@ get_ascii() {
     # the ascii art so they don't affect the width variable.
     while read -r line; do
         ascii_height=$((ascii_height + 1))
-        ascii_width=$((${#line} > ascii_width ? ${#line} : ascii_width))
+
+        # This was a ternary operation but they aren't supported in
+        # MINIX's shell.
+        [ "${#line}" -gt "${ascii_width:-0}" ] &&
+            ascii_width=${#line}
 
     # Using '<<-EOF' is the only way to loop over a command's
     # output without the use of a pipe ('|').
@@ -1117,8 +1121,12 @@ main() {
         # "info names" for output alignment. The option names and subtitles
         # match 1:1 so this is thankfully simple.
         for info; do
-            command -v "get_$info" >/dev/null &&
-                info_length=$((${#info} > info_length ? ${#info} : info_length))
+            command -v "get_$info" >/dev/null || continue
+
+            # This was a ternary operation but they aren't supported in
+            # MINIX's shell.
+            [ "${#info}" -gt "${info_length:-0}" ] &&
+                info_length=${#info}
         done
 
         # Add an additional space of length to act as a gap.
@@ -1130,13 +1138,17 @@ main() {
 
     # Position the cursor below both the ascii art and information lines
     # according to the height of both. If the information exceeds the ascii
-    # art in height, don't touch the cursor, else move it down N lines.
-    cursor_pos=$((info_height > ascii_height ? 0 : ascii_height - info_height))
+    # art in height, don't touch the cursor (0/unset), else move it down
+    # N lines.
+    #
+    # This was a ternary operation but they aren't supported in MINIX's shell.
+    [ "$info_height" -lt "$ascii_height" ] &&
+        cursor_pos=$((ascii_height - info_height))
 
     # Print '$cursor_pos' amount of newlines to correctly position the
     # cursor. This used to be a 'printf $(seq X X)' however 'seq' is only
     # typically available (by default) on GNU based systems!
-    while [ "${i:-0}" -le "$cursor_pos" ]; do
+    while [ "${i:-0}" -le "${cursor_pos:-0}" ]; do
         printf '\n'
         i=$((i + 1))
     done >&6
