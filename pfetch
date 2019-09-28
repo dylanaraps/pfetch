@@ -95,7 +95,7 @@ log() {
     printf '[3%sm%s[m\n' "${PF_COL2-7}" "$info"
 
     # Keep track of the number of times 'log()' has been run.
-    info_height=$((info_height + 1))
+    info_height=$((${info_height:-0} + 1))
 }
 
 get_title() {
@@ -1045,7 +1045,7 @@ get_ascii() {
     # information. The 'sed' is used to strip '[3Xm' color codes from
     # the ascii art so they don't affect the width variable.
     while read -r line; do
-        ascii_height=$((ascii_height + 1))
+        ascii_height=$((${ascii_height:-0} + 1))
 
         # This was a ternary operation but they aren't supported in
         # MINIX's shell.
