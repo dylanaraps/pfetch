@@ -9,9 +9,9 @@ jobs:
       run: |
         shellcheck pfetch
         sh pfetch
+  build:
     runs-on: macOS-latest
     steps:
     - uses: actions/checkout@v1
     - name: Run shellcheck.
-      run: |
-        sh pfetch
+      run: sh pfetch
