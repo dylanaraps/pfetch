@@ -27,6 +27,7 @@ _/\ __)/_)    pkgs   130
 - [x] FreeBSD
 - [x] NetBSD
 - [x] Haiku
+- [x] Minix
 
 ## TODO
 
@@ -39,7 +40,7 @@ _/\ __)/_)    pkgs   130
     - [ ] ???
 - [ ] Expand operating system support.
     - [ ] Solaris ([#5](https://github.com/dylanaraps/pfetch/issues/5))
-    - [ ] MINIX ([#6](https://github.com/dylanaraps/pfetch/issues/6))
+    - [x] MINIX ([#6](https://github.com/dylanaraps/pfetch/issues/6))
     - [ ] AIX ([#7](https://github.com/dylanaraps/pfetch/issues/7))
     - [ ] IRIX ([#8](https://github.com/dylanaraps/pfetch/issues/8))
     - [ ] FreeMiNT ([#9](https://github.com/dylanaraps/pfetch/issues/9))
