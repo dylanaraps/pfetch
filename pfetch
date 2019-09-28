@@ -234,8 +234,8 @@ get_os() {
 
         Haiku)
             # Haiku uses 'uname -v' for version information
-            # instead of 'uname -r'.
-            distro="Haiku $(uname -v)"
+            # instead of 'uname -r' which only prints '1'.
+            distro=$(uname -sv)
         ;;
 
         *)
