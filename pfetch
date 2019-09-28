@@ -154,6 +154,12 @@ get_os() {
             if command -v lsb_release; then
                 distro=$(lsb_release -sd)
 
+                # lsb_release sometimes adds quotes around the output,
+                # this simply remove quotes from the start/end if they
+                # exist.
+                distro=${distro##\"}
+                distro=${distro%%\"}
+
             else
                 # Disable warning about shellcheck not being able
                 # to read '/etc/os-release'. This is fine.
