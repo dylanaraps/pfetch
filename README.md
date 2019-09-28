@@ -47,7 +47,7 @@ _/\ __)/_)    pkgs   130
         - [ ] CYGWIN
         - [ ] MSYS
         - [ ] MINGW
-        - [ ] WSL (*this is fairly simple*)
+        - [x] WSL (*this is fairly simple*)
 
 ## Configuration
 
