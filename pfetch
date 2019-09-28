@@ -1160,7 +1160,7 @@ main() {
     # Print '$cursor_pos' amount of newlines to correctly position the
     # cursor. This used to be a 'printf $(seq X X)' however 'seq' is only
     # typically available (by default) on GNU based systems!
-    while [ "${i:-0}" -le "${cursor_pos:-0}" ]; do
+    while [ "${i:=0}" -le "${cursor_pos:-0}" ]; do
         printf '\n'
         i=$((i + 1))
     done >&6
