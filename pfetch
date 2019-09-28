@@ -362,6 +362,10 @@ get_uptime() {
 }
 
 get_pkgs() {
+    # This is just a simple wrapper around 'command -v' to avoid
+    # spamming '>/dev/null' throughout this function.
+    has() { command -v "$1" >/dev/null; }
+
     # This works by first checking for which package managers are
     # installed and finally by printing each package manager's
     # package list with each package one per line.
@@ -382,27 +386,27 @@ get_pkgs() {
         case $os in
             Linux*)
                 # Commands which print packages one per line.
-                command -v kiss       && kiss l
-                command -v bonsai     && bonsai list
-                command -v pacman-key && pacman -Qq
-                command -v dpkg       && dpkg-query -f '.\n' -W
-                command -v rpm        && rpm -qa
-                command -v xbps-query && xbps-query -l
-                command -v apk        && apk info
+                has kiss       && kiss l
+                has bonsai     && bonsai list
+                has pacman-key && pacman -Qq
+                has dpkg       && dpkg-query -f '.\n' -W
+                has rpm        && rpm -qa
+                has xbps-query && xbps-query -l
+                has apk        && apk info
 
                 # Directories containing packages.
-                command -v brew       && printf '%s\n' "$(brew --cellar)/"*
-                command -v emerge     && printf '%s\n' /var/db/pkg/*/*/
-                command -v pkgtool    && printf '%s\n' /var/log/packages/*
+                has brew       && printf '%s\n' "$(brew --cellar)/"*
+                has emerge     && printf '%s\n' /var/db/pkg/*/*/
+                has pkgtool    && printf '%s\n' /var/log/packages/*
 
                 # GUIX requires two commands.
-                command -v guix       && {
+                has guix       && {
                     guix package -p /run/current-system/profile -I
                     guix package -I
                 }
 
                 # NIX requires two commands.
-                command -v nix-store  && {
+                has nix-store  && {
                     nix-store -q --requisites /run/current-system/sw
                     nix-store -q --requisites ~.nix-profile
                 }
@@ -410,11 +414,11 @@ get_pkgs() {
 
             Darwin*)
                 # Commands which print packages one per line.
-                command -v pkgin      && pkgin list
-                command -v port       && port installed
+                has pkgin      && pkgin list
+                has port       && port installed
 
                 # Directories containing packages.
-                command -v brew       && printf '%s\n' /usr/local/Cellar/*
+                has brew       && printf '%s\n' /usr/local/Cellar/*
             ;;
 
             FreeBSD*)
