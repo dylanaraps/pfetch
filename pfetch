@@ -171,6 +171,19 @@ get_os() {
             # don't follow any os-release/lsb standards whatsoever.
             command -v crux        && distro=$(crux)
             command -v guix        && distro='Guix System'
+
+            # Check to see if Linux is running in Windows 10 under
+            # WSL (Windows subsystem for Linux) and append a string
+            # accordingly.
+            #
+            # If the kernel version string ends in "-Microsoft",
+            # we're very likely running under Windows 10 in WSL.
+            #
+            # This also acts as a means of allowing the user to
+            # fake this by changing their kernel version to end in
+            # "Microsoft".
+            [ "${kernel%%*-Microsoft}" ] ||
+                distro="$distro on Windows 10"
         ;;
 
         Darwin*)
