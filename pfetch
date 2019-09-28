@@ -739,6 +739,18 @@ get_ascii() {
 			EOF
         ;;
 
+        [Dd]ragonfly*)
+            read_ascii 1 <<-EOF
+				    ,${c1}_${c7},
+				 ('-_${c1}|${c7}_-')
+				  >--${c1}|${c7}--<
+				 (_-'${c1}|${c7}'-_)
+				     ${c1}|
+				     |
+				     |
+			EOF
+        ;;
+
         [Ee]lementary*)
             read_ascii <<-EOF
 				${c7}  _______
