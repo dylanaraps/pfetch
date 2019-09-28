@@ -95,7 +95,7 @@ log() {
     printf '[3%sm%s[m\n' "${PF_COL2-7}" "$info"
 
     # Keep track of the number of times 'log()' has been run.
-    : $((info_height+=1))
+    info_height=$((info_height + 1))
 }
 
 get_title() {
@@ -1045,7 +1045,7 @@ get_ascii() {
     # information. The 'sed' is used to strip '[3Xm' color codes from
     # the ascii art so they don't affect the width variable.
     while read -r line; do
-        : $((ascii_height+=1))
+        ascii_height=$((ascii_height + 1))
         ascii_width=$((${#line} > ascii_width ? ${#line} : ascii_width))
 
     # Using '<<-EOF' is the only way to loop over a command's
@@ -1057,7 +1057,7 @@ get_ascii() {
 	EOF
 
     # Add a gap between the ascii art and the information.
-    : $((ascii_width+=4))
+    ascii_width=$((ascii_width + 4))
 
     # Print the ascii art and position the cursor back where we
     # started prior to printing it.
@@ -1122,7 +1122,7 @@ main() {
         done
 
         # Add an additional space of length to act as a gap.
-        : $((info_length+=1))
+        info_length=$((info_length + 1))
 
         # Iterate over the above list and run any existing "get_" functions.
         for info; do "get_$info"; done
@@ -1138,7 +1138,7 @@ main() {
     # typically available (by default) on GNU based systems!
     while [ "${i:-0}" -le "$cursor_pos" ]; do
         printf '\n'
-        : $((i+=1))
+        i=$((i + 1))
     done >&6
 }
 
