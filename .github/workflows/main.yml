@@ -6,4 +6,6 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Run shellcheck.
-      run:  shellcheck pfetch
+      run: |
+        shellcheck pfetch
+        sh pfetch
