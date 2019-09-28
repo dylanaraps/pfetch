@@ -2,7 +2,7 @@ name: Shellcheck
 on: [push]
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: [ubuntu-latest, macOS-latest]
     steps:
     - uses: actions/checkout@v1
     - name: Run shellcheck.
