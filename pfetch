@@ -471,7 +471,7 @@ get_memory() {
             # Parse the '/proc/meminfo' file splitting on ':' and 'k'.
             # The format of the file is 'key:   000kB' and an additional
             # split is used on 'k' to filter out 'kB'.
-            while IFS=:k read -r key val _; do
+            while IFS=':k '  read -r key val _; do
                 case $key in
                     MemTotal)
                         mem_used=$((mem_used + val))
