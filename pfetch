@@ -238,6 +238,14 @@ get_os() {
             distro=$(uname -sv)
         ;;
 
+        Minix)
+            distro="$os $kernel"
+
+            # Minix doesn't support the escape sequences used
+            # on exit, clear the trap.
+            trap '' EXIT
+        ;;
+
         *)
             # Catch all to ensure '$distro' is never blank.
             # This also handles the BSDs.
@@ -1048,7 +1056,7 @@ get_ascii() {
         ascii_height=$((${ascii_height:-0} + 1))
 
         # This was a ternary operation but they aren't supported in
-        # MINIX's shell.
+        # Minix's shell.
         [ "${#line}" -gt "${ascii_width:-0}" ] &&
             ascii_width=${#line}
 
@@ -1063,14 +1071,18 @@ get_ascii() {
     # Add a gap between the ascii art and the information.
     ascii_width=$((ascii_width + 4))
 
-    # Print the ascii art and position the cursor back where we
-    # started prior to printing it.
+    # Minix doesn't support these!
     # '[?7l':  Disable line-wrapping.
     # '[?25l': Hide the cursor.
+    [ "$os" != Minix ] &&
+        printf '[?7l[?25l' >&6
+
+    # Print the ascii art and position the cursor back where we
+    # started prior to printing it.
     # '[1m':   Print the ascii in bold.
     # '[m':    Clear bold.
     # '[%sA':  Move the cursor up '$ascii_height' amount of lines.
-    printf '[?7l[?25l[1m%s[m[%sA' "$ascii" "$ascii_height" >&6
+    printf '[1m%s[m[%sA' "$ascii" "$ascii_height" >&6
 }
 
 main() {
@@ -1124,7 +1136,7 @@ main() {
             command -v "get_$info" >/dev/null || continue
 
             # This was a ternary operation but they aren't supported in
-            # MINIX's shell.
+            # Minix's shell.
             [ "${#info}" -gt "${info_length:-0}" ] &&
                 info_length=${#info}
         done
@@ -1141,7 +1153,7 @@ main() {
     # art in height, don't touch the cursor (0/unset), else move it down
     # N lines.
     #
-    # This was a ternary operation but they aren't supported in MINIX's shell.
+    # This was a ternary operation but they aren't supported in Minix's shell.
     [ "$info_height" -lt "$ascii_height" ] &&
         cursor_pos=$((ascii_height - info_height))
 
