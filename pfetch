@@ -64,7 +64,7 @@ log() {
 
     # Use 'set --' as a means of stripping all leading and trailing
     # white-space from the info string. This also normalizes all
-    # whitespace inside of the string.
+    # white-space inside of the string.
     #
     # Disable the shellcheck warning for word-splitting
     # as it's safe and intended ('set -f' disables globbing).
