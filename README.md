@@ -59,7 +59,7 @@ _/\ __)/_)    pkgs   130
 # Default: first example below
 # Valid: space separated string
 #
-# OFF by default: shell palette
+# OFF by default: shell palette de
 PF_INFO="ascii title distro host kernel uptime pkgs memory"
 
 # Example: Only ASCII.

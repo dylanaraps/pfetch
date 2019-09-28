@@ -586,6 +586,51 @@ get_memory() {
     log memory "${mem_used:-?}M / ${mem_full:-?}M" >&6
 }
 
+get_de() {
+   case $os in
+       Darwin*)
+           de=Aqua
+       ;;
+
+       *)
+            # Display managers and desktop environments set
+            # various environment variables which we can use
+            # to figure out the desktop environment name.
+            #
+            # Some further formatting of the detected values
+            # may need to be done, we'll see how this goes
+            # first.
+            if [ "$XDG_CURRENT_DESKTOP" ]; then
+                de=$XDG_CURRENT_DESKTOP
+
+            elif [ "$DESKTOP_SESSION" ]; then
+                de=${DESKTOP_SESSION##*/}
+
+            elif [ "$GNOME_DESKTOP_SESSION_ID" ]; then
+                de=GNOME
+
+            elif [ "$MATE_DESKTOP_SESSION_ID" ]; then
+                de=MATE
+
+            elif [ "$TDE_FULL_SESSION" ]; then
+                de=Trinity
+            fi
+
+            # When a window manager is started from a display
+            # manager, the display manager sometimes sets the
+            # desktop environment variables to the window
+            # manager's name. If both the WM and the DE match,
+            # discard the DE value and end here.
+            #
+            # Ignore the unused variable error as this only
+            # applies if the user has enabled both 'de' and
+            # 'wm' in '$PF_INFO'.
+            # shellcheck disable=2154
+            [ "$de" = "$wm" ] && return
+       ;;
+   esac
+}
+
 get_palette() {
     # Print the first 8 terminal colors. This uses the existing
     # sequences to change text color with a sequence prepended
