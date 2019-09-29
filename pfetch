@@ -574,7 +574,7 @@ get_memory() {
 
             # NetBSD implements a lot of the Linux '/proc' filesystem,
             # this uses the same parser as the Linux memory detection.
-            while IFS=:k read -r key val _; do
+            while IFS=':k ' read -r key val _; do
                 case $key in
                     MemFree)
                         mem_free=$((val / 1024))
