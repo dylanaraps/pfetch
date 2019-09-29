@@ -284,7 +284,7 @@ get_host() {
             host="$name $version $model"
         ;;
 
-        Darwin*|FreeBSD*)
+        Darwin*|FreeBSD*|Dragonfly*)
             host=$(sysctl -n hw.model)
         ;;
 
@@ -437,7 +437,7 @@ get_pkgs() {
                 has brew       && printf '%s\n' /usr/local/Cellar/*
             ;;
 
-            FreeBSD*)
+            FreeBSD*|Dragonfly*)
                 pkg info
             ;;
 
@@ -544,7 +544,7 @@ get_memory() {
 
         # Used memory is calculated using the following "formula" (FreeBSD):
         # (inactive_count + free_count + cache_count) * page_size / 1024
-        FreeBSD*)
+        FreeBSD*|Dragonfly*)
             mem_full=$(($(sysctl -n hw.physmem) / 1024 / 1024))
 
             # Use 'set --' to store the output of the command in the
