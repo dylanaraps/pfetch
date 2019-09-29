@@ -238,11 +238,11 @@ get_os() {
             distro=$(uname -sv)
         ;;
 
-        Minix)
+        Minix|DragonFly)
             distro="$os $kernel"
 
-            # Minix doesn't support the escape sequences used
-            # on exit, clear the trap.
+            # Minix and DragonFly don't support the escape
+            # sequences used, clear the exit trap.
             trap '' EXIT
         ;;
 
@@ -284,7 +284,7 @@ get_host() {
             host="$name $version $model"
         ;;
 
-        Darwin*|FreeBSD*|Dragonfly*)
+        Darwin*|FreeBSD*|DragonFly*)
             host=$(sysctl -n hw.model)
         ;;
 
@@ -437,7 +437,7 @@ get_pkgs() {
                 has brew       && printf '%s\n' /usr/local/Cellar/*
             ;;
 
-            FreeBSD*|Dragonfly*)
+            FreeBSD*|DragonFly*)
                 pkg info
             ;;
 
@@ -544,7 +544,7 @@ get_memory() {
 
         # Used memory is calculated using the following "formula" (FreeBSD):
         # (inactive_count + free_count + cache_count) * page_size / 1024
-        FreeBSD*|Dragonfly*)
+        FreeBSD*|DragonFly*)
             mem_full=$(($(sysctl -n hw.physmem) / 1024 / 1024))
 
             # Use 'set --' to store the output of the command in the
@@ -739,7 +739,7 @@ get_ascii() {
 			EOF
         ;;
 
-        [Dd]ragonfly*)
+        [Dd]ragon[Ff]ly*)
             read_ascii 1 <<-EOF
 				    ,${c1}_${c7},
 				 ('-_${c1}|${c7}_-')
@@ -1094,10 +1094,10 @@ get_ascii() {
     # Add a gap between the ascii art and the information.
     ascii_width=$((ascii_width + 4))
 
-    # Minix doesn't support these!
+    # Minix and DragonFly don't support these!
     # '[?7l':  Disable line-wrapping.
     # '[?25l': Hide the cursor.
-    [ "$os" != Minix ] &&
+    [ "$os" != Minix ] && [ "$os" != DragonFly ] &&
         printf '[?7l[?25l' >&6
 
     # Print the ascii art and position the cursor back where we
