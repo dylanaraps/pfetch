@@ -349,7 +349,7 @@ get_uptime() {
             IFS=. read -r s _ < /proc/uptime
         ;;
 
-        Darwin*|*BSD*)
+        Darwin*|*BSD*|DragonFly*)
             s=$(sysctl -n kern.boottime)
 
             # Extract the uptime in seconds from the following output:
