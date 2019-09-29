@@ -23,9 +23,10 @@ _/\ __)/_)    pkgs   130
 
 - [x] Linux (A myriad of distributions)
 - [x] MacOS
-- [x] OpenBSD
+- [x] DragonflyBSD
 - [x] FreeBSD
 - [x] NetBSD
+- [x] OpenBSD
 - [x] Haiku
 - [x] Minix
 
