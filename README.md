@@ -21,14 +21,39 @@ _/\ __)/_)    pkgs   130
 
 ## OS support
 
-- [x] Linux (A myriad of distributions)
-- [x] MacOS
-- [x] DragonflyBSD
-- [x] FreeBSD
-- [x] NetBSD
-- [x] OpenBSD
-- [x] Haiku
-- [x] Minix
+- Linux
+    - Alpine Linux
+    - Arch Linux
+    - Arco Linux
+    - Artix Linux
+    - CentOS
+    - Debian
+    - Elementary
+    - Fedora
+    - Gentoo
+    - Guix
+    - Hyperbola
+    - KISS Linux
+    - Linux Lite
+    - Linux Mint
+    - Mageia
+    - Manjaro
+    - MX Linux
+    - NixOS
+    - OpenSUSE
+    - Parabola
+    - Pop!\_OS
+    - PureOS
+    - Slackware
+    - Void Linux
+- BSD
+    - DragonflyBSD
+    - FreeBSD
+    - NetBSD
+    - OpenBSD
+- MacOS
+- Haiku
+- Minix
 
 ## TODO
 
