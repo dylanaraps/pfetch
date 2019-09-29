@@ -407,7 +407,6 @@ get_pkgs() {
         case $os in
             Linux*)
                 # Commands which print packages one per line.
-                has kiss       && kiss l
                 has bonsai     && bonsai list
                 has pacman-key && pacman -Qq
                 has dpkg       && dpkg-query -f '.\n' -W
@@ -417,6 +416,7 @@ get_pkgs() {
                 has guix       && guix package --list-installed
 
                 # Directories containing packages.
+                has kiss       && printf '%s\n' /var/db/kiss/installed/*/
                 has brew       && printf '%s\n' "$(brew --cellar)/"*
                 has emerge     && printf '%s\n' /var/db/pkg/*/*/
                 has pkgtool    && printf '%s\n' /var/log/packages/*
