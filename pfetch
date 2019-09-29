@@ -1029,6 +1029,17 @@ get_ascii() {
 			EOF
         ;;
 
+        [Uu]buntu*)
+            read_ascii 3 <<-EOF
+				${c3}         _
+				     ---(_)
+				 _/  ---  \\
+				(_) |   |
+				  \\  --- _/
+				     ---(_)
+			EOF
+        ;;
+
         [Vv]oid*)
             read_ascii 2 <<-EOF
 				${c2}    _______
