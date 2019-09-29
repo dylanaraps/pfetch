@@ -45,6 +45,7 @@ _/\ __)/_)    pkgs   130
     - Pop!\_OS
     - PureOS
     - Slackware
+    - Ubuntu
     - Void Linux
 - BSD
     - DragonflyBSD
