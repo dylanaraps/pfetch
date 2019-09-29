@@ -88,13 +88,13 @@ _/\ __)/_)    pkgs   130
 # Valid: space separated string
 #
 # OFF by default: shell palette
-PF_INFO="ascii title distro host kernel uptime pkgs memory"
+PF_INFO="ascii title os host kernel uptime pkgs memory"
 
 # Example: Only ASCII.
 PF_INFO="ascii"
 
 # Example: Only Information.
-PF_INFO="title distro host kernel uptime pkgs memory"
+PF_INFO="title os host kernel uptime pkgs memory"
 
 # Separator between info name and info data.
 # Default: unset
