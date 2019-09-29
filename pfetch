@@ -464,7 +464,7 @@ get_pkgs() {
 
 get_memory() {
     case $os in
-        # Used memory is calculated using the following "formula" (Linux):
+        # Used memory is calculated using the following "formula":
         # MemUsed = MemTotal + Shmem - MemFree - Buffers - Cached - SReclaimable
         # Source: https://github.com/KittyKatt/screenFetch/issues/386
         Linux*)
@@ -492,7 +492,7 @@ get_memory() {
             mem_full=$((mem_full / 1024))
         ;;
 
-        # Used memory is calculated using the following "formula" (MacOS):
+        # Used memory is calculated using the following "formula":
         # (wired + active + occupied) * 4 / 1024
         Darwin*)
             mem_full=$(($(sysctl -n hw.memsize) / 1024 / 1024))
@@ -542,8 +542,8 @@ get_memory() {
 			EOF
         ;;
 
-        # Used memory is calculated using the following "formula" (FreeBSD):
-        # (inactive_count + free_count + cache_count) * page_size / 1024
+        # Used memory is calculated using the following "formula":
+        # mem_full - ((inactive + free + cache) * page_size / 1024)
         FreeBSD*|DragonFly*)
             mem_full=$(($(sysctl -n hw.physmem) / 1024 / 1024))
 
@@ -566,7 +566,7 @@ get_memory() {
             # $2: vm.stats.vm.v_inactive_count
             # $3: vm.stats.vm.v_free_count
             # $4: vm.stats.vm.v_cache_count
-            mem_used=$((($2 + $3 + $4) * $1 / 1024 / 1024))
+            mem_used=$((mem_full - (($2 + $3 + $4) * $1 / 1024 / 1024)))
         ;;
 
         NetBSD*)
