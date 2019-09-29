@@ -169,8 +169,8 @@ get_os() {
 
             # Special cases for (independent) distributions which
             # don't follow any os-release/lsb standards whatsoever.
-            command -v crux        && distro=$(crux)
-            command -v guix        && distro='Guix System'
+            command -v crux && distro=$(crux)
+            command -v guix && distro='Guix System'
 
             # Check to see if Linux is running in Windows 10 under
             # WSL (Windows subsystem for Linux) and append a string
