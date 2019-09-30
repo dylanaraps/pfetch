@@ -55,6 +55,7 @@ _/\ __)/_)    pkgs   130
 - MacOS
 - Haiku
 - Minix
+- Solaris
 
 ## TODO
 
@@ -66,7 +67,7 @@ _/\ __)/_)    pkgs   130
     - [ ] Window manager ([#13](https://github.com/dylanaraps/pfetch/pull/13))
     - [ ] ???
 - [ ] Expand operating system support.
-    - [ ] Solaris ([#5](https://github.com/dylanaraps/pfetch/issues/5))
+    - [x] Solaris ([#5](https://github.com/dylanaraps/pfetch/issues/5))
     - [x] MINIX ([#6](https://github.com/dylanaraps/pfetch/issues/6))
     - [ ] AIX ([#7](https://github.com/dylanaraps/pfetch/issues/7))
     - [ ] IRIX ([#8](https://github.com/dylanaraps/pfetch/issues/8))
