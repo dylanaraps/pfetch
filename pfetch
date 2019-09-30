@@ -644,6 +644,15 @@ get_memory() {
         SunOS)
             hw_pagesize=$(pagesize)
 
+            # 'kstat' outputs memory in the following format:
+            # unix:0:system_pages:pagestotal	1046397
+            # unix:0:system_pages:pagesfree		885018
+            #
+            # This simply uses the first "element" (white-space
+            # separated) as the key and the second element as the
+            # value.
+            #
+            # A variable is then assigned based on the key.
             while read -r key val; do
                 case $key in
                     *total) pages_full=$val ;;
