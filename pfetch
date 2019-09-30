@@ -154,18 +154,22 @@ get_os() {
             if command -v lsb_release; then
                 distro=$(lsb_release -sd)
 
-                # lsb_release sometimes adds quotes around the output,
-                # this simply remove quotes from the start/end if they
-                # exist.
-                distro=${distro##\"}
-                distro=${distro%%\"}
-
             else
-                # Disable warning about shellcheck not being able
-                # to read '/etc/os-release'. This is fine.
-                # shellcheck source=/dev/null
-                . /etc/os-release && distro=$PRETTY_NAME
+                # This used to be a simple '. /etc/os-release' but I believe
+                # this is insecure as we blindly execute whatever is in the
+                # file. This parser instead simply handles 'key=val', treating
+                # the file contents as plain-text.
+                while IFS='=' read -r key val; do
+                    case $key in
+                        PRETTY_NAME) distro=$val ;;
+                    esac
+                done < /etc/os-release
             fi
+
+            # 'os-release' and 'lsb_release' sometimes add quotes
+            # around the distribution name, strip them.
+            distro=${distro##[\"\']}
+            distro=${distro%%[\"\']}
 
             # Special cases for (independent) distributions which
             # don't follow any os-release/lsb standards whatsoever.
@@ -1026,6 +1030,16 @@ get_ascii() {
 				   ______| |
 				| |________/
 				|____________
+			EOF
+        ;;
+
+        [Ss]un[Oo][Ss])
+            read_ascii 3 <<-EOF
+				${c3}       .   .;   .
+				   .   :;  ::  ;:   .
+				   .;. ..      .. .;.
+				..  ..             ..  ..
+				 .;,                 ,;.
 			EOF
         ;;
 
