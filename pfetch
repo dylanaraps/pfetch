@@ -1269,12 +1269,6 @@ get_ascii() {
     # Add a gap between the ascii art and the information.
     ascii_width=$((ascii_width + 4))
 
-    # Minix and DragonFly don't support these!
-    # '[?7l':  Disable line-wrapping.
-    # '[?25l': Hide the cursor.
-    [ "$os" != Minix ] && [ "$os" != DragonFly ] &&
-        printf '[?7l[?25l' >&6
-
     # Print the ascii art and position the cursor back where we
     # started prior to printing it.
     # '[1m':   Print the ascii in bold.
@@ -1284,11 +1278,6 @@ get_ascii() {
 }
 
 main() {
-    # Leave the terminal how we found it on exit or Ctrl+C.
-    # '[?7h':  Enable line-wrapping.
-    # '[?25h': Un-hide the cursor.
-    trap 'printf [?7h[?25h >&6' EXIT
-
     # Hide 'stderr' unless the first argument is '-v'. This saves
     # polluting the script with '2>/dev/null'.
     [ "$1" = -v ] || exec 2>/dev/null
@@ -1305,6 +1294,26 @@ main() {
         c3='[33m'; c4='[34m'
         c5='[35m'; c6='[36m'
         c7='[37m'; c8='[38m'
+    }
+
+    # Avoid text-wrapping from wrecking the program output
+    # and hide the cursor to hide its moving around during
+    # the printing process.
+    #
+    # Some terminals don't support these sequences, nor do they
+    # silently conceal them if they're printed resulting in
+    # partial sequences being printed to the terminal!
+    [ "$TERM" = dumb ]   ||
+    [ "$TERM" = minix ]  ||
+    [ "$TERM" = cons25 ] || {
+        # '[?7l':  Disable line-wrapping.
+        # '[?25l': Hide the cursor.
+        printf '[?7l[?25l' >&6
+
+        # Leave the terminal how we found it on exit or Ctrl+C.
+        # '[?7h':  Enable line-wrapping.
+        # '[?25h': Show the cursor.
+        trap 'printf [?7h[?25h >&6' EXIT
     }
 
     # Store the output of 'uname' to avoid calling it multiple times
