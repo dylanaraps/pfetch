@@ -444,7 +444,7 @@ get_pkgs() {
                 has emerge     && printf '%s\n' /var/db/pkg/*/*/
                 has pkgtool    && printf '%s\n' /var/log/packages/*
 
-                # NIX requires two commands.
+                # 'nix' requires two commands.
                 has nix-store  && {
                     nix-store -q --requisites /run/current-system/sw
                     nix-store -q --requisites ~.nix-profile
