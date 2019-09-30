@@ -156,7 +156,7 @@ get_os() {
 
             else
                 # This used to be a simple '. /etc/os-release' but I believe
-                # this is insecure as we blindly execute whatever is in the
+                # this is insecure as we blindly executed whatever was in the
                 # file. This parser instead simply handles 'key=val', treating
                 # the file contents as plain-text.
                 while IFS='=' read -r key val; do
