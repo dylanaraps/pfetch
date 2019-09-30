@@ -21,8 +21,8 @@ _/\ __)/_)    pkgs   130
 
 ## OS support
 
-- **MacOS**
 - **Haiku**
+- **MacOS**
 - **Minix**
 - **Solaris**
 - **BSD**
