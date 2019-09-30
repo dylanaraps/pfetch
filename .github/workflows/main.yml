@@ -8,4 +8,4 @@ jobs:
     - name: Run shellcheck.
       run: |
         shellcheck pfetch
-        sh pfetch
+        sh TERM=dumb pfetch
