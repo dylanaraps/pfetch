@@ -9,5 +9,5 @@ jobs:
       run: |
         shellcheck pfetch
         sh pfetch
-        var=$(printf '[?7l[?25l')
+        var=$(printf '\033[?7l\033[?25l')
         echo "a${var}b"
