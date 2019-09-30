@@ -61,11 +61,10 @@ _/\ __)/_)    pkgs   130
 ## TODO
 
 - [ ] Add optional and additional information detection.
-    - [ ] CPU
     - [ ] Terminal Emulator ([#12](https://github.com/dylanaraps/pfetch/pull/12))
         - The way I implement this in `neofetch` is interesting.
     - [x] Terminal colors ([commit](https://github.com/dylanaraps/pfetch/commit/ba03cb3cf4dfbc767abce6acd53c07ab5568e23d))
-    - [ ] Window manager ([#13](https://github.com/dylanaraps/pfetch/pull/13))
+    - [x] Window manager ([#13](https://github.com/dylanaraps/pfetch/pull/13))
 - [ ] Expand operating system support.
     - [x] Solaris ([#5](https://github.com/dylanaraps/pfetch/issues/5))
     - [x] MINIX ([#6](https://github.com/dylanaraps/pfetch/issues/6))
@@ -88,7 +87,7 @@ _/\ __)/_)    pkgs   130
 # Default: first example below
 # Valid: space separated string
 #
-# OFF by default: shell editor de palette
+# OFF by default: shell editor wm de palette
 PF_INFO="ascii title os host kernel uptime pkgs memory"
 
 # Example: Only ASCII.
