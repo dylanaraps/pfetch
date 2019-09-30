@@ -468,8 +468,8 @@ get_pkgs() {
             ;;
 
             SunOS)
-                has pkginfo    && pkginfo -i
-                has pkg        && pkg list
+                has pkginfo && pkginfo -i
+                has pkg     && pkg list
             ;;
         esac | wc -l
     `
@@ -631,8 +631,11 @@ get_memory() {
         SunOS)
             hw_pagesize=$(pagesize)
 
-            while read -r _ p; do
-                : "${pages_total:+"${pages_free="$p"}"}" "${pages_total="$p"}"
+            while read -r key val; do
+                case $key in
+                    *total) pages_total=$val ;;
+                    *free)  pages_free=$val ;;
+                esac
             done <<-EOF
 				$(kstat -p unix:0:system_pages:pagestotal \
                            unix:0:system_pages:pagesfree)
