@@ -668,6 +668,16 @@ get_memory() {
     log memory "${mem_used:-?}M / ${mem_full:-?}M" >&6
 }
 
+get_de() {
+    # This only supports Xorg related desktop environments though
+    # this is fine as knowing the desktop envrionment on Windows,
+    # macOS etc is useless (they'll always report the same value).
+    #
+    # Display the value of '$XDG_CURRENT_DESKTOP', if it's empty,
+    # display the value of '$DESKTOP_SESSION'.
+    log de "${XDG_CURRENT_DESKTOP:-$DESKTOP_SESSION}" >&6
+}
+
 get_shell() {
     # Display the basename of the '$SHELL' environment variable.
     log shell "${SHELL##*/}" >&6
@@ -677,16 +687,6 @@ get_editor() {
     # Display the value of '$VISUAL', if it's empty, display the
     # value of '$EDITOR'.
     log editor "${VISUAL:-$EDITOR}" >&6
-}
-
-get_de() {
-    # This only supports Xorg related desktop environments though
-    # this is fine as knowing the desktop envrionment on Windows,
-    # macOS etc is useless (they'll always report the same value).
-    #
-    # Display the value of '$XDG_CURRENT_DESKTOP', if it's empty,
-    # display the value of '$DESKTOP_SESSION'.
-    log de "${XDG_CURRENT_DESKTOP:-$DESKTOP_SESSION}" >&6
 }
 
 get_palette() {

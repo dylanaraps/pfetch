@@ -126,6 +126,26 @@ PF_ALIGN=""
 # Default: unset (auto)
 # Valid: string
 PF_ASCII="openbsd"
+
+# The below environment variables control more
+# than just 'pfetch' and can be passed using
+# 'HOSTNAME=cool_pc pfetch' to restrict their
+# usage solely to 'pfetch'.
+
+# Which user to display.
+USER=""
+
+# Which hostname to display.
+HOSTNAME=""
+
+# Which editor to display.
+EDITOR=""
+
+# Which shell to display.
+SHELL=""
+
+# Which desktop environment to display.
+XDG_CURRENT_DESKTOP=""
 ```
 
 ## Credit
