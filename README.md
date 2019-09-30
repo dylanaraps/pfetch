@@ -30,6 +30,8 @@ _/\ __)/_)    pkgs   130
     - FreeBSD
     - NetBSD
     - OpenBSD
+- **Windows**
+    - Windows subsystem for Linux.
 - **Linux**
     - Alpine Linux
     - Arch Linux
@@ -63,11 +65,7 @@ _/\ __)/_)    pkgs   130
 - [ ] Add optional and additional information detection.
     - [ ] Terminal Emulator ([#12](https://github.com/dylanaraps/pfetch/pull/12))
         - The way I implement this in `neofetch` is interesting.
-    - [x] Terminal colors ([commit](https://github.com/dylanaraps/pfetch/commit/ba03cb3cf4dfbc767abce6acd53c07ab5568e23d))
-    - [x] Window manager ([#13](https://github.com/dylanaraps/pfetch/pull/13))
 - [ ] Expand operating system support.
-    - [x] Solaris ([#5](https://github.com/dylanaraps/pfetch/issues/5))
-    - [x] MINIX ([#6](https://github.com/dylanaraps/pfetch/issues/6))
     - [ ] AIX ([#7](https://github.com/dylanaraps/pfetch/issues/7))
     - [ ] IRIX ([#8](https://github.com/dylanaraps/pfetch/issues/8))
     - [ ] FreeMiNT ([#9](https://github.com/dylanaraps/pfetch/issues/9))
@@ -75,7 +73,6 @@ _/\ __)/_)    pkgs   130
         - [ ] CYGWIN
         - [ ] MSYS
         - [ ] MINGW
-        - [x] WSL (*this is fairly simple*)
 
 ## Configuration
 
