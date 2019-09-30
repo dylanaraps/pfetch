@@ -251,6 +251,8 @@ get_os() {
         ;;
 
         SunOS)
+            # Grab the first line of the '/etc/release' file
+            # discarding everything after '('.
             IFS='(' read -r distro _ < /etc/release
         ;;
 
@@ -377,6 +379,13 @@ get_uptime() {
         ;;
 
         SunOS)
+            # Split the output of 'kstat' on '.' and any white-space
+            # which exists in the command output.
+            #
+            # The output is as follows:
+            # unix:0:system_misc:snaptime	14809.906993005
+            #
+            # The parser extracts:          ^^^^^
             IFS='	.' read -r _ s _ <<-EOF
 				$(kstat -p unix:0:system_misc:snaptime)
 			EOF
@@ -637,7 +646,7 @@ get_memory() {
 
             while read -r key val; do
                 case $key in
-                    *total) pages_total=$val ;;
+                    *total) pages_full=$val ;;
                     *free)  pages_free=$val ;;
                 esac
             done <<-EOF
@@ -645,7 +654,7 @@ get_memory() {
                            unix:0:system_pages:pagesfree)
 			EOF
 
-            mem_full=$((pages_total * hw_pagesize / 1024 / 1024))
+            mem_full=$((pages_full * hw_pagesize / 1024 / 1024))
             mem_free=$((pages_free * hw_pagesize / 1024 / 1024))
             mem_used=$((mem_full - mem_free))
         ;;
