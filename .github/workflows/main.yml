@@ -9,4 +9,3 @@ jobs:
       run: |
         shellcheck pfetch
         sh pfetch
-        echo "$TERM"
