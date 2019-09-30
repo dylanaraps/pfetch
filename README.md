@@ -21,7 +21,16 @@ _/\ __)/_)    pkgs   130
 
 ## OS support
 
-- Linux
+- **MacOS**
+- **Haiku**
+- **Minix**
+- **Solaris**
+- **BSD**
+    - DragonflyBSD
+    - FreeBSD
+    - NetBSD
+    - OpenBSD
+- **Linux**
     - Alpine Linux
     - Arch Linux
     - Arco Linux
@@ -47,15 +56,7 @@ _/\ __)/_)    pkgs   130
     - Slackware
     - Ubuntu
     - Void Linux
-- BSD
-    - DragonflyBSD
-    - FreeBSD
-    - NetBSD
-    - OpenBSD
-- MacOS
-- Haiku
-- Minix
-- Solaris
+    - Other distributions are supported with a generic penguin logo.
 
 ## TODO
 
