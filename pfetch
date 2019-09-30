@@ -277,10 +277,6 @@ get_kernel() {
    esac
 }
 
-get_shell() {
-    log shell "${SHELL##*/}" >&6
-}
-
 get_host() {
     case $os in
         Linux*)
@@ -670,6 +666,23 @@ get_memory() {
     esac
 
     log memory "${mem_used:-?}M / ${mem_full:-?}M" >&6
+}
+
+get_shell() {
+    # Display the basename of the '$SHELL' environment variable.
+    log shell "${SHELL##*/}" >&6
+}
+
+get_editor() {
+    # Display the value of '$VISUAL', if it's empty, display the
+    # value of '$EDITOR'.
+    log editor "${VISUAL:-$EDITOR}" >&6
+}
+
+get_de() {
+    # Display the value of '$XDG_CURRENT_DESKTOP', if it's empty,
+    # display the value of '$DESKTOP_SESSION'.
+    log de "${XDG_CURRENT_DESKTOP:-$DESKTOP_SESSION}" >&6
 }
 
 get_palette() {
