@@ -100,8 +100,8 @@ log() {
 
 get_title() {
     # Username is retrieved by first checking '$USER' with a fallback
-    # to the 'whoami' command.
-    user=${USER:-$(whoami)}
+    # to the 'id -un' command.
+    user=${USER:-$(id -un)}
 
     # Hostname is retrieved by first checking '$HOSTNAME' with a fallback
     # to the 'hostname' command.
@@ -246,6 +246,10 @@ get_os() {
             trap '' EXIT
         ;;
 
+        SunOS)
+            IFS='(' read -r distro _ < /etc/release
+        ;;
+
         *)
             # Catch all to ensure '$distro' is never blank.
             # This also handles the BSDs.
@@ -367,6 +371,12 @@ get_uptime() {
             # regular seconds.
             s=$(($(system_time) / 1000000))
         ;;
+
+        SunOS)
+            IFS='	.' read -r _ s _ <<-EOF
+				$(kstat -p unix:0:system_misc:snaptime)
+			EOF
+        ;;
     esac
 
     # Convert the uptime from seconds into days, hours and minutes.
@@ -455,6 +465,11 @@ get_pkgs() {
 
             Minix)
                 printf '%s\n' /usr/pkg/var/db/pkg/*/
+            ;;
+
+            SunOS)
+                has pkginfo    && pkginfo -i
+                has pkg        && pkg list
             ;;
         esac | wc -l
     `
@@ -611,6 +626,21 @@ get_memory() {
 
             mem_used=$(((mem_full - mem_free) / 1024))
             mem_full=$(( mem_full / 1024))
+        ;;
+
+        SunOS)
+            hw_pagesize=$(pagesize)
+
+            while read -r _ p; do
+                : "${pages_total:+"${pages_free="$p"}"}" "${pages_total="$p"}"
+            done <<-EOF
+				$(kstat -p unix:0:system_pages:pagestotal \
+                           unix:0:system_pages:pagesfree)
+			EOF
+
+            mem_full=$((pages_total * hw_pagesize / 1024 / 1024))
+            mem_free=$((pages_free * hw_pagesize / 1024 / 1024))
+            mem_used=$((mem_full - mem_free))
         ;;
     esac
 
