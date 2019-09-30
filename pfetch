@@ -100,8 +100,8 @@ log() {
 
 get_title() {
     # Username is retrieved by first checking '$USER' with a fallback
-    # to the 'whoami' command.
-    user=${USER:-$(whoami)}
+    # to the 'id -un' command.
+    user=${USER:-$(id -un)}
 
     # Hostname is retrieved by first checking '$HOSTNAME' with a fallback
     # to the 'hostname' command.
