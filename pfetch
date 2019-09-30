@@ -189,11 +189,10 @@ get_os() {
             # WSL2 (Windows subsystem for Linux [version 2]) and
             # append a string accordingly.
             #
-            # If either of these environment variables are defined
-            # and non-empty, we are very likely running under
-            # Windows 10 in WSL2.
-            [ "$WSL_INTEROP" ] || [ "$WSLENV" ] || [ "$WSL_DISTRO_NAME" ] &&
-                distro="$distro on Windows 10 [WSL1]"
+            # This checks to see if '$WSLENV' is defined. This
+            # appends the Windows 10 string even if '$WSLENV' is
+            # empty. We only need to check that is has been _exported_.
+            distro="${distro}${WSLENV+ on Windows 10 [WSL2]}"
         ;;
 
         Darwin*)
