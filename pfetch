@@ -1372,7 +1372,7 @@ main() {
     # N lines.
     #
     # This was a ternary operation but they aren't supported in Minix's shell.
-    [ "$info_height" -lt "$ascii_height" ] &&
+    [ "${info_height:-0}" -lt "${ascii_height:-0}" ] &&
         cursor_pos=$((ascii_height - info_height))
 
     # Print '$cursor_pos' amount of newlines to correctly position the
