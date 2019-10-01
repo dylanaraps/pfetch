@@ -261,6 +261,19 @@ get_os() {
             IFS='(' read -r distro _ < /etc/release
         ;;
 
+        CYGWIN*|MSYS*|MINGW*)
+            # Grab everything after the first instance of
+            # white-space in the command output of 'wmic'.
+            #
+            # The format of 'wmic' is as follows:
+            # Caption=Microsoft Windows 7 Enterprise
+            #
+            # This extracts:    ^^^^^^^^^^^^^^^^^^^^
+            read -r _ distro <<-EOF
+    			$(wmic os get Caption /value)
+			EOF
+        ;;
+
         *)
             # Catch all to ensure '$distro' is never blank.
             # This also handles the BSDs.
@@ -306,6 +319,21 @@ get_host() {
 
         *BSD*)
             host=$(sysctl -n hw.vendor hw.product)
+        ;;
+
+        CYGWIN*|MSYS*|MINGW*)
+            # Grab everything after the first instance of '=' in each
+            # line of the command output of 'wmic'. Append the output
+            # of each line to the '$host' variable.
+            #
+            # The format of 'wmic' is as follows:
+            # Manufacturer=VMware, Inc.
+            # Model=VMware Virtual Platform
+            while IFS='=' read -r _ val; do
+                host="${host}${val:+ $val}"
+            done <<-EOF
+    			$(wmic computersystem get manufacturer,model /value)
+			EOF
         ;;
     esac
 
@@ -356,7 +384,7 @@ get_uptime() {
     # converting that data into days, hours and minutes using simple
     # math.
     case $os in
-        Linux*|Minix*)
+        Linux*|Minix*|CYGWIN*|MSYS*|MINGW*)
             IFS=. read -r s _ < /proc/uptime
         ;;
 
@@ -485,6 +513,14 @@ get_pkgs() {
                 has pkginfo && pkginfo -i
                 has pkg     && pkg list
             ;;
+
+            CYGWIN*)
+                cygcheck -cd
+            ;;
+
+            MSYS*)
+                pacman -Qq
+            ;;
         esac | wc -l
     `
 
@@ -496,7 +532,7 @@ get_memory() {
         # Used memory is calculated using the following "formula":
         # MemUsed = MemTotal + Shmem - MemFree - Buffers - Cached - SReclaimable
         # Source: https://github.com/KittyKatt/screenFetch/issues/386
-        Linux*)
+        Linux*|CYGWIN*|MSYS*|MINGW*)
             # Parse the '/proc/meminfo' file splitting on ':' and 'k'.
             # The format of the file is 'key:   000kB' and an additional
             # split is used on 'k' to filter out 'kB'.
