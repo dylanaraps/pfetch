@@ -210,35 +210,45 @@ get_os() {
             # says "populate $line with the third field's contents".
             while IFS='<>' read -r _ _ line _; do
                 case $line in
-                    # Match 'ProductVersion' and read the next line
+                    # Match the key and read the next line
                     # directly as it contains the key's value.
-                    ProductVersion)
-                        IFS='<>' read -r _ _ mac_version _
+                    #
+                    # Define a shell variable using the key's value.
+                    ProductName|ProductVersion)
+                        IFS='<>' read -r _ _ "${line?}"  _
                         break
                     ;;
                 esac
             done < /System/Library/CoreServices/SystemVersion.plist
 
-            # Use the ProductVersion to determine which macOS/OS X codename
-            # the system has. As far as I'm aware there's no "dynamic" way
-            # of grabbing this information.
-            case $mac_version in
-                10.4*)  distro='Mac OS X Tiger' ;;
-                10.5*)  distro='Mac OS X Leopard' ;;
-                10.6*)  distro='Mac OS X Snow Leopard' ;;
-                10.7*)  distro='Mac OS X Lion' ;;
-                10.8*)  distro='OS X Mountain Lion' ;;
-                10.9*)  distro='OS X Mavericks' ;;
-                10.10*) distro='OS X Yosemite' ;;
-                10.11*) distro='OS X El Capitan' ;;
-                10.12*) distro='macOS Sierra' ;;
-                10.13*) distro='macOS High Sierra' ;;
-                10.14*) distro='macOS Mojave' ;;
-                10.15*) distro='macOS Catalina' ;;
-                *)      distro='macOS' ;;
-            esac
+            case ${ProductName?} in
+                iPhone*)
+                    distro="iOS ${ProductVersion?}"
+                ;;
 
-            distro="$distro $mac_version"
+                *)
+                    # Use the ProductVersion to determine which macOS/OS X
+                    # codename the system has. As far as I'm aware there's
+                    # no "dynamic" way of grabbing this information.
+                    case ${ProductVersion?} in
+                        10.4*)  distro='Mac OS X Tiger' ;;
+                        10.5*)  distro='Mac OS X Leopard' ;;
+                        10.6*)  distro='Mac OS X Snow Leopard' ;;
+                        10.7*)  distro='Mac OS X Lion' ;;
+                        10.8*)  distro='OS X Mountain Lion' ;;
+                        10.9*)  distro='OS X Mavericks' ;;
+                        10.10*) distro='OS X Yosemite' ;;
+                        10.11*) distro='OS X El Capitan' ;;
+                        10.12*) distro='macOS Sierra' ;;
+                        10.13*) distro='macOS High Sierra' ;;
+                        10.14*) distro='macOS Mojave' ;;
+                        10.15*) distro='macOS Catalina' ;;
+                        *)      distro='macOS' ;;
+                    esac
+
+                    distro="$distro ${ProductVersion?}"
+                ;;
+            esac
         ;;
 
         Haiku)
