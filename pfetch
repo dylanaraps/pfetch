@@ -975,7 +975,7 @@ get_ascii() {
 			EOF
         ;;
 
-        [Gg]uix[Ss][Dd]*|guix*)
+        [Gg]uix[Ss][Dd]*|[Gg]uix*)
             read_ascii 3 <<-EOF
 				${c3}|.__          __.|
 				|__ \\        / __|
