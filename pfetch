@@ -845,6 +845,17 @@ get_ascii() {
 			EOF
         ;;
 
+        [Aa]ndroid*)
+            read_ascii 2 <<-EOF
+				${c2}  ;,           ,;
+				   ';,.-----.,;'
+				  ,'           ',
+				 /    O     O    \\
+				|                 |
+				'-----------------'
+			EOF
+        ;;
+
         [Aa]rch*)
             read_ascii 4 <<-EOF
 				${c6}      /\\
