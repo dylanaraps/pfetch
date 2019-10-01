@@ -455,10 +455,24 @@ get_pkgs() {
             Darwin*)
                 # Commands which print packages one per line.
                 has pkgin      && pkgin list
-                has port       && port installed
 
                 # Directories containing packages.
                 has brew       && printf '%s\n' /usr/local/Cellar/*
+
+                # 'port' prints a single line of output to 'stdout'
+                # when no packages are installed and exits with
+                # success causing a false-positive of 1 package
+                # installed.
+                #
+                # 'port' should really exit with a non-zero code
+                # in this case to allow scripts to cleanly handle
+                # this behavior.
+                has port       && {
+                    pkg_list=$(port installed)
+
+                    [ "$pkg_list" = "No ports are installed." ] ||
+                        printf '%s\n' "$pkg_list"
+                }
             ;;
 
             FreeBSD*|DragonFly*)
