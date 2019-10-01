@@ -1205,7 +1205,7 @@ get_ascii() {
 			EOF
         ;;
 
-        [Ss]un[Oo][Ss])
+        [Ss]un[Oo][Ss]|[Ss]olaris*)
             read_ascii 3 <<-EOF
 				${c3}       .   .;   .
 				   .   :;  ::  ;:   .
