@@ -30,15 +30,12 @@ picture"!
 - **Minix**
 - **Solaris**
 - **BSD**
-    - DragonflyBSD
-    - FreeBSD
-    - NetBSD
-    - OpenBSD
+    - DragonflyBSD, FreeBSD, NetBSD and OpenBSD.
 - **Windows**
     - Windows subsystem for Linux.
 - **Linux**
     - Alpine Linux, Arch Linux, Arco Linux, Artix Linux, CentOS, Debian, Elementary, Fedora, Gentoo, Guix, Hyperbola, KISS Linux, Linux Lite, Linux Mint, Mageia, Manjaro, MX Linux, NixOS, OpenSUSE, Parabola, Pop!\_OS, PureOS, Slackware, Ubuntu and Void Linux.
-    - Other distributions are supported with a generic penguin logo.
+    - All other distributions are supported with a generic penguin logo.
 
 ## Configuration
 
