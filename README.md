@@ -1,6 +1,6 @@
-# pfetch
-
-A pretty system information tool written in POSIX `sh`.
+<p align="center"><img src="https://user-images.githubusercontent.com/6799467/65944518-68834d80-e421-11e9-9b14-6ca26a16108a.png" width="300px"></p>
+<h1 align="center">pfetch</h1>
+<p align="center">A pretty system information tool written in POSIX sh.</p>
 
 The goal of this project is to implement a simple system information tool in POSIX `sh` using features built into the language itself (*where possible*).
 
