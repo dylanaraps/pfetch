@@ -1012,7 +1012,7 @@ get_ascii() {
 			EOF
         ;;
 
-        [Ll]inux*[Ll]ite*)
+        [Ll]inux*[Ll]ite*|[Ll]ite*)
             read_ascii 3 <<-EOF
 				${c3}   /\\
 				  /  \\
