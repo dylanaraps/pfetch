@@ -2,11 +2,19 @@
 <h1 align="center">pfetch</h1>
 <p align="center">A pretty system information tool written in POSIX sh.</p><br>
 
-The goal of this project is to implement a simple system information tool in POSIX `sh` using features built into the language itself (*where possible*).
+The goal of this project is to implement a simple system
+information tool in POSIX `sh` using features built into
+the language itself (*where possible*).
 
-The source code is highly documented and I hope it will act as a learning resource for POSIX `sh` and simple information detection across various different operating systems.
+The source code is highly documented and I hope it will
+act as a learning resource for POSIX `sh` and simple
+information detection across various different operating
+systems.
 
-If anything in the source code is unclear or is lacking in its explanation, open an issue. Sometimes you get too close to something and you fail to see the "bigger picture"!
+If anything in the source code is unclear or is lacking
+in its explanation, open an issue. Sometimes you get too
+close to something and you fail to see the "bigger
+picture"!
 
 ## OS support
 
