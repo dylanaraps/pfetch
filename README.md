@@ -18,6 +18,10 @@ in its explanation, open an issue. Sometimes you get too
 close to something and you fail to see the "bigger
 picture"!
 
+<br>
+<br>
+<br>
+
 ## OS support
 
 - **Haiku**
