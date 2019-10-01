@@ -64,22 +64,6 @@ picture"!
     - Void Linux
     - Other distributions are supported with a generic penguin logo.
 
-## TODO
-
-- [ ] Add optional and additional information detection.
-    - [ ] Terminal Emulator ([#12](https://github.com/dylanaraps/pfetch/pull/12))
-        - The way I implement this in `neofetch` is interesting.
-- [ ] Expand operating system support.
-    - [ ] Android
-    - [ ] iOS
-    - [ ] AIX ([#7](https://github.com/dylanaraps/pfetch/issues/7))
-    - [ ] IRIX ([#8](https://github.com/dylanaraps/pfetch/issues/8))
-    - [ ] FreeMiNT ([#9](https://github.com/dylanaraps/pfetch/issues/9))
-    - [ ] Windows ([#10](https://github.com/dylanaraps/pfetch/issues/10))
-        - [ ] CYGWIN
-        - [ ] MSYS
-        - [ ] MINGW
-
 ## Configuration
 
 `pfetch` is configured through environment variables.
