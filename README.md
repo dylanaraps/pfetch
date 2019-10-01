@@ -2,24 +2,11 @@
 <h1 align="center">pfetch</h1>
 <p align="center">A pretty system information tool written in POSIX sh.</p><br>
 
-<pre align="right" width="40%">
-➜ pfetch
-    ___       goldie@KISS
-   (.· |      os     KISS Linux
-   (<> |      host   Lenovo YOGA 900-13ISK
-  / __  \     kernel 5.3.1-coffee
- ( /  \ /|    uptime 6h 20m
-_/\ __)/_)    pkgs   130
-\/-____\/     memory 1721M / 7942M
-</pre>
-
-<p>
 The goal of this project is to implement a simple system information tool in POSIX `sh` using features built into the language itself (*where possible*).
 
 The source code is highly documented and I hope it will act as a learning resource for POSIX `sh` and simple information detection across various different operating systems.
 
 If anything in the source code is unclear or is lacking in its explanation, open an issue. Sometimes you get too close to something and you fail to see the "bigger picture"!
-</p>
 
 ## OS support
 
