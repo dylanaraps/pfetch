@@ -1146,7 +1146,7 @@ get_ascii() {
 			EOF
         ;;
 
-        openSUSE*|open*SUSE*|SUSE*|suse*)
+        [Oo]penSUSE*|[Oo]pen*SUSE*|SUSE*|suse*)
             read_ascii 2 <<-EOF
 				${c2}  _______
 				__|   __ \\
