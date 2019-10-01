@@ -30,12 +30,12 @@ picture"!
     - All other distributions are supported with a generic penguin logo.
 - **BSD**
     - DragonflyBSD, FreeBSD, NetBSD and OpenBSD.
+- **Windows**
+    - Windows subsystem for Linux.
 - **Haiku**
 - **MacOS**
 - **Minix**
 - **Solaris**
-- **Windows**
-    - Windows subsystem for Linux.
 
 ## Configuration
 
