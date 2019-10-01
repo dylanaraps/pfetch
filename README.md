@@ -1,6 +1,6 @@
 <p align="center"><img src="https://user-images.githubusercontent.com/6799467/65944518-68834d80-e421-11e9-9b14-6ca26a16108a.png" width="350px"></p>
 <h1 align="center">pfetch</h1>
-<p align="center">A pretty system information tool written in POSIX sh.</p><br>
+<p align="center">A pretty system information tool written in POSIX sh</p><br>
 
 <img src="https://user-images.githubusercontent.com/6799467/65945384-5bfff480-e423-11e9-863e-4e7cf16eb648.png" width="40%" align="right">
 
@@ -37,31 +37,7 @@ picture"!
 - **Windows**
     - Windows subsystem for Linux.
 - **Linux**
-    - Alpine Linux
-    - Arch Linux
-    - Arco Linux
-    - Artix Linux
-    - CentOS
-    - Debian
-    - Elementary
-    - Fedora
-    - Gentoo
-    - Guix
-    - Hyperbola
-    - KISS Linux
-    - Linux Lite
-    - Linux Mint
-    - Mageia
-    - Manjaro
-    - MX Linux
-    - NixOS
-    - OpenSUSE
-    - Parabola
-    - Pop!\_OS
-    - PureOS
-    - Slackware
-    - Ubuntu
-    - Void Linux
+    - Alpine Linux, Arch Linux, Arco Linux, Artix Linux, CentOS, Debian, Elementary, Fedora, Gentoo, Guix, Hyperbola, KISS Linux, Linux Lite, Linux Mint, Mageia, Manjaro, MX Linux, NixOS, OpenSUSE, Parabola, Pop!\_OS, PureOS, Slackware, Ubuntu and Void Linux.
     - Other distributions are supported with a generic penguin logo.
 
 ## Configuration
