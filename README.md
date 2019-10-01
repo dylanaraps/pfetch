@@ -2,6 +2,8 @@
 <h1 align="center">pfetch</h1>
 <p align="center">A pretty system information tool written in POSIX sh.</p><br>
 
+<img src="https://user-images.githubusercontent.com/6799467/65945384-5bfff480-e423-11e9-863e-4e7cf16eb648.png" width="40%" align="right">
+
 The goal of this project is to implement a simple system
 information tool in POSIX `sh` using features built into
 the language itself (*where possible*).
