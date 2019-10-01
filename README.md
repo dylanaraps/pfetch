@@ -2,7 +2,7 @@
 <h1 align="center">pfetch</h1>
 <p align="center">A pretty system information tool written in POSIX sh.</p><br>
 
-<pre align="right">
+<pre align="right" width="40%">
 ➜ pfetch
     ___       goldie@KISS
    (.· |      os     KISS Linux
@@ -13,7 +13,7 @@ _/\ __)/_)    pkgs   130
 \/-____\/     memory 1721M / 7942M
 </pre>
 
-<p width="50%">
+<p>
 The goal of this project is to implement a simple system information tool in POSIX `sh` using features built into the language itself (*where possible*).
 
 The source code is highly documented and I hope it will act as a learning resource for POSIX `sh` and simple information detection across various different operating systems.
