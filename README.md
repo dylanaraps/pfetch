@@ -25,17 +25,17 @@ picture"!
 
 ## OS support
 
+- **Linux**
+    - Alpine Linux, Arch Linux, Arco Linux, Artix Linux, CentOS, Debian, Elementary, Fedora, Gentoo, Guix, Hyperbola, KISS Linux, Linux Lite, Linux Mint, Mageia, Manjaro, MX Linux, NixOS, OpenSUSE, Parabola, Pop!\_OS, PureOS, Slackware, Ubuntu and Void Linux.
+    - All other distributions are supported with a generic penguin logo.
+- **BSD**
+    - DragonflyBSD, FreeBSD, NetBSD and OpenBSD.
 - **Haiku**
 - **MacOS**
 - **Minix**
 - **Solaris**
-- **BSD**
-    - DragonflyBSD, FreeBSD, NetBSD and OpenBSD.
 - **Windows**
     - Windows subsystem for Linux.
-- **Linux**
-    - Alpine Linux, Arch Linux, Arco Linux, Artix Linux, CentOS, Debian, Elementary, Fedora, Gentoo, Guix, Hyperbola, KISS Linux, Linux Lite, Linux Mint, Mageia, Manjaro, MX Linux, NixOS, OpenSUSE, Parabola, Pop!\_OS, PureOS, Slackware, Ubuntu and Void Linux.
-    - All other distributions are supported with a generic penguin logo.
 
 ## Configuration
 
