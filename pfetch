@@ -765,8 +765,17 @@ get_wm() {
                 # To extract the name, everything before '_NET_WM_NAME = \"'
                 # is removed and everything after the next '"' is removed.
                 wm=$(xprop -id "$id" -notype -len 25 -f _NET_WM_NAME 8t)
-                wm=${wm##*_NET_WM_NAME = \"}
-                wm=${wm%%\"*}
+
+                # Handle cases of a window manager _not_ populating the
+                # '_NET_WM_NAME' atom. Display nothing in this case.
+                case $wm in
+                    *'_NET_WM_NAME = '*)
+                        wm=${wm##*_NET_WM_NAME = \"}
+                        wm=${wm%%\"*}
+                    ;;
+
+                    *)  wm= ;;
+                esac
             }
         ;;
     esac
