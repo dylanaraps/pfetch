@@ -129,7 +129,7 @@ get_os() {
 
     case $os in
         Linux*)
-            # Some Linux disttributions (which are based on others)
+            # Some Linux distributions (which are based on others)
             # fail to identify as they **do not** change the upstream
             # distributions identification packages or files.
             #
@@ -153,6 +153,12 @@ get_os() {
             # from their respective upstreams.
             if command -v lsb_release; then
                 distro=$(lsb_release -sd)
+
+            # Android detection works by checking for the existence of
+            # the follow two directories. I don't think there's a simpler
+            # method than this.
+            elif [ -d /system/app ] && [ -d /system/priv-app ]; then
+                distro="Android $(getprop ro.build.version.release)"
 
             else
                 # This used to be a simple '. /etc/os-release' but I believe
