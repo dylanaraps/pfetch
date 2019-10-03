@@ -551,7 +551,7 @@ get_memory() {
             # split is used on '.' to filter it out.
             while IFS=:. read -r key val; do
                 case $key in
-                    *wired*|*active*|*occupied*)
+                    *' wired'*|*' active'*|*' occupied'*)
                         mem_used=$((mem_used + ${val:-0}))
                     ;;
                 esac
