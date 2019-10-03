@@ -345,7 +345,7 @@ get_host() {
         case $word in
             To      | [Bb]e      | [Ff]illed | by     | O.E.M.  | OEM  |\
             Not     | Applicable | Specified | System | Product | Name |\
-            Version | Undefined  | Default   | string | INVALID | �    )
+            Version | Undefined  | Default   | string | INVALID | �    | os )
                 continue
             ;;
         esac
