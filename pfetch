@@ -438,6 +438,7 @@ get_pkgs() {
             Linux*)
                 # Commands which print packages one per line.
                 has bonsai     && bonsai list
+                has crux       && pkginfo -i
                 has pacman-key && pacman -Qq
                 has dpkg       && dpkg-query -f '.\n' -W
                 has rpm        && rpm -qa
