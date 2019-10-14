@@ -1368,7 +1368,7 @@ get_ascii() {
     # some versions of Android shipped with a totally broken 'sed'
     # command from 'toybox' and so we're forced to avoid 'sed'.
     done <<-EOF
-		$(printf %s "$ascii" | awk '{gsub("\\[3.m","");print}')
+		  $(printf %s "$ascii" | awk '{gsub("\\[3.m","");print}')
 	EOF
 
     # Add a gap between the ascii art and the information.
