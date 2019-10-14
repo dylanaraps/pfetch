@@ -694,6 +694,67 @@ get_memory() {
     log memory "${mem_used:-?}M / ${mem_full:-?}M" >&6
 }
 
+get_disk() {
+    # Store the version of the 'df' command as the available
+    # flags, options and implementation differs between operating
+    # systems and we need to handle these edge-cases.
+    df_version=$(df --version 2>&1)
+
+    case $df_version in
+        # The 'df' command is from AIX.
+        *IMitv*)
+            set -- -P -g
+        ;;
+
+        # The 'df' command is from IRIX.
+        *befhikm*)
+            set -- -P -k
+        ;;
+
+        # The 'df' command is from OpenBSD.
+        *hiklnP*)
+            set -- -h
+        ;;
+
+        # The 'df' command is from Haiku and is wildly
+        # different and provides no workable output,
+        # end here.
+        *Tracker*) # Haiku
+            return
+        ;;
+
+        # From testing it is saffe to assume that
+        # any other 'df' version provides these flags.
+        *)
+            set -- -P -h
+        ;;
+    esac
+
+    # Read the output of 'df' line by line. The first line
+    # contains header information for the "table" so it is
+    # skipped.
+    #
+    # The next lines are then split to grab the relevant
+    # information and thankfully the output remains the
+    # same between all but one 'df' implementation.
+    #
+    # TODO: Configure disks to send to 'df'. Do we need to
+    #       do this? I'd love to _not_ do it.
+    df "$@" / | while read -r name full used _ perc _; do
+        [ "$header" ] || { header=1; continue; }
+
+        case $df_version in
+            # The 'df' command is from IRIX.
+            *befhikm*)
+                used=$((used/1024/1024))G
+                full=$((full/1024/1024))G
+            ;;
+        esac
+
+        log disk "$name [$used / $full ($perc)]" >&6
+    done
+}
+
 get_wm() {
     case $os in
         # Don't display window manager on macOS.
@@ -1302,12 +1363,8 @@ get_ascii() {
     # output without the use of a pipe ('|').
     # This ensures that any variables defined in the while loop
     # are still accessible in the script.
-    #
-    # The 'awk' command below used to be a simple 'sed', however
-    # some versions of Android shipped with a totally broken 'sed'
-    # command from 'toybox' and so we're forced to avoid 'sed'.
     done <<-EOF
-        $(printf %s "$ascii" | awk '{gsub("\\[3.m","");print}')
+		$(printf %s "$ascii" | sed 's/\[3.m//g')
 	EOF
 
     # Add a gap between the ascii art and the information.
