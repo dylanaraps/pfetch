@@ -508,7 +508,7 @@ get_pkgs() {
         esac | wc -l
     `
 
-    log pkgs "${packages:-?}" >&6
+    [ "$packages" -gt 1 ] && log pkgs "$packages" >&6
 }
 
 get_memory() {
