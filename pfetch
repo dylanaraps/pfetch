@@ -343,7 +343,7 @@ get_host() {
         # found in the "blacklist" below. Only non-matches are appended
         # to the final host string.
         case $word in
-            To      | [Bb]e      | [Ff]illed | by     | O.E.M.  | OEM  |\
+            To      | [Bb]e      | [Ff]illed | [Bb]y  | O.E.M.  | OEM  |\
             Not     | Applicable | Specified | System | Product | Name |\
             Version | Undefined  | Default   | string | INVALID | �    | os )
                 continue
