@@ -1303,7 +1303,7 @@ get_ascii() {
     # This ensures that any variables defined in the while loop
     # are still accessible in the script.
     done <<-EOF
- 		$(printf %s "$ascii" | sed 's/\[3.m//g')
+ 		$(printf %s "$ascii" | sed 's/\[3.m//g')
 	EOF
 
     # Add a gap between the ascii art and the information.
