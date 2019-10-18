@@ -1302,10 +1302,6 @@ get_ascii() {
     # output without the use of a pipe ('|').
     # This ensures that any variables defined in the while loop
     # are still accessible in the script.
-    #
-    # The 'awk' command below used to be a simple 'sed', however
-    # some versions of Android shipped with a totally broken 'sed'
-    # command from 'toybox' and so we're forced to avoid 'sed'.
     done <<-EOF
  		$(printf %s "$ascii" | sed 's/\[3.m//g')
 	EOF
