@@ -1350,12 +1350,12 @@ get_ascii() {
     printf '[1m%s[m[%sA' "$ascii" "$ascii_height" >&6
 }
 
- sync_output() {
+sync_output() {
      # pad a string value out to $2 width
      pad_right() {
          line=$1
          length=$2
-         plain_line=$(echo "$line" | sed 's/\[[0-9]*m//g')
+         plain_line=$(printf "%s" "${line}" | sed 's/\[[0-9]*m//g')
 
          while [ ${#plain_line} -lt $length ]; do
              line="$line "
@@ -1386,14 +1386,16 @@ get_ascii() {
      }
 
      # iterate over ascii lines if it was included as an option
-     if echo "$*" | grep "ascii" >/dev/null; then
-         set +f $(echo "$*" | sed 's/ascii//')
+     if printf "$*" | grep "ascii" >/dev/null; then
+         set +f $(printf "$*" | sed 's/ascii//')
          get_ascii 6>/dev/null
 
          # cheat: assume that the first color char is something we want to use on all the ascii lines.
          ascii_color=$(printf "$ascii" | sed 1q | sed 's/^\(\[3.m\).*$/\1/')
 
-         while IFS=$'\n' read -r ascii_line; do
+         newline='
+'
+         while IFS=$newline read -r ascii_line; do
              printf "%s[1m" "${ascii_color}" >&6
              pad_right "$ascii_line" ${ascii_width} >&6
              printf '[m' >&6
