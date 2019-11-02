@@ -1382,12 +1382,12 @@ sync_output() {
          # Print the info name and color the text.
          name_part=$(printf '[3%sm[1m%s[m' "${PF_COL1-4}" "$name")
          pad_right "$name_part$PF_SEP" "${PF_ALIGN-$info_length}"
-         printf '[3%sm%s[m\n' "${PF_COL2-7}" "$info"
+         printf '[3%sm%s[m' "${PF_COL2-7}" "$info"
      }
 
      # iterate over ascii lines if it was included as an option
      if printf "$*" | grep "ascii" >/dev/null; then
-         set +f $(printf "$*" | sed 's/ascii//')
+         set +f -- $(printf "$*" | sed 's/ascii//')
          get_ascii 6>/dev/null
 
          # cheat: assume that the first color char is something we want to use on all the ascii lines.
@@ -1404,6 +1404,7 @@ sync_output() {
                  get_$1
                  shift
              fi
+             printf '\n' >&6
          done<<EOF
 $ascii
 EOF
