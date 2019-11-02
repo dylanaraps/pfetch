@@ -1350,6 +1350,68 @@ get_ascii() {
     printf '[1m%s[m[%sA' "$ascii" "$ascii_height" >&6
 }
 
+ sync_output() {
+     # pad a string value out to $2 width
+     pad_right() {
+         line=$1
+         length=$2
+         plain_line=$(echo "$line" | sed 's/\[[0-9]*m//g')
+
+         while [ ${#plain_line} -lt $length ]; do
+             line="$line "
+             plain_line="$plain_line "
+         done
+
+         printf "%s" "$line"
+     }
+
+     # a log that uses pad_right instead of cursor movement
+     log() {
+         # End here if no data was found.
+         [ "$2" ] || return
+
+         # Store the value of '$1' as we reset the argument list below.
+         name=$1
+
+         {
+             set -f
+             set +f -- $2
+             info=$*
+         }
+
+         # Print the info name and color the text.
+         name_part=$(printf '[3%sm[1m%s[m' "${PF_COL1-4}" "$name")
+         pad_right "$name_part$PF_SEP" "${PF_ALIGN-$info_length}"
+         printf '[3%sm%s[m\n' "${PF_COL2-7}" "$info"
+     }
+
+     # iterate over ascii lines if it was included as an option
+     if echo "$*" | grep "ascii" >/dev/null; then
+         set +f $(echo "$*" | sed 's/ascii//')
+         get_ascii 6>/dev/null
+
+         # cheat: assume that the first color char is something we want to use on all the ascii lines.
+         ascii_color=$(printf "$ascii" | sed 1q | sed 's/^\(\[3.m\).*$/\1/')
+
+         while IFS=$'\n' read -r ascii_line; do
+             printf "%s[1m" "${ascii_color}" >&6
+             pad_right "$ascii_line" ${ascii_width} >&6
+             printf '[m' >&6
+
+             if [ ! -z "$1" ]; then
+                 get_$1
+                 shift
+             fi
+         done<<EOF
+$ascii
+EOF
+     else
+         for info; do "get_$info"; done
+     fi
+
+     printf "\n" >&6
+ }
+
 main() {
     # Hide 'stderr' unless the first argument is '-v'. This saves
     # polluting the script with '2>/dev/null'.
@@ -1429,8 +1491,13 @@ main() {
         # Add an additional space of length to act as a gap.
         info_length=$((info_length + 1))
 
-        # Iterate over the above list and run any existing "get_" functions.
-        for info; do "get_$info"; done
+        if [ ! -z "$PF_SYNC" ]; then
+            sync_output "$@"
+            exit
+        else
+            # Iterate over the above list and run any existing "get_" functions.
+            for info; do "get_$info"; done
+        fi
     }
 
     # Position the cursor below both the ascii art and information lines
