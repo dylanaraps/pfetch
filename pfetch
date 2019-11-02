@@ -1451,4 +1451,8 @@ main() {
     done >&6
 }
 
+if [ ! -z "$PF_SOURCE" ]; then
+    . "$PF_SOURCE"
+fi
+
 main "$@"

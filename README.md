@@ -87,6 +87,11 @@ PF_ALIGN=""
 # Valid: string
 PF_ASCII="openbsd"
 
+# A file to source before calling the main function
+# Default: unset (none)
+# Valid: filepath
+PF_SOURCE=""
+
 # The below environment variables control more
 # than just 'pfetch' and can be passed using
 # 'HOSTNAME=cool_pc pfetch' to restrict their
