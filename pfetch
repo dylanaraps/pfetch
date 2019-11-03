@@ -1031,7 +1031,7 @@ get_ascii() {
         [Ll]inux*)
             read_ascii 4 <<-EOF
 				${c4}    ___
-				   (${c7}.· ${c4}|
+				   (${c7}.. ${c4}|
 				   (${c5}<> ${c4}|
 				  / ${c7}__  ${c4}\\
 				 ( ${c7}/  \\ ${c4}/|
@@ -1334,6 +1334,8 @@ main() {
         set -f
         set +f ${PF_INFO-ascii title os host kernel uptime pkgs memory}
 
+        # Grab the ascii art if the user has enabled it. This simply
+        # populates the '$ascii' variable.
         case $@ in *ascii*) get_ascii; shift; esac
 
         # Iterate over the info functions to determine the lengths of the
