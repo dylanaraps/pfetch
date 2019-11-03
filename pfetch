@@ -1334,7 +1334,7 @@ main() {
         set -f
         set +f ${PF_INFO-ascii title os host kernel uptime pkgs memory}
 
-        case $* in *ascii*) get_ascii; shift; esac
+        case $@ in *ascii*) get_ascii; shift; esac
 
         # Iterate over the info functions to determine the lengths of the
         # "info names" for output alignment. The option names and subtitles
@@ -1351,7 +1351,7 @@ main() {
         # Add an additional space of length to act as a gap.
         info_length=$((info_length + 1))
 
-        while IFS= read -r line; do
+        while IFS= read -r line || [ "$1" ]; do
             "get_$1"
             shift "$(($# ? 1 : 0))"
             printf '%*.s%s\r%s\n' "$ascii_width" "" "$out" "$line" >&6
