@@ -24,7 +24,11 @@ log() {
 
     align=$(printf '%*.s' "$((${#name}-info_length))" "")
 
-    out="[3${PF_COL1-4};1m${name}[m${PF_SEP}${align}[3${PF_COL2-7}m${info}[m"
+    # Construct the information string.
+    out=
+    out="[3${PF_COL1-4};1m${name}[m"
+    out="$out${PF_SEP}${align}"
+    out="$out[3${PF_COL2-7}m${info}[m"
 }
 
 get_title() {
@@ -781,12 +785,12 @@ get_palette() {
     #
     # This allows us to save hardcoding a second set of sequences
     # for background colors.
-    palette="  [7m$c1  $c2  $c3  $c4  $c5  $c6  $c7  "
+    palette="[7m$c1 $c1 $c2 $c2 $c3 $c3 $c4 $c4 $c5 $c5 $c6 $c6 [m"
 
-    # Print the palette with a newline before and after.
-    # The '\033[%sC' moves the text to the right, the
-    # length of the ascii art.
-    printf '\n[%sC%s[m\n' "${ascii_width-1}" "$palette" >&6
+    # Print the palette with a new-line before and afterwards.
+    printf '\n' >&6
+    log "$palette
+        " " "
 }
 
 get_ascii() {
