@@ -781,12 +781,7 @@ get_palette() {
     #
     # This allows us to save hardcoding a second set of sequences
     # for background colors.
-    palette="  [7m$c1  $c2  $c3  $c4  $c5  $c6  $c7  "
-
-    # Print the palette with a newline before and after.
-    # The '\033[%sC' moves the text to the right, the
-    # length of the ascii art.
-    printf '\n[%sC%s[m\n' "${ascii_width-1}" "$palette" >&6
+    out="  [7m$c1  $c2  $c3  $c4  $c5  $c6  $c7  [m"
 }
 
 get_ascii() {
@@ -1263,11 +1258,14 @@ get_ascii() {
     # This ensures that any variables defined in the while loop
     # are still accessible in the script.
     done <<-EOF
- 		$(printf %s "$ascii" | sed 's/\[3.m//g')
+		$(printf %s "$ascii" | sed 's/\[3.m//g')
 	EOF
 
     # Add a gap between the ascii art and the information.
     ascii_width=$((ascii_width + 4))
+
+    # note the first char of $ascii if it's a color esc code
+    ascii_color=$(printf "$ascii" | sed 1q | sed 's/^\(\[3.m\).*$/\1/')
 }
 
 main() {
@@ -1356,7 +1354,11 @@ main() {
         while IFS= read -r line || [ "$1" ]; do
             "get_$1"
             shift "$(($# ? 1 : 0))"
-            printf '%*.s%s\r%s\n' "$ascii_width" "" "$out" "$line" >&6
+
+            plain_line=$(printf %s "$line" | sed 's/\[[0-9]*m//g')
+            align=$((${#out} + ascii_width - ${#plain_line}))
+
+            printf '%s%*s\n' "${ascii_color}${line}" "$align" "$out" >&6
             out=
         done <<-EOF
 			$ascii[m
