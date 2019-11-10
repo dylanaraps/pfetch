@@ -445,6 +445,7 @@ get_pkgs() {
                 has xbps-query && xbps-query -l
                 has apk        && apk info
                 has guix       && guix package --list-installed
+                has opkg       && opkg list-installed
 
                 # Directories containing packages.
                 has kiss       && printf '%s\n' /var/db/kiss/installed/*/
