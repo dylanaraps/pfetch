@@ -452,6 +452,7 @@ get_pkgs() {
                 has brew       && printf '%s\n' "$(brew --cellar)/"*
                 has emerge     && printf '%s\n' /var/db/pkg/*/*/
                 has pkgtool    && printf '%s\n' /var/log/packages/*
+                has eopkg      && printf '%s\n' /var/lib/eopkg/package/*
 
                 # 'nix' requires two commands.
                 has nix-store  && {
