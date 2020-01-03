@@ -1003,6 +1003,17 @@ get_ascii() {
 			EOF
         ;;
 
+        [Ee]ndeavour*)
+            read_ascii 4 <<-EOF
+				      ${c1}/${c4}\\
+			    ${c1}/${c4}/  \\${c6}\\
+			   ${c1}/${c4}/    \\ ${c6}\\
+			 ${c1}/ ${c4}/     _) ${c6})
+			${c1}/_${c4}/___-- ${c6}__-
+			 ${c6}/____--
+			EOF
+        ;;
+
         [Ff]edora*)
             read_ascii 4 <<-EOF
 				${c7}      _____
