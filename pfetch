@@ -119,17 +119,14 @@ get_cpu() {
     case $os in
         Linux*)
             cpu_model=$(grep 'model name' /proc/cpuinfo | uniq | sed 's/.*://')
-            #cpu_cores=$(grep 'cpu cores' /proc/cpuinfo | uniq | sed 's/.*://' | awk '{$1=$1;print}')
-            #cpu_threads=$(grep -c processor /proc/cpuinfo)
-            ryzen="Ryzen"
-            if test "${cpu_model#*$ryzen}" != "$cpu_model"
-            then
-                cpu_freq=$(cat /sys/devices/system/cpu/cpu0/cpufreq/bios_limit)
-                cpu_freq=$((cpu_freq / 10000))
-                cpu_freq=$(echo $cpu_freq | sed -e "s/.\{1\}/&./1")
-                cpu_model=$cpu_model" @ $cpu_freq""Ghz"
-            fi
-            ;;
+			case $cpu_model in
+				*Ryzen*)
+					cpu_model="Not implemented"
+					;;
+				*)
+					;;
+			esac
+			;;
         *)
             cpu_model="unsupported"
             ;;
