@@ -121,7 +121,6 @@ get_cpu() {
             cpu_model=$(grep 'model name' /proc/cpuinfo | uniq | sed 's/.*://')
 			case $cpu_model in
 				*Ryzen*)
-					cpu_model="Not implemented"
 					;;
 				*)
 					;;
