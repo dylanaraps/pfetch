@@ -1328,9 +1328,7 @@ main() {
         c7='[37m'; c8='[38m'
     }
 
-    # Avoid text-wrapping from wrecking the program output
-    # and hide the cursor to hide its moving around during
-    # the printing process.
+    # Avoid text-wrapping from wrecking the program output.
     #
     # Some terminals don't support these sequences, nor do they
     # silently conceal them if they're printed resulting in
@@ -1338,11 +1336,10 @@ main() {
     [ "$TERM" = dumb ]   ||
     [ "$TERM" = minix ]  ||
     [ "$TERM" = cons25 ] || {
-        # '[?7l':  Disable line-wrapping.
+        # Disable line-wrapping.
         printf '[?7l' >&6
 
-        # Leave the terminal how we found it on exit or Ctrl+C.
-        # '[?7h':  Enable line-wrapping.
+        # Enable line-wrapping again on exit.
         trap 'printf [?7h >&6' EXIT
     }
 
