@@ -1296,6 +1296,11 @@ main() {
     # This gives full control over what it displayed on the screen.
     exec 6>&1 >/dev/null
 
+    # Allow the user to execute their own script and modify or
+    # extend pfetch's behavior.
+    # shellcheck source=/dev/null
+    . "${PF_SOURCE:-/dev/null}" ||:
+
     # Ensure that the 'TMPDIR' is writable as heredocs use it and
     # fail without the write permission. This was found to be the
     # case on Android where the temporary directory requires root.

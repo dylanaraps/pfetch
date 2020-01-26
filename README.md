@@ -57,6 +57,11 @@ PF_INFO="ascii"
 # Example: Only Information.
 PF_INFO="title os host kernel uptime pkgs memory"
 
+# A file to source before running pfetch.
+# Default: unset
+# Valid: A shell script
+PF_SOURCE=""
+
 # Separator between info name and info data.
 # Default: unset
 # Valid: string
