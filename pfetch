@@ -25,10 +25,9 @@ log() {
     align=$(printf '%*.s' "$((${#name}-info_length))" "")
 
     # Construct the information string.
-    out=
     out="[3${PF_COL1-4};1m${name}[m"
     out="$out${PF_SEP}${align}"
-    out="$out[3${PF_COL2-7}m${info}[m"
+    out="$out[3${PF_COL2-7}m${info}"
 }
 
 get_title() {
@@ -1340,13 +1339,11 @@ main() {
     [ "$TERM" = minix ]  ||
     [ "$TERM" = cons25 ] || {
         # '[?7l':  Disable line-wrapping.
-        # '[?25l': Hide the cursor.
-        printf '[?7l[?25l' >&6
+        printf '[?7l' >&6
 
         # Leave the terminal how we found it on exit or Ctrl+C.
         # '[?7h':  Enable line-wrapping.
-        # '[?25h': Show the cursor.
-        trap 'printf [?7h[?25h >&6' EXIT
+        trap 'printf [?7h >&6' EXIT
     }
 
     # Store the output of 'uname' to avoid calling it multiple times
