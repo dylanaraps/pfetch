@@ -794,6 +794,130 @@ get_palette() {
         " " "
 }
 
+get_term() {
+    # Workaround for macOS systems that don't support the
+    # "algorithm" of obtaining the terminal program name.
+    #
+    # This also doubles as a means of allowing the user to
+    # set whatever value they like here through the
+    # '$TERM_PROGRAM' environment variable.
+    case $TERM_PROGRAM in
+        iTerm.app)    term=iTerm2 ;;
+        Terminal.app) term='Apple Terminal' ;;
+        Hyper)        term=HyperTerm ;;
+        *)            term=${TERM_PROGRAM%%.app} ;;
+    esac
+
+    # Special case for TosWin2 (FreeMiNT) which doesn't
+    # support the "algorithm" of obtaining the terminal
+    # program name.
+    [ "$TERM" = tw52 ] || [ "$TERM" = tw100 ] &&
+        term=TosWin2
+
+    # Special case for when 'pfetch' is run over SSH.
+    [ "$SSH_CONNECTION" ] &&
+        term=$SSH_TTY
+
+    # This surprisingly reliable method of detecting the current
+    # terminal emulator is kinda neat.
+    #
+    # It works by looping through each parent of each process
+    # starting with '$PPID' (the parent process ID) until we
+    # find a match or hit PID 1 (init).
+    #
+    # On each iteration the name of the current parent process
+    # is checked against a list of good values and bad values.
+    # If no match is found we check the parent of the parent
+    # and so on.
+    #
+    # Using this method *no* terminal emulator names are
+    # hardcoded and the list remains small and general. In short
+    # it's basically a list of what *isn't* a terminal emulator
+    # and a list of places we should *stop*.
+    while [ -z "$term" ]; do
+        # This block is OS-specific and handles the fetching of
+        # the parent process (of the parent) and the fetching of
+        # said process' name.
+        case $os in
+            Linux*)
+                # On Linux some implementation of 'ps' aren't POSIX
+                # compliant, thankfully Linux provides this information
+                # though the '/proc' filesystem.
+                #
+                # This loops line by line over the '/proc/PID/status'
+                # file splitting at ':' and '<TAB>', we then look for
+                # the key containing 'PPid' and grab the value.
+                while IFS=':	' read -r key val; do
+                    case $key in
+                        PPid)
+                            ppid=$val
+                            break
+                        ;;
+                    esac
+                done < "/proc/${ppid:-$PPID}/status"
+
+                # Get the name of the parent process.
+                read -r name < "/proc/$ppid/comm"
+            ;;
+
+            Windows*)
+                # I need some assistance to add Windows support
+                # as the 'ps' command used in MINGW, MSYS and CYGWIN
+                # isn't POSIX compliant(?).
+                return
+            ;;
+
+            *)
+                # POSIX compliant 'ps' makes this really easy,
+                # just two simple commands to grab the parent
+                # process ID and the ID's name.
+                ppid=$(ps -p "${ppid:-$PPID}" -o ppid=)
+                name=$(ps -p "$ppid"          -o comm=)
+            ;;
+        esac
+
+        # Check the parent process name against a list of good and bad
+        # values. On a bad value we either keep iterating up the parent
+        # process list or we stop altogether (PID 1 for example).
+        case $name in
+            # If the parent process name matches the user's shell (or
+            # anything that looks like a shell), do another iteration.
+            #
+            # This also includes 'screen' and anything that looks like
+            # 'su' or 'sudo'.
+            ${SHELL##*/} | *sh | screen | su* ) ;;
+
+            # If the parent process name matches 'login', 'init' or
+            # '*Login*' we're most likely in the TTY and not a graphical
+            # session. In this case 'term' is set to the current TTY and
+            # we end here.
+            login* | *Login* | init)
+                term=$(tty)
+            ;;
+
+            # If the parent process name matches anything in this list
+            # we can no longer continue. We've either hit PID 1 or a parent
+            # which *won't* lead to the terminal emulator's PID.
+            ruby      | systemd  | python*  | 1  | sshd* | tmux* |\
+            USER*PID* | kdeinit* | launchd* | '' )
+                break
+            ;;
+
+            # If none of the above have matched we've reached the terminal
+            # emulator's PID and we can end here.
+            *)
+                term=${name##*/}
+            ;;
+        esac
+    done
+
+    [ "$term" ] && log term "$term" >&6
+}
+
+get_shell() {
+    log shell "${SHELL##*/}" >&6
+}
+
 get_ascii() {
     # This is a simple function to read the contents of
     # an ascii file from 'stdin'. It allows for the use
@@ -1361,7 +1485,7 @@ main() {
         # Disable globbing and set the positional parameters to the
         # contents of 'PF_INFO'.
         set -f
-        set +f ${PF_INFO-ascii title os host kernel uptime pkgs memory}
+        set +f ${PF_INFO-ascii title os host kernel term uptime pkgs memory}
 
         # Grab the ascii art if the user has enabled it. This simply
         # populates the '$ascii' variable.
