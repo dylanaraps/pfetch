@@ -63,7 +63,7 @@ get_os() {
         Linux*)
             # Some Linux distributions (which are based on others)
             # fail to identify as they **do not** change the upstream
-            # distributions identification packages or files.
+            # distribution's identification packages or files.
             #
             # It is senseless to add a special case in the code for
             # each and every distribution (which _is_ technically no
