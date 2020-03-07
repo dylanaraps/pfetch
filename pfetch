@@ -113,6 +113,10 @@ get_os() {
             # don't follow any os-release/lsb standards whatsoever.
             command -v crux && distro=$(crux)
             command -v guix && distro='Guix System'
+
+            # Check to see if we're running Bedrock Linux which is
+            # very unique. This simply checks to see if the user's
+            # PATH contais a Bedrock specific value.
             case $PATH in
                 */bedrock/cross/*) distro='Bedrock Linux'
             esac
