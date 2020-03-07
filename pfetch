@@ -113,6 +113,9 @@ get_os() {
             # don't follow any os-release/lsb standards whatsoever.
             command -v crux && distro=$(crux)
             command -v guix && distro='Guix System'
+            case $PATH in
+                */bedrock/cross/*) distro='Bedrock Linux'
+            esac
 
             # Check to see if Linux is running in Windows 10 under
             # WSL1 (Windows subsystem for Linux [version 1]) and
@@ -886,6 +889,15 @@ get_ascii() {
 				${c4}  /      ,\`\\
 				${c4} /   ,.'\`.  \\
 				${c4}/.,'\`     \`'.\\
+			EOF
+        ;;
+
+        [Bb]edrock*)
+            read_ascii 4 <<-EOF
+				${c7}__
+				${c7}\\ \\___
+				${c7} \\  _ \\
+				${c7}  \\___/
 			EOF
         ;;
 
