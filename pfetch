@@ -25,7 +25,7 @@ log() {
     # Construct the information string.
     out="[3${PF_COL1-4};1m${name}[m"
     out="$out${PF_SEP}[$((info_length-${#name}))C"
-    out="$out[3${PF_COL2-7}m${info}"
+    out="$out[3${PF_COL2-7}m$info"
 }
 
 get_title() {
@@ -216,7 +216,14 @@ get_kernel() {
     case $os in
         # Don't print kernel output on some systems as the
         # OS name includes it.
-        *BSD*|Haiku|Minix) ;;
+        *BSD*|Haiku|Minix) 
+            log kernel "?" 
+        ;;
+
+        IRIX)
+            kernel=$(uname -vR)
+            kernel=${kernel#* }
+        ;;
 
         *)
             # '$kernel' is the cached output of 'uname -r'.
@@ -334,6 +341,25 @@ get_uptime() {
 				$(kstat -p unix:0:system_misc:snaptime)
 			EOF
         ;;
+
+        IRIX)
+            # Grab the uptime in a pretty format. Usually,
+            # 00:00:00 from the 'ps' command.
+            t=$(LC_ALL=POSIX ps -o etime= -p 1)
+
+            # Split the pretty output into days or hours
+            # based on the uptime.
+            case $t in 
+                *-*)   d=${t%%-*} t=${t#*-} ;;
+                *:*:*) h=${t%%:*} t=${t#*:} ;;
+            esac
+
+            h=${h#0} t=${t#0}
+
+            # Convert the split pretty fields back into
+            # seconds so we may re-convert them to our format.
+            s=$((${d:-0}*86400 + ${h:-0}*3600 + ${t%%:*}*60 + ${t#*:}))
+        ;;
     esac
 
     # Convert the uptime from seconds into days, hours and minutes.
@@ -445,8 +471,18 @@ get_pkgs() {
                 has pkginfo && pkginfo -i
                 has pkg     && pkg list
             ;;
+
+            IRIX)
+                versions -b
+            ;;
         esac | wc -l
     `
+
+    case $os in
+        # IRIX's package manager adds 3 lines of extra
+        # output which we must account for here.
+        IRIX) packages=$((packages - 3)) ;;
+    esac
 
     [ "$packages" -gt 1 ] && log pkgs "$packages"
 }
@@ -626,6 +662,27 @@ get_memory() {
 
             mem_full=$((pages_full * hw_pagesize / 1024 / 1024))
             mem_free=$((pages_free * hw_pagesize / 1024 / 1024))
+            mem_used=$((mem_full - mem_free))
+        ;;
+
+        IRIX)
+            # Read the memory information from the 'top' command. Parse
+            # and split each line until we reach the line starting with
+            # "Memory".
+            #
+            # Example output: Memory: 160M max, 147M avail, .....
+            while IFS=' :' read -r label mem_full _ mem_free _; do
+                case $label in
+                    Memory) 
+                        mem_full=${mem_full%M}
+                        mem_free=${mem_free%M}
+                        break 
+                    ;;
+                esac
+            done <<-EOF
+                $(top -n)
+			EOF
+
             mem_used=$((mem_full - mem_free))
         ;;
     esac
@@ -1030,6 +1087,18 @@ get_ascii() {
 				 ${c7} /  ___ \\
 				 ${c7}/ .\`   \`.\\
 				${c7}/.\`      \`.\\
+			EOF
+        ;;
+
+        [Ii][Rr][Ii][Xx]*)
+            read_ascii 1 <<-EOF
+				${c1} __
+				${c1} \\ \\   __
+				${c1}  \\ \\ / /
+				${c1}   \\ v /
+				${c1}   / . \\
+				${c1}  /_/ \\ \\
+				${c1}       \\_\\
 			EOF
         ;;
 
