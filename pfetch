@@ -338,7 +338,22 @@ get_uptime() {
         ;;
 
         IRIX*)
-            # TODO
+            # Grab the uptime in a pretty format. Usually,
+            # 00:00:00 from the 'ps' command.
+            t=$(LC_ALL=POSIX ps -o etime= -p 1)
+
+            # Split the pretty output into days or hours
+            # based on the uptime.
+            case $t in 
+                *-*)   d=${t%%-*} t=${t#*-} ;;
+                *:*:*) h=${t%%:*} t=${t#*:} ;;
+            esac
+
+            h=${h#0} t=${t#0}
+
+            # Convert the split pretty fields back into
+            # seconds so we may re-convert them to our format.
+            s=$((${d:-0}*86400 + ${h:-0}*3600 + ${t%%:*}*60 + ${t#*:}))
         ;;
     esac
 
