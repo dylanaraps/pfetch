@@ -37,6 +37,7 @@ picture"!
 - **MacOS**
 - **Minix**
 - **Solaris**
+- **IRIX**
 
 ## Configuration
 
