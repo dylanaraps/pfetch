@@ -22,7 +22,7 @@ log() {
         info=$*
     }
 
-    align=$(printf '%*.s' "$((${#name}-info_length))" "")
+    align=$(printf '%*s' "$((${#name}-info_length))" "")
 
     # Construct the information string.
     out="[3${PF_COL1-4};1m${name}[m"
@@ -1401,7 +1401,7 @@ main() {
         while IFS= read -r line || [ "$1" ]; do
             "get_$1"
             shift "$(($# ? 1 : 0))"
-            printf '%*.s%s\r%s\n' "$ascii_width" "" "$out" "$line" >&6
+            printf '%*s%s\r%s\n' "$ascii_width" "" "$out" "$line" >&6
             out=
         done <<-EOF
 			$ascii[m
