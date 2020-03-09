@@ -25,7 +25,7 @@ log() {
     # Construct the information string.
     out="[3${PF_COL1-4};1m${name}[m"
     out="$out${PF_SEP}[$((info_length-${#name}))C"
-    out="$out[3${PF_COL2-7}m${info:-?}"
+    out="$out[3${PF_COL2-7}m$info"
 }
 
 get_title() {
@@ -216,7 +216,9 @@ get_kernel() {
     case $os in
         # Don't print kernel output on some systems as the
         # OS name includes it.
-        *BSD*|Haiku|Minix) ;;
+        *BSD*|Haiku|Minix) 
+            log kernel "?" 
+        ;;
 
         IRIX)
             kernel=$(uname -vR)
@@ -1089,14 +1091,14 @@ get_ascii() {
         ;;
 
         [Ii][Rr][Ii][Xx]*)
-            read_ascii 4 <<-EOF
-				TODO
-				TODO
-				TODO
-				TODO
-				TODO
-				TODO
-				TODO
+            read_ascii 1 <<-EOF
+				${c1} __
+				${c1} \\ \\   __
+				${c1}  \\ \\ / /
+				${c1}   \\ v /
+				${c1}   / . \\
+				${c1}  /_/ \\ \\
+				${c1}       \\_\\
 			EOF
         ;;
 
