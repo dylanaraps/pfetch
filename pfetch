@@ -1085,8 +1085,14 @@ get_ascii() {
 			EOF
         ;;
 
-        [Ii]rix*)
+        [Ii][Rr][Ii][Xx]*)
             read_ascii 4 <<-EOF
+				TODO
+				TODO
+				TODO
+				TODO
+				TODO
+				TODO
 				TODO
 			EOF
         ;;
