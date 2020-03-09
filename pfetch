@@ -218,7 +218,7 @@ get_kernel() {
     case $os in
         # Don't print kernel output on some systems as the
         # OS name includes it.
-        *BSD*|Haiku|Minix) ;;
+        *BSD*|Haiku|Minix|IRIX*) ;;
 
         *)
             # '$kernel' is the cached output of 'uname -r'.
@@ -336,6 +336,10 @@ get_uptime() {
 				$(kstat -p unix:0:system_misc:snaptime)
 			EOF
         ;;
+
+        IRIX*)
+            # TODO
+        ;;
     esac
 
     # Convert the uptime from seconds into days, hours and minutes.
@@ -446,6 +450,11 @@ get_pkgs() {
             SunOS)
                 has pkginfo && pkginfo -i
                 has pkg     && pkg list
+            ;;
+
+            IRIX*)
+                # TODO: result - 3.
+                versions -b
             ;;
         esac | wc -l
     `
@@ -629,6 +638,10 @@ get_memory() {
             mem_full=$((pages_full * hw_pagesize / 1024 / 1024))
             mem_free=$((pages_free * hw_pagesize / 1024 / 1024))
             mem_used=$((mem_full - mem_free))
+        ;;
+
+        IRIX*)
+            # TODO
         ;;
     esac
 
@@ -1034,6 +1047,13 @@ get_ascii() {
 				${c7}/.\`      \`.\\
 			EOF
         ;;
+
+        [Ii]rix*)
+            read_ascii 4 <<-EOF
+				TODO
+			EOF
+        ;;
+
 
         [Ll]inux*[Ll]ite*|[Ll]ite*)
             read_ascii 3 <<-EOF
