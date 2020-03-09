@@ -25,7 +25,7 @@ log() {
     # Construct the information string.
     out="[3${PF_COL1-4};1m${name}[m"
     out="$out${PF_SEP}[$((info_length-${#name}))C"
-    out="$out[3${PF_COL2-7}m${info}"
+    out="$out[3${PF_COL2-7}m${info:-?}"
 }
 
 get_title() {
@@ -216,7 +216,12 @@ get_kernel() {
     case $os in
         # Don't print kernel output on some systems as the
         # OS name includes it.
-        *BSD*|Haiku|Minix|IRIX) ;;
+        *BSD*|Haiku|Minix) ;;
+
+        IRIX)
+            kernel=$(uname -vR)
+            kernel=${kernel#* }
+        ;;
 
         *)
             # '$kernel' is the cached output of 'uname -r'.
