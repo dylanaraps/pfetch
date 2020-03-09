@@ -218,7 +218,7 @@ get_kernel() {
     case $os in
         # Don't print kernel output on some systems as the
         # OS name includes it.
-        *BSD*|Haiku|Minix|IRIX*) ;;
+        *BSD*|Haiku|Minix|IRIX) ;;
 
         *)
             # '$kernel' is the cached output of 'uname -r'.
@@ -337,7 +337,7 @@ get_uptime() {
 			EOF
         ;;
 
-        IRIX*)
+        IRIX)
             # Grab the uptime in a pretty format. Usually,
             # 00:00:00 from the 'ps' command.
             t=$(LC_ALL=POSIX ps -o etime= -p 1)
@@ -467,12 +467,17 @@ get_pkgs() {
                 has pkg     && pkg list
             ;;
 
-            IRIX*)
-                # TODO: result - 3.
+            IRIX)
                 versions -b
             ;;
         esac | wc -l
     `
+
+    case $os in
+        # IRIX's package manager adds 3 lines of extra
+        # output which we must account for here.
+        IRIX) packages=$((packages - 3)) ;;
+    esac
 
     [ "$packages" -gt 1 ] && log pkgs "$packages"
 }
@@ -655,7 +660,7 @@ get_memory() {
             mem_used=$((mem_full - mem_free))
         ;;
 
-        IRIX*)
+        IRIX)
             # Read the memory information from the 'top' command. Parse
             # and split each line until we reach the line starting with
             # "Memory".
