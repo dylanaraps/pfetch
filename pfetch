@@ -249,7 +249,7 @@ get_host() {
                              machdep.dmi.system-product)
         ;;
 
-        *BSD*)
+        *BSD*|Minix)
             host=$(sysctl -n hw.vendor hw.product)
         ;;
     esac
