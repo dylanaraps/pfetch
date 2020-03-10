@@ -1466,8 +1466,14 @@ main() {
         info_length=$((info_length + 1))
 
         while IFS= read -r line || [ "$1" ]; do
-            "get_$1"
-            shift "$(($# ? 1 : 0))"
+            # Iterate over the info skipping any lines
+            # which are blank.
+            for info; do
+                "get_$1"
+                shift "$(($# ? 1 : 0))"
+                [ "$out" ] && break
+            done 
+
             printf '\033[%sC%s\r%s\n' "$ascii_width" "$out" "$line" >&6
             out=
         done <<-EOF
