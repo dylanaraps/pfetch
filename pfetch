@@ -1474,10 +1474,11 @@ main() {
                 [ "$out" ] && break
             done 
 
-            printf '\033[%sC%s\r%s\n' "$ascii_width" "$out" "$line" >&6
+            printf '\033[%sC%s\033[m\r\033[1m%s\033[m\n' \
+                "$ascii_width" "$out" "$line" >&6
             out=
         done <<-EOF
-			$ascii[m
+			$ascii
 		EOF
     }
 }
