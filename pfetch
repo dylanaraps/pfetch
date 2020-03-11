@@ -216,9 +216,7 @@ get_kernel() {
     case $os in
         # Don't print kernel output on some systems as the
         # OS name includes it.
-        *BSD*|Haiku|Minix) 
-            log kernel "?" 
-        ;;
+        *BSD*|Haiku|Minix) ;;
 
         IRIX)
             kernel=$(uname -vR)
