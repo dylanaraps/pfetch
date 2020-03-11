@@ -1455,6 +1455,11 @@ get_ascii() {
 }
 
 main() {
+    [ "$1" = --version ] && {
+        printf 'pfetch 0.7.0\n' 
+        exit
+    }
+
     # Hide 'stderr' unless the first argument is '-v'. This saves
     # polluting the script with '2>/dev/null'.
     [ "$1" = -v ] || exec 2>/dev/null
