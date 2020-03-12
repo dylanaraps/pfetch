@@ -88,7 +88,7 @@ log() {
     # Move the cursor backward the length of the *current* info name and
     # then move it forwards the length of the *longest* info name. This
     # aligns each info data line.
-    printf '[%sD[%sC' "${#name}" "${PF_ALIGN-$info_length}"
+    printf '[%sD[%sC' "${#name}" "${PF_ALIGN:-$info_length}"
 
     # Print the info data, color it and strip all leading whitespace
     # from the string.
