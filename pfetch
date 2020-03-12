@@ -274,7 +274,7 @@ get_os() {
             IFS='(' read -r distro _ < /etc/release
         ;;
 
-        OpenBSD)
+        OpenBSD*)
             # Show the OpenBSD version type (current if present).
             # kern.version=OpenBSD 6.6-current (GENERIC.MP) ...
             IFS=' =' read -r _ distro openbsd_ver _ <<-EOF
@@ -325,6 +325,10 @@ get_host() {
         NetBSD*)
             host=$(sysctl -n machdep.dmi.system-vendor \
                              machdep.dmi.system-product)
+        ;;
+
+        OpenBSD*)
+            host=$(sysctl -n hw.version)
         ;;
 
         *BSD*|Minix)
