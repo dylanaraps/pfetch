@@ -274,6 +274,16 @@ get_os() {
             IFS='(' read -r distro _ < /etc/release
         ;;
 
+        OpenBSD)
+            # Show the OpenBSD version type (current if present).
+            # kern.version=OpenBSD 6.6-current (GENERIC.MP) ...
+            IFS=' =' read -r _ distro openbsd_ver _ <<-EOF
+				$(sysctl kern.version)
+			EOF
+
+            distro="$distro $openbsd_ver"
+        ;;
+
         *)
             # Catch all to ensure '$distro' is never blank.
             # This also handles the BSDs.
