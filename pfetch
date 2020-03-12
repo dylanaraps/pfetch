@@ -845,51 +845,35 @@ get_wm() {
                 # To extract the name, everything before '_NET_WM_NAME = \"'
                 # is removed and everything after the next '"' is removed.
                 wm=$(xprop -id "$id" -notype -len 25 -f _NET_WM_NAME 8t)
-
-                # Handle cases of a window manager _not_ populating the
-                # '_NET_WM_NAME' atom. Display nothing in this case.
-                case $wm in
-                    *'_NET_WM_NAME = '*)
-                        wm=${wm##*_NET_WM_NAME = \"}
-                        wm=${wm%%\"*}
-                    ;;
-
-                    *)
-                        # Fallback to checking the process list
-                        # for the select few window managers which
-                        # don't set '_NET_WM_NAME'.
-                        #
-                        # TODO: This is currently limited to 'grep'
-                        #       implementations providing the '-o'
-                        #       flag. This needs to be replaced with
-                        #       a command which searches for a list
-                        #       of strings and returns _only_ the
-                        #       first match's contents (also ensuring
-                        #       the search itself isn't matched).
-                        #
-                        #       A generic parser isn't possible as
-                        #       the output of 'ps' is _not_ the same
-                        #       between implementations and across
-                        #       operating systems.
-                        #
-                        #       The simple search method above works
-                        #       regardless of 'ps' implementation.
-                        #
-                        # Disable the shellcheck warning about using
-                        # 'pgrep' instead of 'ps | grep' as 'pgrep'
-                        # is not always available.
-                        # shellcheck disable=2009
-                        wm=$(ps x | grep -o \
-                                         -e '[c]atwm' \
-                                         -e '[f]vwm' \
-                                         -e '[d]wm' \
-                                         -e '[2]bwm' \
-                                         -e '[m]onsterwm' \
-                                         -e '[w]maker' \
-                                         -e '[s]owm')
-                    ;;
-                esac
             }
+
+            # Handle cases of a window manager _not_ populating the
+            # '_NET_WM_NAME' atom. Display nothing in this case.
+            case $wm in
+                *'_NET_WM_NAME = '*)
+                    wm=${wm##*_NET_WM_NAME = \"}
+                    wm=${wm%%\"*}
+                ;;
+
+                *)
+                    # Fallback to checking the process list
+                    # for the select few window managers which
+                    # don't set '_NET_WM_NAME'.
+                    while read -r ps_line; do
+                        case $ps_line in
+                            *catwm*)     wm=catwm ;;
+                            *fvwm*)      wm=fvwm ;;
+                            *dwm*)       wm=dwm ;;
+                            *2bwm*)      wm=2bwm ;;
+                            *monsterwm*) wm=monsterwm ;;
+                            *wmaker*)    wm='Window Maker' ;;
+                            *sowm*)      wm=sowm ;;
+                        esac
+                    done <<-EOF
+                        $(ps x)
+					EOF
+                ;;
+            esac
         ;;
     esac
 
