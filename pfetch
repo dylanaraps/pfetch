@@ -497,7 +497,7 @@ get_pkgs() {
                 # 'nix' requires two commands.
                 has nix-store  && {
                     nix-store -q --requisites /run/current-system/sw
-                    nix-store -q --requisites ~.nix-profile
+                    nix-store -q --requisites ~/.nix-profile
                 }
             ;;
 
