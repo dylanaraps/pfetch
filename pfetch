@@ -184,7 +184,7 @@ get_os() {
 
             # Check to see if we're running Bedrock Linux which is
             # very unique. This simply checks to see if the user's
-            # PATH contais a Bedrock specific value.
+            # PATH contains a Bedrock specific value.
             case $PATH in
                 */bedrock/cross/*) distro='Bedrock Linux'
             esac
@@ -883,7 +883,7 @@ get_wm() {
 
 get_de() {
     # This only supports Xorg related desktop environments though
-    # this is fine as knowing the desktop envrionment on Windows,
+    # this is fine as knowing the desktop environment on Windows,
     # macOS etc is useless (they'll always report the same value).
     #
     # Display the value of '$XDG_CURRENT_DESKTOP', if it's empty,
