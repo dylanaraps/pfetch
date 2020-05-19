@@ -39,6 +39,14 @@ picture"!
 - **Solaris**
 - **IRIX**
 
+## Installation
+
+### macOS (Homebrew)
+
+```
+$ brew install pfetch
+```
+
 ## Configuration
 
 `pfetch` is configured through environment variables.
