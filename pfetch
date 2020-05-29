@@ -195,8 +195,8 @@ get_os() {
             #
             # If the kernel version string ends in "-Microsoft",
             # we're very likely running under Windows 10 in WSL1.
-            [ "${kernel%%*-Microsoft}" ] ||
-                distro="$distro on Windows 10 [WSL1]"
+            if [ "$WSLENV" ]; then
+                distro="${distro}${WSLENV+ on Windows 10 [WSL2]}"
 
             # Check to see if Linux is running in Windows 10 under
             # WSL2 (Windows subsystem for Linux [version 2]) and
@@ -205,7 +205,9 @@ get_os() {
             # This checks to see if '$WSLENV' is defined. This
             # appends the Windows 10 string even if '$WSLENV' is
             # empty. We only need to check that is has been _exported_.
-            distro="${distro}${WSLENV+ on Windows 10 [WSL2]}"
+            elif [ -z "${kernel%%*-Microsoft}" ]; then
+                distro="$distro on Windows 10 [WSL1]"
+            fi
         ;;
 
         Darwin*)
@@ -296,8 +298,8 @@ get_kernel() {
     case $os in
         # Don't print kernel output on some systems as the
         # OS name includes it.
-        *BSD*|Haiku|Minix) 
-            return 
+        *BSD*|Haiku|Minix)
+            return
         ;;
     esac
 
@@ -426,7 +428,7 @@ get_uptime() {
 
             # Split the pretty output into days or hours
             # based on the uptime.
-            case $t in 
+            case $t in
                 *-*)   d=${t%%-*} t=${t#*-} ;;
                 *:*:*) h=${t%%:*} t=${t#*:} ;;
             esac
@@ -750,10 +752,10 @@ get_memory() {
             # Example output: Memory: 160M max, 147M avail, .....
             while IFS=' :' read -r label mem_full _ mem_free _; do
                 case $label in
-                    Memory) 
+                    Memory)
                         mem_full=${mem_full%M}
                         mem_free=${mem_free%M}
-                        break 
+                        break
                     ;;
                 esac
             done <<-EOF
@@ -913,7 +915,7 @@ get_palette() {
 
     # Print the palette with a new-line before and afterwards.
     printf '\n' >&6
-    log "$palette 
+    log "$palette
         " " " >&6
 }
 
@@ -1454,7 +1456,7 @@ get_ascii() {
 
 main() {
     [ "$1" = --version ] && {
-        printf 'pfetch 0.7.0\n' 
+        printf 'pfetch 0.7.0\n'
         exit
     }
 
