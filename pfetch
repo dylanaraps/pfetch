@@ -1035,6 +1035,19 @@ get_ascii() {
 			EOF
         ;;
 
+        [Cc]lippy*)
+            read_ascii 3 <<-EOF
+				${c7} __
+				${c7}/  \\
+				${c7}|  |
+				${c7}@  @ /
+				${c7}|| ||
+				${c7}|| ||
+				${c7}|\_/|
+				${c7}\___/
+			EOF
+        ;;
+
         [Dd]ebian*)
             read_ascii 1 <<-EOF
 				${c1}  _____
