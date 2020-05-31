@@ -1380,6 +1380,17 @@ get_ascii() {
 			EOF
         ;;
 
+        [Rr]aspbian*)
+            read_ascii 1 <<-EOF
+				${c1}  __  __
+				${c1} (_\\)(/_)
+				${c2} (_(__)_)
+				${c2}(_(_)(_)_)
+				${c2} (_(__)_)
+				${c2}   (__)
+			EOF
+        ;;
+
         [Ss]lackware*)
             read_ascii 4 <<-EOF
 				${c4}   ________
