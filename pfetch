@@ -1299,6 +1299,16 @@ get_ascii() {
 			EOF
         ;;
 
+        [Oo]pen[Ss][Uu][Ss][Ee]*[Tt]umbleweed*)
+            read_ascii 2 <<-EOF
+				${c2}  _____   ______
+				${c2} / ____\\ / ____ \\
+				${c2}/ /    \`/ /    \\ \\
+				${c2}\\ \\____/ /,____/ /
+				${c2} \\______/ \\_____/
+			EOF
+        ;;
+
         [Oo]pen[Ss][Uu][Ss][Ee]*|[Oo]pen*SUSE*|SUSE*|suse*)
             read_ascii 2 <<-EOF
 				${c2}  _______
