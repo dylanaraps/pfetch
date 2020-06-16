@@ -1508,6 +1508,12 @@ main() {
         exit
     }
 
+    # list all available values for PF_INFO
+    [ "$1" = -l ] && {
+        sed -n 's/^get_\(\w\+\)() {/\1/p' "$(readlink -f -- "$0")"
+        exit
+    }
+
     # Hide 'stderr' unless the first argument is '-v'. This saves
     # polluting the script with '2>/dev/null'.
     [ "$1" = -v ] || exec 2>/dev/null
