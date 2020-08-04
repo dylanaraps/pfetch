@@ -232,9 +232,6 @@ get_os() {
                         break
                     ;;
                 esac
-            done < /System/Library/CoreServices/SystemVersion.plist
-
-            while IFS='<>' read -r _ _ line _; do
                 case $line in
                     # Match 'ProductName' and read the next line
                     # directly as it contains the key's value.
