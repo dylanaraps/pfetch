@@ -1023,6 +1023,16 @@ get_ascii() {
 			EOF
         ;;
 
+        [Bb]uildroot*)
+            read_ascii 3 <<-EOF
+				${c3}   ___
+				${c3} / \`   \\
+				${c3}|   :  :|
+				${c3}-. _:__.-
+				${c3}  \` ---- \`
+			EOF
+        ;;
+
         [Cc]ent[Oo][Ss]*)
             read_ascii 5 <<-EOF
 				${c2} ____${c3}^${c5}____
