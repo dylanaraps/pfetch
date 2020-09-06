@@ -39,6 +39,14 @@ picture"!
 - **Solaris**
 - **IRIX**
 
+## Installation
+
+```console
+$ git clone 'git://github.com/dylanaraps/pfetch'
+$ cd ./pfetch
+$ make PREFIX=/path/to/install install
+```
+
 ## Configuration
 
 `pfetch` is configured through environment variables.
