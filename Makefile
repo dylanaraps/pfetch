@@ -1,10 +1,14 @@
+TARGET ?= pfetch
 PREFIX ?= /usr
 
+.PHONY: install uninstall
 all:
-	@echo RUN \'make install\' to install pfetch
+	@echo Run \'make install\' to install $(TARGET)
 
 install:
-	@install -Dm755 pfetch $(DESTDIR)$(PREFIX)/bin/pfetch
+	@install -Dm755 $(TARGET) $(DESTDIR)$(PREFIX)/bin/$(TARGET)
+	@echo Installed $(TARGET) to $(DESTDIR)$(PREFIX)/bin/$(TARGET)
 
 uninstall:
-	@rm -f $(DESTDIR)$(PREFIX)/bin/pfetch
+	@rm -f $(DESTDIR)$(PREFIX)/bin/$(TARGET)
+	@echo Uninstalled $(TARGET) from $(DESTDIR)$(PREFIX)/bin/$(TARGET)
