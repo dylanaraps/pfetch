@@ -77,7 +77,7 @@ log() {
 
     # Move the cursor to the right, the width of the ascii art with an
     # additional gap for text spacing.
-    printf '[%sC' "${ascii_width--1}"
+    printf '[%sC' "$ascii_width"
 
     # Print the info name and color the text.
     printf '[3%s;1m%s[m' "${PF_COL1-4}" "$name"
