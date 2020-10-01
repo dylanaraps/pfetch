@@ -905,6 +905,11 @@ get_editor() {
     log editor "${VISUAL:-$EDITOR}" >&6
 }
 
+get_term() {
+    # Display the value of '$TERM'
+    log term "${TERM}" >&6
+}
+
 get_palette() {
     # Print the first 8 terminal colors. This uses the existing
     # sequences to change text color with a sequence prepended
@@ -1580,7 +1585,7 @@ main() {
         # Disable globbing and set the positional parameters to the
         # contents of 'PF_INFO'.
         set -f
-        set +f -- ${PF_INFO-ascii title os host kernel uptime pkgs memory}
+        set +f -- ${PF_INFO-ascii title os host term kernel uptime pkgs memory}
 
         # Iterate over the info functions to determine the lengths of the
         # "info names" for output alignment. The option names and subtitles
