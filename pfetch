@@ -290,6 +290,10 @@ get_os() {
             distro="$distro $openbsd_ver"
         ;;
 
+        FreeBSD)
+            distro="$os $(freebsd-version)"
+        ;;
+
         (*)
             # Catch all to ensure '$distro' is never blank.
             # This also handles the BSDs.
