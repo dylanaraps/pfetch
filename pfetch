@@ -565,7 +565,7 @@ get_pkgs() {
         (IRIX) packages=$((packages - 3)) ;;
     esac
 
-    case "$packages" in (0|1|-*) :;; (*) log pkgs "$packages" >&6;; esac
+    case "$packages" in (1?*|[2-9]*) log pkgs "$packages" >&6;; esac
 }
 
 get_memory() {
