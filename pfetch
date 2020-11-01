@@ -112,6 +112,10 @@ get_title() {
     # shellcheck disable=SC2039
     hostname=${HOSTNAME:-${hostname:-$(hostname)}}
 
+    # If the hostname is still not found, fallback to the contents of the
+    # /etc/hostname file.
+    [ "$hostname" ] || read -r hostname < /etc/hostname
+
     log "[3${PF_COL3:-1}m${user}${c7}@[3${PF_COL3:-1}m${hostname}" " " >&6
 }
 
