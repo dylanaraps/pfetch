@@ -132,7 +132,7 @@ get_os() {
     }
 
     case $os in
-        Linux*)
+        (Linux*)
             # Some Linux distributions (which are based on others)
             # fail to identify as they **do not** change the upstream
             # distribution's identification packages or files.
@@ -171,7 +171,7 @@ get_os() {
                 # the file contents as plain-text.
                 while IFS='=' read -r key val; do
                     case $key in
-                        PRETTY_NAME) distro=$val ;;
+                        (PRETTY_NAME) distro=$val ;;
                     esac
                 done < /etc/os-release
             fi
@@ -190,7 +190,7 @@ get_os() {
             # very unique. This simply checks to see if the user's
             # PATH contains a Bedrock specific value.
             case $PATH in
-                */bedrock/cross/*) distro='Bedrock Linux'
+                (*/bedrock/cross/*) distro='Bedrock Linux'
             esac
 
             # Check to see if Linux is running in Windows 10 under
@@ -214,7 +214,7 @@ get_os() {
             fi
         ;;
 
-        Darwin*)
+        (Darwin*)
             # Parse the SystemVersion.plist file to grab the macOS
             # version. The file is in the following format:
             #
@@ -242,31 +242,31 @@ get_os() {
             # the system has. As far as I'm aware there's no "dynamic" way
             # of grabbing this information.
             case $mac_version in
-                10.4*)  distro='Mac OS X Tiger' ;;
-                10.5*)  distro='Mac OS X Leopard' ;;
-                10.6*)  distro='Mac OS X Snow Leopard' ;;
-                10.7*)  distro='Mac OS X Lion' ;;
-                10.8*)  distro='OS X Mountain Lion' ;;
-                10.9*)  distro='OS X Mavericks' ;;
-                10.10*) distro='OS X Yosemite' ;;
-                10.11*) distro='OS X El Capitan' ;;
-                10.12*) distro='macOS Sierra' ;;
-                10.13*) distro='macOS High Sierra' ;;
-                10.14*) distro='macOS Mojave' ;;
-                10.15*) distro='macOS Catalina' ;;
-                *)      distro='macOS' ;;
+                (10.4*)  distro='Mac OS X Tiger' ;;
+                (10.5*)  distro='Mac OS X Leopard' ;;
+                (10.6*)  distro='Mac OS X Snow Leopard' ;;
+                (10.7*)  distro='Mac OS X Lion' ;;
+                (10.8*)  distro='OS X Mountain Lion' ;;
+                (10.9*)  distro='OS X Mavericks' ;;
+                (10.10*) distro='OS X Yosemite' ;;
+                (10.11*) distro='OS X El Capitan' ;;
+                (10.12*) distro='macOS Sierra' ;;
+                (10.13*) distro='macOS High Sierra' ;;
+                (10.14*) distro='macOS Mojave' ;;
+                (10.15*) distro='macOS Catalina' ;;
+                (*)      distro='macOS' ;;
             esac
 
             distro="$distro $mac_version"
         ;;
 
-        Haiku)
+        (Haiku)
             # Haiku uses 'uname -v' for version information
             # instead of 'uname -r' which only prints '1'.
             distro=$(uname -sv)
         ;;
 
-        Minix|DragonFly)
+        (Minix|DragonFly)
             distro="$os $kernel"
 
             # Minix and DragonFly don't support the escape
@@ -274,13 +274,13 @@ get_os() {
             trap '' EXIT
         ;;
 
-        SunOS)
+        (SunOS)
             # Grab the first line of the '/etc/release' file
             # discarding everything after '('.
             IFS='(' read -r distro _ < /etc/release
         ;;
 
-        OpenBSD*)
+        (OpenBSD*)
             # Show the OpenBSD version type (current if present).
             # kern.version=OpenBSD 6.6-current (GENERIC.MP) ...
             IFS=' =' read -r _ distro openbsd_ver _ <<-EOF
@@ -290,7 +290,7 @@ get_os() {
             distro="$distro $openbsd_ver"
         ;;
 
-        *)
+        (*)
             # Catch all to ensure '$distro' is never blank.
             # This also handles the BSDs.
             distro="$os $kernel"
@@ -302,7 +302,7 @@ get_kernel() {
     case $os in
         # Don't print kernel output on some systems as the
         # OS name includes it.
-        *BSD*|Haiku|Minix)
+        (*BSD*|Haiku|Minix)
             return
         ;;
     esac
@@ -313,7 +313,7 @@ get_kernel() {
 
 get_host() {
     case $os in
-        Linux*)
+        (Linux*)
             # Despite what these files are called, version doesn't
             # always contain the version nor does name always contain
             # the name.
@@ -324,20 +324,20 @@ get_host() {
             host="$name $version $model"
         ;;
 
-        Darwin*|FreeBSD*|DragonFly*)
+        (Darwin*|FreeBSD*|DragonFly*)
             host=$(sysctl -n hw.model)
         ;;
 
-        NetBSD*)
+        (NetBSD*)
             host=$(sysctl -n machdep.dmi.system-vendor \
                              machdep.dmi.system-product)
         ;;
 
-        OpenBSD*)
+        (OpenBSD*)
             host=$(sysctl -n hw.version)
         ;;
 
-        *BSD*|Minix)
+        (*BSD*|Minix)
             host=$(sysctl -n hw.vendor hw.product)
         ;;
     esac
@@ -370,7 +370,7 @@ get_host() {
         # found in the "blacklist" below. Only non-matches are appended
         # to the final host string.
         case $word in
-            To      | [Bb]e      | [Ff]illed | [Bb]y  | O.E.M.  | OEM  |\
+           (To      | [Bb]e      | [Ff]illed | [Bb]y  | O.E.M.  | OEM  |\
             Not     | Applicable | Specified | System | Product | Name |\
             Version | Undefined  | Default   | string | INVALID | �    | os )
                 continue
@@ -389,7 +389,7 @@ get_uptime() {
     # converting that data into days, hours and minutes using simple
     # math.
     case $os in
-        Linux*|Minix*)
+        (Linux*|Minix*)
             IFS=. read -r s _ < /proc/uptime
         ;;
 
@@ -406,13 +406,13 @@ get_uptime() {
             s=$(($(date +%s) - s))
         ;;
 
-        Haiku)
+        (Haiku)
             # The boot time is returned in microseconds, convert it to
             # regular seconds.
             s=$(($(system_time) / 1000000))
         ;;
 
-        SunOS)
+        (SunOS)
             # Split the output of 'kstat' on '.' and any white-space
             # which exists in the command output.
             #
@@ -425,7 +425,7 @@ get_uptime() {
 			EOF
         ;;
 
-        IRIX)
+        (IRIX)
             # Grab the uptime in a pretty format. Usually,
             # 00:00:00 from the 'ps' command.
             t=$(LC_ALL=POSIX ps -o etime= -p 1)
@@ -433,8 +433,8 @@ get_uptime() {
             # Split the pretty output into days or hours
             # based on the uptime.
             case $t in
-                *-*)   d=${t%%-*} t=${t#*-} ;;
-                *:*:*) h=${t%%:*} t=${t#*:} ;;
+                (*-*)   d=${t%%-*} t=${t#*-} ;;
+                (*:*:*) h=${t%%:*} t=${t#*:} ;;
             esac
 
             h=${h#0} t=${t#0}
@@ -451,9 +451,9 @@ get_uptime() {
     m=$((s / 60 % 60))
 
     # Only append days, hours and minutes if they're non-zero.
-    [ "$d" = 0 ] || uptime="${uptime}${d}d "
-    [ "$h" = 0 ] || uptime="${uptime}${h}h "
-    [ "$m" = 0 ] || uptime="${uptime}${m}m "
+    case "$d" in ([!0]*) uptime="${uptime}${d}d "; esac
+    case "$h" in ([!0]*) uptime="${uptime}${h}h "; esac
+    case "$m" in ([!0]*) uptime="${uptime}${m}m "; esac
 
     log uptime "${uptime:-0m}" >&6
 }
@@ -481,7 +481,7 @@ get_pkgs() {
     # shellcheck disable=2006
     packages=`
         case $os in
-            Linux*)
+            (Linux*)
                 # Commands which print packages one per line.
                 has bonsai     && bonsai list
                 has crux       && pkginfo -i
@@ -508,7 +508,7 @@ get_pkgs() {
                 }
             ;;
 
-            Darwin*)
+            (Darwin*)
                 # Commands which print packages one per line.
                 has pkgin      && pkgin list
 
@@ -526,37 +526,38 @@ get_pkgs() {
                 has port       && {
                     pkg_list=$(port installed)
 
-                    [ "$pkg_list" = "No ports are installed." ] ||
+                    case "$pkg_list" in ("No ports are installed.") :;; (*)
                         printf '%s\n' "$pkg_list"
+                    esac
                 }
             ;;
 
-            FreeBSD*|DragonFly*)
+            (FreeBSD*|DragonFly*)
                 pkg info
             ;;
 
-            OpenBSD*)
+            (OpenBSD*)
                 printf '%s\n' /var/db/pkg/*/
             ;;
 
-            NetBSD*)
+            (NetBSD*)
                 pkg_info
             ;;
 
-            Haiku)
+            (Haiku)
                 printf '%s\n' /boot/system/package-links/*
             ;;
 
-            Minix)
+            (Minix)
                 printf '%s\n' /usr/pkg/var/db/pkg/*/
             ;;
 
-            SunOS)
+            (SunOS)
                 has pkginfo && pkginfo -i
                 has pkg     && pkg list
             ;;
 
-            IRIX)
+            (IRIX)
                 versions -b
             ;;
         esac | wc -l
@@ -565,10 +566,10 @@ get_pkgs() {
     case $os in
         # IRIX's package manager adds 3 lines of extra
         # output which we must account for here.
-        IRIX) packages=$((packages - 3)) ;;
+        (IRIX) packages=$((packages - 3)) ;;
     esac
 
-    [ "$packages" -gt 1 ] && log pkgs "$packages" >&6
+    case "$packages" in (1?*|[2-9]*) log pkgs "$packages" >&6;; esac
 }
 
 get_memory() {
@@ -576,22 +577,22 @@ get_memory() {
         # Used memory is calculated using the following "formula":
         # MemUsed = MemTotal + Shmem - MemFree - Buffers - Cached - SReclaimable
         # Source: https://github.com/KittyKatt/screenFetch/issues/386
-        Linux*)
+        (Linux*)
             # Parse the '/proc/meminfo' file splitting on ':' and 'k'.
             # The format of the file is 'key:   000kB' and an additional
             # split is used on 'k' to filter out 'kB'.
             while IFS=':k '  read -r key val _; do
                 case $key in
-                    MemTotal)
+                    (MemTotal)
                         mem_used=$((mem_used + val))
                         mem_full=$val
                     ;;
 
-                    Shmem)
+                    (Shmem)
                         mem_used=$((mem_used + val))
                     ;;
 
-                    MemFree|Buffers|Cached|SReclaimable)
+                    (MemFree|Buffers|Cached|SReclaimable)
                         mem_used=$((mem_used - val))
                     ;;
                 esac
@@ -603,7 +604,7 @@ get_memory() {
 
         # Used memory is calculated using the following "formula":
         # (wired + active + occupied) * 4 / 1024
-        Darwin*)
+        (Darwin*)
             mem_full=$(($(sysctl -n hw.memsize) / 1024 / 1024))
 
             # Parse the 'vmstat' file splitting on ':' and '.'.
@@ -611,7 +612,7 @@ get_memory() {
             # split is used on '.' to filter it out.
             while IFS=:. read -r key val; do
                 case $key in
-                    *' wired'*|*' active'*|*' occupied'*)
+                    (*' wired'*|*' active'*|*' occupied'*)
                         mem_used=$((mem_used + ${val:-0}))
                     ;;
                 esac
@@ -627,7 +628,7 @@ get_memory() {
             mem_used=$((mem_used * 4 / 1024))
         ;;
 
-        OpenBSD*)
+        (OpenBSD*)
             mem_full=$(($(sysctl -n hw.physmem) / 1024 / 1024))
 
             # This is a really simpler parser for 'vmstat' which grabs
@@ -653,7 +654,7 @@ get_memory() {
 
         # Used memory is calculated using the following "formula":
         # mem_full - ((inactive + free + cache) * page_size / 1024)
-        FreeBSD*|DragonFly*)
+        (FreeBSD*|DragonFly*)
             mem_full=$(($(sysctl -n hw.physmem) / 1024 / 1024))
 
             # Use 'set --' to store the output of the command in the
@@ -678,14 +679,14 @@ get_memory() {
             mem_used=$((mem_full - (($2 + $3 + $4) * $1 / 1024 / 1024)))
         ;;
 
-        NetBSD*)
+        (NetBSD*)
             mem_full=$(($(sysctl -n hw.physmem64) / 1024 / 1024))
 
             # NetBSD implements a lot of the Linux '/proc' filesystem,
             # this uses the same parser as the Linux memory detection.
             while IFS=':k ' read -r key val _; do
                 case $key in
-                    MemFree)
+                    (MemFree)
                         mem_free=$((val / 1024))
                         break
                     ;;
@@ -695,7 +696,7 @@ get_memory() {
             mem_used=$((mem_full - mem_free))
         ;;
 
-        Haiku)
+        (Haiku)
             # Read the first line of 'sysinfo -mem' splitting on
             # '(', ' ', and ')'. The needed information is then
             # stored in the 5th and 7th elements. Using '_' "consumes"
@@ -711,7 +712,7 @@ get_memory() {
             mem_full=$((mem_full / 1024 / 1024))
         ;;
 
-        Minix)
+        (Minix)
             # Minix includes the '/proc' filesystem though the format
             # differs from Linux. The '/proc/meminfo' file is only a
             # single line with space separated elements and elements
@@ -722,7 +723,7 @@ get_memory() {
             mem_full=$(( mem_full / 1024))
         ;;
 
-        SunOS)
+        (SunOS)
             hw_pagesize=$(pagesize)
 
             # 'kstat' outputs memory in the following format:
@@ -736,8 +737,8 @@ get_memory() {
             # A variable is then assigned based on the key.
             while read -r key val; do
                 case $key in
-                    *total) pages_full=$val ;;
-                    *free)  pages_free=$val ;;
+                    (*total) pages_full=$val ;;
+                    (*free)  pages_free=$val ;;
                 esac
             done <<-EOF
 				$(kstat -p unix:0:system_pages:pagestotal \
@@ -749,7 +750,7 @@ get_memory() {
             mem_used=$((mem_full - mem_free))
         ;;
 
-        IRIX)
+        (IRIX)
             # Read the memory information from the 'top' command. Parse
             # and split each line until we reach the line starting with
             # "Memory".
@@ -757,7 +758,7 @@ get_memory() {
             # Example output: Memory: 160M max, 147M avail, .....
             while IFS=' :' read -r label mem_full _ mem_free _; do
                 case $label in
-                    Memory)
+                    (Memory)
                         mem_full=${mem_full%M}
                         mem_free=${mem_free%M}
                         break
@@ -777,9 +778,9 @@ get_memory() {
 get_wm() {
     case $os in
         # Don't display window manager on macOS.
-        Darwin*) ;;
+        (Darwin*) ;;
 
-        *)
+        (*)
             # xprop can be used to grab the window manager's properties
             # which contains the window manager's name under '_NET_WM_NAME'.
             #
@@ -857,24 +858,24 @@ get_wm() {
             # Handle cases of a window manager _not_ populating the
             # '_NET_WM_NAME' atom. Display nothing in this case.
             case $wm in
-                *'_NET_WM_NAME = '*)
+                (*'_NET_WM_NAME = '*)
                     wm=${wm##*_NET_WM_NAME = \"}
                     wm=${wm%%\"*}
                 ;;
 
-                *)
+                (*)
                     # Fallback to checking the process list
                     # for the select few window managers which
                     # don't set '_NET_WM_NAME'.
                     while read -r ps_line; do
                         case $ps_line in
-                            *catwm*)     wm=catwm ;;
-                            *fvwm*)      wm=fvwm ;;
-                            *dwm*)       wm=dwm ;;
-                            *2bwm*)      wm=2bwm ;;
-                            *monsterwm*) wm=monsterwm ;;
-                            *wmaker*)    wm='Window Maker' ;;
-                            *sowm*)      wm=sowm ;;
+                            (*catwm*)     wm=catwm ;;
+                            (*fvwm*)      wm=fvwm ;;
+                            (*dwm*)       wm=dwm ;;
+                            (*2bwm*)      wm=2bwm ;;
+                            (*monsterwm*) wm=monsterwm ;;
+                            (*wmaker*)    wm='Window Maker' ;;
+                            (*sowm*)      wm=sowm ;;
                         esac
                     done <<-EOF
                         $(ps x)
@@ -961,7 +962,7 @@ get_ascii() {
     #       allows indentation to continue naturally despite
     #       the use of '<<-EOF'.
     case ${1:-${PF_ASCII:-${distro:-$os}}} in
-        [Aa]lpine*)
+        ([Aa]lpine*)
             read_ascii 4 <<-EOF
 				${c4}   /\\ /\\
 				  /${c7}/ ${c4}\\  \\
@@ -972,7 +973,7 @@ get_ascii() {
 			EOF
         ;;
 
-        [Aa]ndroid*)
+        ([Aa]ndroid*)
             read_ascii 2 <<-EOF
 				${c2}  ;,           ,;
 				${c2}   ';,.-----.,;'
@@ -983,7 +984,7 @@ get_ascii() {
 			EOF
         ;;
 
-        [Aa]rch*)
+        ([Aa]rch*)
             read_ascii 4 <<-EOF
 				${c6}       /\\
 				${c6}      /  \\
@@ -995,7 +996,7 @@ get_ascii() {
 			EOF
         ;;
 
-        [Aa]rco*)
+        ([Aa]rco*)
             read_ascii 4 <<-EOF
 				${c4}      /\\
 				${c4}     /  \\
@@ -1007,7 +1008,7 @@ get_ascii() {
 			EOF
         ;;
 
-        [Aa]rtix*)
+        ([Aa]rtix*)
             read_ascii 6 <<-EOF
 				${c4}      /\\
 				${c4}     /  \\
@@ -1019,7 +1020,7 @@ get_ascii() {
 			EOF
         ;;
 
-        [Bb]edrock*)
+        ([Bb]edrock*)
             read_ascii 4 <<-EOF
 				${c7}__
 				${c7}\\ \\___
@@ -1028,7 +1029,7 @@ get_ascii() {
 			EOF
         ;;
 
-        [Bb]uildroot*)
+        ([Bb]uildroot*)
             read_ascii 3 <<-EOF
 				${c3}   ___
 				${c3} / \`   \\
@@ -1038,7 +1039,7 @@ get_ascii() {
 			EOF
         ;;
 
-        [Cc]ent[Oo][Ss]*)
+        ([Cc]ent[Oo][Ss]*)
             read_ascii 5 <<-EOF
 				${c2} ____${c3}^${c5}____
 				${c2} |\\  ${c3}|${c5}  /|
@@ -1050,7 +1051,7 @@ get_ascii() {
 			EOF
         ;;
 
-        [Dd]ebian*)
+        ([Dd]ebian*)
             read_ascii 1 <<-EOF
 				${c1}  _____
 				${c1} /  __ \\
@@ -1061,7 +1062,7 @@ get_ascii() {
 			EOF
         ;;
 
-        [Dd]ragon[Ff]ly*)
+        ([Dd]ragon[Ff]ly*)
             read_ascii 1 <<-EOF
 				    ,${c1}_${c7},
 				 ('-_${c1}|${c7}_-')
@@ -1073,7 +1074,7 @@ get_ascii() {
 			EOF
         ;;
 
-        [Ee]lementary*)
+        ([Ee]lementary*)
             read_ascii <<-EOF
 				${c7}  _______
 				${c7} / ____  \\
@@ -1084,7 +1085,7 @@ get_ascii() {
 			EOF
         ;;
 
-        [Ee]ndeavour*)
+        ([Ee]ndeavour*)
             read_ascii 4 <<-EOF
 						      ${c1}/${c4}\\
 				    ${c1}/${c4}/  \\${c6}\\
@@ -1095,7 +1096,7 @@ get_ascii() {
 			EOF
         ;;
 
-        [Ff]edora*)
+        ([Ff]edora*)
             read_ascii 4 <<-EOF
 				${c7}      _____
 				     /   __)${c4}\\${c7}
@@ -1108,7 +1109,7 @@ get_ascii() {
 			EOF
         ;;
 
-        [Ff]ree[Bb][Ss][Dd]*)
+        ([Ff]ree[Bb][Ss][Dd]*)
             read_ascii 1 <<-EOF
 				${c1}/\\,-'''''-,/\\
 				${c1}\\_)       (_/
@@ -1119,7 +1120,7 @@ get_ascii() {
 			EOF
         ;;
 
-        [Gg]entoo*)
+        ([Gg]entoo*)
             read_ascii 5 <<-EOF
 				${c5} _-----_
 				${c5}(       \\
@@ -1131,7 +1132,7 @@ get_ascii() {
 			EOF
         ;;
 
-        [Gg][Nn][Uu]*)
+        ([Gg][Nn][Uu]*)
             read_ascii 3 <<-EOF
 				${c2}    _-\`\`-,   ,-\`\`-_
 				${c2}  .'  _-_|   |_-_  '.
@@ -1147,7 +1148,7 @@ get_ascii() {
 			EOF
         ;;
 
-        [Gg]uix[Ss][Dd]*|[Gg]uix*)
+        ([Gg]uix[Ss][Dd]*|[Gg]uix*)
             read_ascii 3 <<-EOF
 				${c3}|.__          __.|
 				${c3}|__ \\        / __|
@@ -1159,7 +1160,7 @@ get_ascii() {
 			EOF
         ;;
 
-        [Hh]aiku*)
+        ([Hh]aiku*)
             read_ascii 3 <<-EOF
 				${c3}       ,^,
 				 ${c3}     /   \\
@@ -1172,7 +1173,7 @@ get_ascii() {
 			EOF
         ;;
 
-        [Hh]yperbola*)
+        ([Hh]yperbola*)
             read_ascii <<-EOF
 				${c7}    |\`__.\`/
 				   ${c7} \____/
@@ -1184,7 +1185,7 @@ get_ascii() {
 			EOF
         ;;
 
-        [Ii][Rr][Ii][Xx]*)
+        ([Ii][Rr][Ii][Xx]*)
             read_ascii 1 <<-EOF
 				${c1} __
 				${c1} \\ \\   __
@@ -1196,7 +1197,7 @@ get_ascii() {
 			EOF
         ;;
 
-        [Kk][Dd][Ee]*[Nn]eon*)
+        ([Kk][Dd][Ee]*[Nn]eon*)
             read_ascii 6 <<-EOF
 				${c7}   .${c6}__${c7}.${c6}__${c7}.
 				${c6}  /  _${c7}.${c6}_  \\
@@ -1207,7 +1208,7 @@ get_ascii() {
 			EOF
         ;;
 
-        [Ll]inux*[Ll]ite*|[Ll]ite*)
+        ([Ll]inux*[Ll]ite*|[Ll]ite*)
             read_ascii 3 <<-EOF
 				${c3}   /\\
 				${c3}  /  \\
@@ -1219,7 +1220,7 @@ get_ascii() {
 			EOF
         ;;
 
-        [Ll]inux*[Mm]int*|[Mm]int)
+        ([Ll]inux*[Mm]int*|[Mm]int)
             read_ascii 2 <<-EOF
 				${c2} ___________
 				${c2}|_          \\
@@ -1232,7 +1233,7 @@ get_ascii() {
         ;;
 
 
-        [Ll]inux*)
+        ([Ll]inux*)
             read_ascii 4 <<-EOF
 				${c4}    ___
 				   ${c4}(${c7}.. ${c4}|
@@ -1244,7 +1245,7 @@ get_ascii() {
 			EOF
         ;;
 
-        [Mm]ac[Oo][Ss]*|[Dd]arwin*)
+        ([Mm]ac[Oo][Ss]*|[Dd]arwin*)
             read_ascii 1 <<-EOF
 				${c1}       .:'
 				${c1}    _ :'_
@@ -1256,7 +1257,7 @@ get_ascii() {
 			EOF
         ;;
 
-        [Mm]ageia*)
+        ([Mm]ageia*)
             read_ascii 2 <<-EOF
 				${c6}   *
 				${c6}    *
@@ -1268,7 +1269,7 @@ get_ascii() {
 			EOF
         ;;
 
-        [Mm]anjaro*)
+        ([Mm]anjaro*)
             read_ascii 2 <<-EOF
 				${c2}||||||||| ||||
 				${c2}||||||||| ||||
@@ -1280,7 +1281,7 @@ get_ascii() {
 			EOF
         ;;
 
-        [Mm]inix*)
+        ([Mm]inix*)
             read_ascii 4 <<-EOF
 				${c4} ,,        ,,
 				${c4};${c7},${c4} ',    ,' ${c7},${c4};
@@ -1293,7 +1294,7 @@ get_ascii() {
 			EOF
         ;;
 
-        [Mm][Xx]*)
+        ([Mm][Xx]*)
             read_ascii <<-EOF
 				${c7}    \\\\  /
 				 ${c7}    \\\\/
@@ -1305,7 +1306,7 @@ get_ascii() {
 			EOF
         ;;
 
-        [Nn]et[Bb][Ss][Dd]*)
+        ([Nn]et[Bb][Ss][Dd]*)
             read_ascii 3 <<-EOF
 				${c7}\\\\${c3}\`-______,----__
 				${c7} \\\\        ${c3}__,---\`_
@@ -1317,7 +1318,7 @@ get_ascii() {
 			EOF
         ;;
 
-        [Nn]ix[Oo][Ss]*)
+        ([Nn]ix[Oo][Ss]*)
             read_ascii 4 <<-EOF
 				${c4}  \\\\  \\\\ //
 				${c4} ==\\\\__\\\\/ //
@@ -1329,7 +1330,7 @@ get_ascii() {
 			EOF
         ;;
 
-        [Oo]pen[Bb][Ss][Dd]*)
+        ([Oo]pen[Bb][Ss][Dd]*)
             read_ascii 3 <<-EOF
 				${c3}      _____
 				${c3}    \\-     -/
@@ -1341,7 +1342,7 @@ get_ascii() {
 			EOF
         ;;
 
-        [Oo]pen[Ss][Uu][Ss][Ee]*[Tt]umbleweed*)
+        ([Oo]pen[Ss][Uu][Ss][Ee]*[Tt]umbleweed*)
             read_ascii 2 <<-EOF
 				${c2}  _____   ______
 				${c2} / ____\\ / ____ \\
@@ -1351,7 +1352,7 @@ get_ascii() {
 			EOF
         ;;
 
-        [Oo]pen[Ss][Uu][Ss][Ee]*|[Oo]pen*SUSE*|SUSE*|suse*)
+        ([Oo]pen[Ss][Uu][Ss][Ee]*|[Oo]pen*SUSE*|SUSE*|suse*)
             read_ascii 2 <<-EOF
 				${c2}  _______
 				${c2}__|   __ \\
@@ -1363,7 +1364,7 @@ get_ascii() {
 			EOF
         ;;
 
-        [Oo]pen[Ww]rt*)
+        ([Oo]pen[Ww]rt*)
             read_ascii 1 <<-EOF
 				${c1} _______
 				${c1}|       |.-----.-----.-----.
@@ -1376,7 +1377,7 @@ get_ascii() {
 			EOF
         ;;
 
-        [Pp]arabola*)
+        ([Pp]arabola*)
             read_ascii 5 <<-EOF
 				${c5}  __ __ __  _
 				${c5}.\`_//_//_/ / \`.
@@ -1387,7 +1388,7 @@ get_ascii() {
 			EOF
         ;;
 
-        [Pp]op!_[Oo][Ss]*)
+        ([Pp]op!_[Oo][Ss]*)
             read_ascii 6 <<-EOF
 				${c6}______
 				${c6}\\   _ \\        __
@@ -1400,7 +1401,7 @@ get_ascii() {
 			EOF
         ;;
 
-        [Pp]ure[Oo][Ss]*)
+        ([Pp]ure[Oo][Ss]*)
             read_ascii <<-EOF
 				${c7} _____________
 				${c7}|  _________  |
@@ -1411,7 +1412,7 @@ get_ascii() {
 			EOF
         ;;
 
-        [Rr]aspbian*)
+        ([Rr]aspbian*)
             read_ascii 1 <<-EOF
 				${c2}  __  __
 				${c2} (_\\)(/_)
@@ -1422,7 +1423,7 @@ get_ascii() {
 			EOF
         ;;
 
-        [Ss]lackware*)
+        ([Ss]lackware*)
             read_ascii 4 <<-EOF
 				${c4}   ________
 				${c4}  /  ______|
@@ -1434,7 +1435,7 @@ get_ascii() {
 			EOF
         ;;
 
-        [Ss]un[Oo][Ss]|[Ss]olaris*)
+        ([Ss]un[Oo][Ss]|[Ss]olaris*)
             read_ascii 3 <<-EOF
 				${c3}       .   .;   .
 				${c3}   .   :;  ::  ;:   .
@@ -1444,7 +1445,7 @@ get_ascii() {
 			EOF
         ;;
 
-        [Uu]buntu*)
+        ([Uu]buntu*)
             read_ascii 3 <<-EOF
 				${c3}         _
 				${c3}     ---(_)
@@ -1455,7 +1456,7 @@ get_ascii() {
 			EOF
         ;;
 
-        [Vv]oid*)
+        ([Vv]oid*)
             read_ascii 2 <<-EOF
 				${c2}    _______
 				${c2} _ \\______ -
@@ -1467,7 +1468,7 @@ get_ascii() {
 			EOF
         ;;
 
-        *)
+        (*)
             # On no match of a distribution ascii art, this function calls
             # itself again, this time to look for a more generic OS related
             # ascii art (KISS Linux -> Linux).
@@ -1518,14 +1519,16 @@ get_ascii() {
 }
 
 main() {
-    [ "$1" = --version ] && {
+    case "$1" in (--version) {
         printf 'pfetch 0.7.0\n'
         exit
     }
 
     # Hide 'stderr' unless the first argument is '-v'. This saves
     # polluting the script with '2>/dev/null'.
-    [ "$1" = -v ] || exec 2>/dev/null
+    ;;(-v) :
+    ;;(*) exec 2>/dev/null
+    ;;esac
 
     # Hide 'stdout' and selectively print to it using '>&6'.
     # This gives full control over what it displayed on the screen.
@@ -1556,15 +1559,13 @@ main() {
     # Some terminals don't support these sequences, nor do they
     # silently conceal them if they're printed resulting in
     # partial sequences being printed to the terminal!
-    [ "$TERM" = dumb ]   ||
-    [ "$TERM" = minix ]  ||
-    [ "$TERM" = cons25 ] || {
+    case "$TERM" in (dumb|minix|cons25) :;;(*)
         # Disable line-wrapping.
         printf '[?7l' >&6
 
         # Enable line-wrapping again on exit.
         trap 'printf [?7h >&6' EXIT
-    }
+    ;;esac
 
     # Store the output of 'uname' to avoid calling it multiple times
     # throughout the script. 'read <<EOF' is the simplest way of reading
