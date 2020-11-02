@@ -155,7 +155,7 @@ get_os() {
             # This applies only to distributions which follow the standard
             # by shipping unmodified identification files and packages
             # from their respective upstreams.
-            if command -v lsb_release; then
+            if [ -x "$(command -v "lsb_release")" ]; then
                 distro=$(lsb_release -sd)
 
             # Android detection works by checking for the existence of
@@ -183,8 +183,8 @@ get_os() {
 
             # Special cases for (independent) distributions which
             # don't follow any os-release/lsb standards whatsoever.
-            command -v crux && distro=$(crux)
-            command -v guix && distro='Guix System'
+            [ -x "$(command -v "crux")" ] && distro=$(crux)
+            [ -x "$(command -v "guix")" ] && distro='Guix System'
 
             # Check to see if we're running Bedrock Linux which is
             # very unique. This simply checks to see if the user's
@@ -461,7 +461,7 @@ get_uptime() {
 get_pkgs() {
     # This is just a simple wrapper around 'command -v' to avoid
     # spamming '>/dev/null' throughout this function.
-    has() { command -v "$1" >/dev/null; }
+    has() { [ -x "$(command -v "$1")" ]; }
 
     # This works by first checking for which package managers are
     # installed and finally by printing each package manager's
@@ -834,7 +834,7 @@ get_wm() {
 
             # This is a two pass call to xprop. One call to get the window
             # manager's ID and another to print its properties.
-            command -v xprop && {
+            [ -x "$(command -v "xprop")" ] && {
                 # The output of the ID command is as follows:
                 # _NET_SUPPORTING_WM_CHECK: window id # 0x400000
                 #
@@ -1591,7 +1591,7 @@ main() {
         # "info names" for output alignment. The option names and subtitles
         # match 1:1 so this is thankfully simple.
         for info; do
-            command -v "get_$info" >/dev/null || continue
+            [ -x "$(command -v "get_$info")" ] || continue
 
             # This was a ternary operation but they aren't supported in
             # Minix's shell.
