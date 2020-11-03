@@ -2,6 +2,14 @@
 #
 # pfetch - Simple POSIX sh fetch script.
 
+# This is just a simple wrapper around 'command -v' to avoid
+# spamming '>/dev/null' throughout this function. This also guards
+# against aliases and functions.
+has() {
+    _cmd=$(command -v "$1") >/dev/null || return 1
+    [ -x "$_cmd" ] || return 1
+}
+
 log() {
     # The 'log()' function handles the printing of information.
     # In 'pfetch' (and 'neofetch'!) the printing of the ascii art and info
@@ -155,7 +163,7 @@ get_os() {
             # This applies only to distributions which follow the standard
             # by shipping unmodified identification files and packages
             # from their respective upstreams.
-            if command -v lsb_release; then
+            if has lsb_release; then
                 distro=$(lsb_release -sd)
 
             # Android detection works by checking for the existence of
@@ -183,8 +191,8 @@ get_os() {
 
             # Special cases for (independent) distributions which
             # don't follow any os-release/lsb standards whatsoever.
-            command -v crux && distro=$(crux)
-            command -v guix && distro='Guix System'
+            has crux && distro=$(crux)
+            has guix && distro='Guix System'
 
             # Check to see if we're running Bedrock Linux which is
             # very unique. This simply checks to see if the user's
@@ -459,10 +467,6 @@ get_uptime() {
 }
 
 get_pkgs() {
-    # This is just a simple wrapper around 'command -v' to avoid
-    # spamming '>/dev/null' throughout this function.
-    has() { command -v "$1" >/dev/null; }
-
     # This works by first checking for which package managers are
     # installed and finally by printing each package manager's
     # package list with each package one per line.
@@ -834,7 +838,7 @@ get_wm() {
 
             # This is a two pass call to xprop. One call to get the window
             # manager's ID and another to print its properties.
-            command -v xprop && {
+            has xprop && {
                 # The output of the ID command is as follows:
                 # _NET_SUPPORTING_WM_CHECK: window id # 0x400000
                 #
