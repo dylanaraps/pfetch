@@ -6,7 +6,7 @@
 # spamming '>/dev/null' throughout this function. This also guards
 # against aliases and functions.
 has() {
-    _cmd=$(command -v "$1") >/dev/null || return 1
+    _cmd=$(command -v "$1") 2>/dev/null || return 1
     [ -x "$_cmd" ] || return 1
 }
 
