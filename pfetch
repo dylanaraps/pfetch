@@ -1218,6 +1218,17 @@ get_ascii() {
 				${c7}/.\`      \`.\\
 			EOF
         ;;
+        
+        ([Ii]nstant[Oo][Ss]*)
+            read_ascii <<-EOF
+				${c0} ,-''-,
+				${c0}: .''. :
+				${c0}: ',,' :
+				${c0} '-____:__
+				${c0}       :  \`.
+				${c0}       \`._.'
+			EOF
+        ;;
 
         ([Ii][Rr][Ii][Xx]*)
             read_ascii 1 <<-EOF
