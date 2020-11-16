@@ -1024,10 +1024,15 @@ get_palette() {
     #
     # This allows us to save hardcoding a second set of sequences
     # for background colors.
-    esc SGR 7
-    palette="$e$c1 $c1 $c2 $c2 $c3 $c3 $c4 $c4 $c5 $c5 $c6 $c6 "
-    esc SGR 0
-    palette="$palette$e"
+    #
+    # False positive.
+    # shellcheck disable=2154
+    {
+        esc SGR 7
+        palette="$e$c1 $c1 $c2 $c2 $c3 $c3 $c4 $c4 $c5 $c5 $c6 $c6 "
+        esc SGR 0
+        palette="$palette$e"
+    }
 
     # Print the palette with a new-line before and afterwards.
     printf '\n' >&6
@@ -1071,6 +1076,9 @@ get_ascii() {
     # NOTE: Each ascii art below is indented using tabs, this
     #       allows indentation to continue naturally despite
     #       the use of '<<-EOF'.
+    #
+    # False positive.
+    # shellcheck disable=2154
     case ${1:-${PF_ASCII:-${distro:-$os}}} in
         ([Aa]lpine*)
             read_ascii 4 <<-EOF
@@ -1308,7 +1316,7 @@ get_ascii() {
 				${c7}/.\`      \`.\\
 			EOF
         ;;
-        
+
         ([Ii]nstant[Oo][Ss]*)
             read_ascii <<-EOF
 				${c0} ,-''-,
