@@ -68,6 +68,11 @@ PF_SOURCE=""
 # Valid: string
 PF_SEP=":"
 
+# Enable/Disable colors in output:
+# Default: 1
+# Valid: 1 (enabled), 0 (disabled)
+PF_COLOR=1
+
 # Color of info names:
 # Default: unset (auto)
 # Valid: 0-9

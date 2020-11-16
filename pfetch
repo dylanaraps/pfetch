@@ -2,6 +2,51 @@
 #
 # pfetch - Simple POSIX sh fetch script.
 
+# Wrapper around all escape sequences used by pfetch to allow for
+# greater control over which sequences are used (if any at all).
+esc() {
+    case $1 in
+        CUU) e="${esc_c}[${2}A" ;; # cursor up
+        CUD) e="${esc_c}[${2}B" ;; # cursor down
+        CUF) e="${esc_c}[${2}C" ;; # cursor right
+        CUB) e="${esc_c}[${2}D" ;; # cursor left
+
+        # text formatting
+        SGR)
+            case ${PF_COLOR:=1} in
+                (1)
+                    e="${esc_c}[${2}m"
+                ;;
+
+                (0)
+                    # colors disabled
+                    e=
+                ;;
+            esac
+        ;;
+
+        # line wrap
+        DECAWM)
+            case $TERM in
+                (dumb | minix | cons25)
+                    # not supported
+                    e=
+                ;;
+
+                (*)
+                    e="${esc_c}[?7${2}"
+                ;;
+            esac
+        ;;
+    esac
+}
+
+# Print a sequence to the terminal.
+esc_p() {
+    esc "$@"
+    printf '%s' "$e"
+}
+
 # This is just a simple wrapper around 'command -v' to avoid
 # spamming '>/dev/null' throughout this function. This also guards
 # against aliases and functions.
@@ -85,10 +130,13 @@ log() {
 
     # Move the cursor to the right, the width of the ascii art with an
     # additional gap for text spacing.
-    printf '[%sC' "$ascii_width"
+    esc_p CUF "$ascii_width"
 
     # Print the info name and color the text.
-    printf '[3%s;1m%s[m' "${PF_COL1-4}" "$name"
+    esc_p SGR "3${PF_COL1-4}";
+    esc_p SGR 1
+    printf '%s' "$name"
+    esc_p SGR 0
 
     # Print the info name and info data separator.
     printf %s "$PF_SEP"
@@ -96,11 +144,15 @@ log() {
     # Move the cursor backward the length of the *current* info name and
     # then move it forwards the length of the *longest* info name. This
     # aligns each info data line.
-    printf '[%sD[%sC' "${#name}" "${PF_ALIGN:-$info_length}"
+    esc_p CUB "${#name}"
+    esc_p CUF "${PF_ALIGN:-$info_length}"
 
     # Print the info data, color it and strip all leading whitespace
     # from the string.
-    printf '[3%sm%s[m\n' "${PF_COL2-7}" "$info"
+    esc_p SGR "3${PF_COL2-7}"
+    printf '%s' "$info"
+    esc_p SGR 0
+    printf '\n'
 
     # Keep track of the number of times 'log()' has been run.
     info_height=$((${info_height:-0} + 1))
@@ -118,13 +170,26 @@ get_title() {
     # the intention for using it is allowing the user to overwrite the
     # value on invocation.
     # shellcheck disable=SC2039
-    hostname=${HOSTNAME:-${hostname:-$(hostname)}}
+    host=${HOSTNAME:-${host:-$(hostname)}}
 
     # If the hostname is still not found, fallback to the contents of the
     # /etc/hostname file.
-    [ "$hostname" ] || read -r hostname < /etc/hostname
+    [ "$host" ] || read -r host < /etc/hostname
 
-    log "[3${PF_COL3:-1}m${user}${c7}@[3${PF_COL3:-1}m${hostname}" " " >&6
+    # Add escape sequences for coloring to user and host name. As we embed
+    # them directly in the arguments passed to log(), we cannot use esc_p().
+    esc SGR 1
+    user=$e$user
+    esc SGR "3${PF_COL3:-1}"
+    user=$e$user
+    esc SGR 1
+    user=$user$e
+    esc SGR 1
+    host=$e$host
+    esc SGR "3${PF_COL3:-1}"
+    host=$e$host
+
+    log "${user}@${host}" " " >&6
 }
 
 get_os() {
@@ -179,7 +244,9 @@ get_os() {
                 # the file contents as plain-text.
                 while IFS='=' read -r key val; do
                     case $key in
-                        (PRETTY_NAME) distro=$val ;;
+                        (PRETTY_NAME)
+                            distro=$val
+                        ;;
                     esac
                 done < /etc/os-release
             fi
@@ -198,7 +265,9 @@ get_os() {
             # very unique. This simply checks to see if the user's
             # PATH contains a Bedrock specific value.
             case $PATH in
-                (*/bedrock/cross/*) distro='Bedrock Linux'
+                (*/bedrock/cross/*)
+                    distro='Bedrock Linux'
+                ;;
             esac
 
             # Check to see if Linux is running in Windows 10 under
@@ -332,7 +401,7 @@ get_host() {
             host="$name $version $model"
         ;;
 
-        (Darwin*|FreeBSD*|DragonFly*)
+        (Darwin* | FreeBSD* | DragonFly*)
             host=$(sysctl -n hw.model)
         ;;
 
@@ -345,7 +414,7 @@ get_host() {
             host=$(sysctl -n hw.version)
         ;;
 
-        (*BSD*|Minix)
+        (*BSD* | Minix)
             host=$(sysctl -n hw.vendor hw.product)
         ;;
     esac
@@ -373,7 +442,7 @@ get_host() {
     # This string reconstruction is needed as some OEMs either leave the
     # identification information as "To be filled by OEM", "Default",
     # "undefined" etc and we shouldn't print this to the screen.
-    for word; do
+    for word do
         # This works by reconstructing the string by excluding words
         # found in the "blacklist" below. Only non-matches are appended
         # to the final host string.
@@ -397,11 +466,11 @@ get_uptime() {
     # converting that data into days, hours and minutes using simple
     # math.
     case $os in
-        (Linux*|Minix*)
+        (Linux* | Minix*)
             IFS=. read -r s _ < /proc/uptime
         ;;
 
-        Darwin*|*BSD*|DragonFly*)
+        Darwin* | *BSD* | DragonFly*)
             s=$(sysctl -n kern.boottime)
 
             # Extract the uptime in seconds from the following output:
@@ -530,8 +599,14 @@ get_pkgs() {
                 has port       && {
                     pkg_list=$(port installed)
 
-                    case "$pkg_list" in ("No ports are installed.") :;; (*)
-                        printf '%s\n' "$pkg_list"
+                    case "$pkg_list" in
+                        ("No ports are installed.")
+                            # do nothing
+                        ;;
+
+                        (*)
+                            printf '%s\n' "$pkg_list"
+                        ;;
                     esac
                 }
             ;;
@@ -570,10 +645,16 @@ get_pkgs() {
     case $os in
         # IRIX's package manager adds 3 lines of extra
         # output which we must account for here.
-        (IRIX) packages=$((packages - 3)) ;;
+        (IRIX)
+            packages=$((packages - 3))
+        ;;
     esac
 
-    case "$packages" in (1?*|[2-9]*) log pkgs "$packages" >&6;; esac
+    case $packages in
+        (1?*|[2-9]*)
+            log pkgs "$packages" >&6
+        ;;
+    esac
 }
 
 get_memory() {
@@ -596,7 +677,7 @@ get_memory() {
                         mem_used=$((mem_used + val))
                     ;;
 
-                    (MemFree|Buffers|Cached|SReclaimable)
+                    (MemFree | Buffers | Cached | SReclaimable)
                         mem_used=$((mem_used - val))
                     ;;
 
@@ -757,8 +838,13 @@ get_memory() {
             # A variable is then assigned based on the key.
             while read -r key val; do
                 case $key in
-                    (*total) pages_full=$val ;;
-                    (*free)  pages_free=$val ;;
+                    (*total)
+                        pages_full=$val
+                    ;;
+
+                    (*free)
+                        pages_free=$val
+                    ;;
                 esac
             done <<-EOF
 				$(kstat -p unix:0:system_pages:pagestotal \
@@ -797,8 +883,9 @@ get_memory() {
 
 get_wm() {
     case $os in
-        # Don't display window manager on macOS.
-        (Darwin*) ;;
+        (Darwin*)
+            # Don't display window manager on macOS.
+        ;;
 
         (*)
             # xprop can be used to grab the window manager's properties
@@ -937,7 +1024,10 @@ get_palette() {
     #
     # This allows us to save hardcoding a second set of sequences
     # for background colors.
-    palette="[7m$c1 $c1 $c2 $c2 $c3 $c3 $c4 $c4 $c5 $c5 $c6 $c6 [m"
+    esc SGR 7
+    palette="$e$c1 $c1 $c2 $c2 $c3 $c3 $c4 $c4 $c5 $c5 $c6 $c6 "
+    esc SGR 0
+    palette="$palette$e"
 
     # Print the palette with a new-line before and afterwards.
     printf '\n' >&6
@@ -1523,7 +1613,7 @@ get_ascii() {
     # printing of the information through user configuration.
     #
     # Iterate over each line of the ascii art to retrieve the above
-    # information. The 'sed' is used to strip '[3Xm' color codes from
+    # information. The 'sed' is used to strip '\033[3Xm' color codes from
     # the ascii art so they don't affect the width variable.
     while read -r line; do
         ascii_height=$((${ascii_height:-0} + 1))
@@ -1546,27 +1636,32 @@ get_ascii() {
 
     # Print the ascii art and position the cursor back where we
     # started prior to printing it.
-    # '[1m':   Print the ascii in bold.
-    # '[m':    Clear bold.
-    # '[%sA':  Move the cursor up '$ascii_height' amount of lines.
-    printf '[1m%s[m[%sA' "$ascii" "$ascii_height" >&6
+    {
+        esc_p SGR 1
+        printf '%s' "$ascii"
+        esc_p SGR 0
+        esc_p CUU "$ascii_height"
+    } >&6
 }
 
 main() {
-    case "$1" in (--version) {
+    [ "$1" = --version ] && {
         printf 'pfetch 0.7.0\n'
-        exit
+        exit 0
     }
 
     # Hide 'stderr' unless the first argument is '-v'. This saves
     # polluting the script with '2>/dev/null'.
-    ;;(-v) :
-    ;;(*) exec 2>/dev/null
-    ;;esac
+    [ "$1" = -v ] || {
+        exec 2>/dev/null
+    }
 
     # Hide 'stdout' and selectively print to it using '>&6'.
     # This gives full control over what it displayed on the screen.
     exec 6>&1 >/dev/null
+
+    # Store raw escape sequence character for later reuse.
+    esc_c=$(printf '\033')
 
     # Allow the user to execute their own script and modify or
     # extend pfetch's behavior.
@@ -1581,25 +1676,16 @@ main() {
     # Generic color list.
     # Disable warning about unused variables.
     # shellcheck disable=2034
-    {
-        c1='[31m'; c2='[32m'
-        c3='[33m'; c4='[34m'
-        c5='[35m'; c6='[36m'
-        c7='[37m'; c8='[38m'
-    }
+    for _c in c1 c2 c3 c4 c5 c6 c7 c8; do
+        esc SGR "3${_c#?}" 0
+        export "$_c=$e"
+    done
 
-    # Avoid text-wrapping from wrecking the program output.
-    #
-    # Some terminals don't support these sequences, nor do they
-    # silently conceal them if they're printed resulting in
-    # partial sequences being printed to the terminal!
-    case "$TERM" in (dumb|minix|cons25) :;;(*)
-        # Disable line-wrapping.
-        printf '[?7l' >&6
-
-        # Enable line-wrapping again on exit.
-        trap 'printf [?7h >&6' EXIT
-    ;;esac
+    # Disable line wrapping and catch the EXIT signal to enable it again
+    # on exit. Ideally you'd somehow query the current value and retain
+    # it but I'm yet to see this irk anyone.
+    esc_p DECAWM l >&6
+    trap 'esc_p DECAWM h >&6' EXIT
 
     # Store the output of 'uname' to avoid calling it multiple times
     # throughout the script. 'read <<EOF' is the simplest way of reading
@@ -1624,7 +1710,7 @@ main() {
         # Iterate over the info functions to determine the lengths of the
         # "info names" for output alignment. The option names and subtitles
         # match 1:1 so this is thankfully simple.
-        for info; do
+        for info do
             command -v "get_$info" >/dev/null || continue
 
             # This was a ternary operation but they aren't supported in
@@ -1637,7 +1723,9 @@ main() {
         info_length=$((info_length + 1))
 
         # Iterate over the above list and run any existing "get_" functions.
-        for info; do "get_$info"; done
+        for info do
+            "get_$info"
+        done
     }
 
     # Position the cursor below both the ascii art and information lines
