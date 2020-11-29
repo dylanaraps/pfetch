@@ -331,7 +331,7 @@ get_os() {
                 (10.13*) distro='macOS High Sierra' ;;
                 (10.14*) distro='macOS Mojave' ;;
                 (10.15*) distro='macOS Catalina' ;;
-		   		(11.0*) distro='macOS Big Sur' ;;
+		   		(11.0*)  distro='macOS Big Sur' ;;
                 (*)      distro='macOS' ;;
             esac
 
