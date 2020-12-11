@@ -999,6 +999,11 @@ get_wm() {
     log wm "$wm" >&6
 }
 
+get_battery(){
+    battery_level=`cat /sys/class/power_supply/BAT1/capacity`
+    battery_status=`cat /sys/class/power_supply/BAT1/status`
+    log battery "${battery_level}% (${battery_status})" >&6
+}
 
 get_de() {
     # This only supports Xorg related desktop environments though
@@ -1728,7 +1733,7 @@ main() {
         # Disable globbing and set the positional parameters to the
         # contents of 'PF_INFO'.
         set -f
-        set +f -- ${PF_INFO-ascii title os host kernel uptime pkgs memory}
+        set +f -- ${PF_INFO-ascii title os host kernel uptime pkgs memory battery}
 
         # Iterate over the info functions to determine the lengths of the
         # "info names" for output alignment. The option names and subtitles
