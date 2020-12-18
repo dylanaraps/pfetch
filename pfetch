@@ -1000,8 +1000,8 @@ get_wm() {
 }
 
 get_battery(){
-    battery_level=`cat /sys/class/power_supply/BAT*/capacity`
-    battery_status=`cat /sys/class/power_supply/BAT*/status`
+    battery_level=$(cat /sys/class/power_supply/BAT*/capacity)
+    battery_status=$(cat /sys/class/power_supply/BAT*/status)
     log battery "${battery_level}% (${battery_status})" >&6
 }
 
