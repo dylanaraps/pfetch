@@ -652,8 +652,8 @@ get_pkgs() {
         (IRIX)
             packages=$((packages - 3))
         ;;
-        # OpenBSD's wc adds whitespace before the number
-        # which need to be stripped to be logged
+        # OpenBSD's wc prints whitespace before the number
+        # which needs to be stripped.
         (OpenBSD)
             packages="$(echo $packages)"
         ;;
