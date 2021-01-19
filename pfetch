@@ -1017,8 +1017,14 @@ get_shell() {
 
 get_editor() {
     # Display the value of '$VISUAL', if it's empty, display the
-    # value of '$EDITOR'.
-    log editor "${VISUAL:-$EDITOR}" >&6
+    # value of '$EDITOR'. In both cases, if the value is a path,
+    # then return only the executable file name.
+    if [ "$VISUAL" ]
+    then
+        log editor "${VISUAL##*/}"
+    else
+        log editor "${EDITOR##*/}"
+    fi >&6
 }
 
 get_palette() {
