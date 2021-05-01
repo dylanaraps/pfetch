@@ -314,10 +314,21 @@ get_os() {
                     ;;
                 esac
             done < /System/Library/CoreServices/SystemVersion.plist
+            while IFS='<>' read -r _ _ line _; do
+                case $line in
+                    # Match 'ProductVersion' and read the next line
+                    # directly as it contains the key's value.
+                    ProductName)
+                        IFS='<>' read -r _ _ product_name _
+                        break
+                    ;;
+                esac
+            done < /System/Library/CoreServices/SystemVersion.plist
 
             # Use the ProductVersion to determine which macOS/OS X codename
             # the system has. As far as I'm aware there's no "dynamic" way
             # of grabbing this information.
+            
             case $mac_version in
                 (10.4*)  distro='Mac OS X Tiger' ;;
                 (10.5*)  distro='Mac OS X Leopard' ;;
@@ -332,6 +343,11 @@ get_os() {
                 (10.14*) distro='macOS Mojave' ;;
                 (10.15*) distro='macOS Catalina' ;;
                 (*)      distro='macOS' ;;
+                
+            esac
+            case $product_name in
+                (iPhone*)      distro='iOS' ;;
+                
             esac
 
             distro="$distro $mac_version"
@@ -591,6 +607,9 @@ get_pkgs() {
 
                 # Directories containing packages.
                 has brew       && printf '%s\n' /usr/local/Cellar/*
+
+                # Commands which print packages one per line.
+                has dpkg       && dpkg-query -f '.\n' -W
 
                 # 'port' prints a single line of output to 'stdout'
                 # when no packages are installed and exits with
