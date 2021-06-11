@@ -652,6 +652,12 @@ get_pkgs() {
         (IRIX)
             packages=$((packages - 3))
         ;;
+
+        # OpenBSD's wc prints whitespace before the output
+        # which needs to be stripped.
+        (OpenBSD)
+            packages=$((packages))
+        ;;
     esac
 
     case $packages in
