@@ -310,7 +310,12 @@ get_os() {
                     # directly as it contains the key's value.
                     ProductVersion)
                         IFS='<>' read -r _ _ mac_version _
-                        break
+                        continue
+                    ;;
+
+                    ProductName)
+                        IFS='<>' read -r _ _ mac_product _
+                        continue
                     ;;
                 esac
             done < /System/Library/CoreServices/SystemVersion.plist
@@ -333,6 +338,11 @@ get_os() {
                 (10.15*) distro='macOS Catalina' ;;
                 (11*)    distro='macOS Big Sur' ;;
                 (*)      distro='macOS' ;;
+            esac
+
+            # Use the ProductName to determine if we're running in iOS.
+            case $mac_product in
+                (iP*) distro='iOS' ;;
             esac
 
             distro="$distro $mac_version"
@@ -589,6 +599,7 @@ get_pkgs() {
             (Darwin*)
                 # Commands which print packages one per line.
                 has pkgin      && pkgin list
+                has dpkg       && dpkg-query -f '.\n' -W
 
                 # Directories containing packages.
                 has brew       && printf '%s\n' /usr/local/Cellar/*
