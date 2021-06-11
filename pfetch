@@ -1622,6 +1622,17 @@ get_ascii() {
 			EOF
         ;;
 
+		([Xx]eonix*)
+            read_ascii 2 <<-EOF
+				${c2}    ___  ___
+				${c2}___ \  \/  / ___
+				${c2}\  \ \    / /  /
+				${c2} \  \/    \/  /
+				${c2}  \    /\    /
+				${c2}   \__/  \__/
+			EOF
+        ;;
+
         (*)
             # On no match of a distribution ascii art, this function calls
             # itself again, this time to look for a more generic OS related
