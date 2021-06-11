@@ -464,7 +464,8 @@ get_host() {
         case $word in
            (To      | [Bb]e      | [Ff]illed | [Bb]y  | O.E.M.  | OEM  |\
             Not     | Applicable | Specified | System | Product | Name |\
-            Version | Undefined  | Default   | string | INVALID | �    | os )
+            Version | Undefined  | Default   | string | INVALID | �    | os |\
+            Type1ProductConfigId )
                 continue
             ;;
         esac
