@@ -1328,7 +1328,7 @@ get_ascii() {
 			EOF
         ;;
 		
-		([Hh]ydroOS*)
+        ([Hh]ydroOS*)
 			read_ascii 4 <<-EOF
 				${c1}╔╗╔╗──╔╗───╔═╦══╗
 				${c1}║╚╝╠╦╦╝╠╦╦═╣║║══╣
@@ -1336,7 +1336,7 @@ get_ascii() {
 				${c1}╚╝╚╬╗╠═╩╝╚═╩═╩══╝
 				${c1}───╚═╝
 			EOF
-		;;
+        ;;
 
         ([Hh]yperbola*)
             read_ascii <<-EOF
