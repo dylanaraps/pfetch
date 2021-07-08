@@ -310,7 +310,12 @@ get_os() {
                     # directly as it contains the key's value.
                     ProductVersion)
                         IFS='<>' read -r _ _ mac_version _
-                        break
+                        continue
+                    ;;
+
+                    ProductName)
+                        IFS='<>' read -r _ _ mac_product _
+                        continue
                     ;;
                 esac
             done < /System/Library/CoreServices/SystemVersion.plist
@@ -331,7 +336,13 @@ get_os() {
                 (10.13*) distro='macOS High Sierra' ;;
                 (10.14*) distro='macOS Mojave' ;;
                 (10.15*) distro='macOS Catalina' ;;
+                (11*)    distro='macOS Big Sur' ;;
                 (*)      distro='macOS' ;;
+            esac
+
+            # Use the ProductName to determine if we're running in iOS.
+            case $mac_product in
+                (iP*) distro='iOS' ;;
             esac
 
             distro="$distro $mac_version"
@@ -453,7 +464,8 @@ get_host() {
         case $word in
            (To      | [Bb]e      | [Ff]illed | [Bb]y  | O.E.M.  | OEM  |\
             Not     | Applicable | Specified | System | Product | Name |\
-            Version | Undefined  | Default   | string | INVALID | �    | os )
+            Version | Undefined  | Default   | string | INVALID | �    | os |\
+            Type1ProductConfigId )
                 continue
             ;;
         esac
@@ -588,6 +600,7 @@ get_pkgs() {
             (Darwin*)
                 # Commands which print packages one per line.
                 has pkgin      && pkgin list
+                has dpkg       && dpkg-query -f '.\n' -W
 
                 # Directories containing packages.
                 has brew       && printf '%s\n' /usr/local/Cellar/*
@@ -651,6 +664,12 @@ get_pkgs() {
         # output which we must account for here.
         (IRIX)
             packages=$((packages - 3))
+        ;;
+
+        # OpenBSD's wc prints whitespace before the output
+        # which needs to be stripped.
+        (OpenBSD)
+            packages=$((packages))
         ;;
     esac
 
@@ -1240,14 +1259,15 @@ get_ascii() {
 
         ([Ff]edora*)
             read_ascii 4 <<-EOF
-				${c7}      _____
-				     /   __)${c4}\\${c7}
-				     |  /  ${c4}\\ \\${c7}
-				  ${c4}__${c7}_|  |_${c4}_/ /${c7}
-				 ${c4}/ ${c7}(_    _)${c4}_/${c7}
-				${c4}/ /${c7}  |  |
-				${c4}\\ \\${c7}__/  |
-				 ${c4}\\${c7}(_____/
+				        ${c4},'''''.
+				       ${c4}|   ,.  |
+				       ${c4}|  |  '_'
+				${c4}  ,....|  |..
+				${c4}.'  ,_;|   ..'
+				${c4}|  |   |  |
+				${c4}|  ',_,'  |
+				${c4} '.     ,'
+				   ${c4}'''''
 			EOF
         ;;
 
@@ -1314,6 +1334,16 @@ get_ascii() {
 				       ${c3}|_|
 			EOF
         ;;
+		
+        ([Hh]ydroOS*)
+			read_ascii 4 <<-EOF
+				${c1}╔╗╔╗──╔╗───╔═╦══╗
+				${c1}║╚╝╠╦╦╝╠╦╦═╣║║══╣
+				${c1}║╔╗║║║╬║╔╣╬║║╠══║
+				${c1}╚╝╚╬╗╠═╩╝╚═╩═╩══╝
+				${c1}───╚═╝
+			EOF
+        ;;
 
         ([Hh]yperbola*)
             read_ascii <<-EOF
@@ -1324,6 +1354,23 @@ get_ascii() {
 				 ${c7} /  ___ \\
 				 ${c7}/ .\`   \`.\\
 				${c7}/.\`      \`.\\
+			EOF
+        ;;
+
+        ([Ii]glunix*)
+            read_ascii <<-EOF
+				${c0}       |
+				${c0}       |          |
+				${c0}                  |
+				${c0}  |    ________
+				${c0}  |  /\\   |    \\
+				${c0}    /  \\  |     \\  |
+				${c0}   /    \\        \\ |
+				${c0}  /      \\________\\
+				${c0}  \\      /        /
+				${c0}   \\    /        /
+				${c0}    \\  /        /
+				${c0}     \\/________/
 			EOF
         ;;
 
@@ -1400,11 +1447,11 @@ get_ascii() {
 
         ([Mm]ac[Oo][Ss]*|[Dd]arwin*)
             read_ascii 1 <<-EOF
-				${c1}       .:'
-				${c1}    _ :'_
-				${c2} .'\`_\`-'_\`\`.
-				${c2}:________.-'
-				${c3}:_______:
+				${c2}       .:'
+				${c2}    _ :'_
+				${c3} .'\`_\`-'_\`\`.
+				${c1}:________.-'
+				${c1}:_______:
 				${c4} :_______\`-;
 				${c5}  \`._.-._.'
 			EOF
@@ -1618,6 +1665,17 @@ get_ascii() {
 				${c2}| | \___/ | |
 				${c2}| \\______ \\_|
 				${c2} -_______\\
+			EOF
+        ;;
+
+		([Xx]eonix*)
+            read_ascii 2 <<-EOF
+				${c2}    ___  ___
+				${c2}___ \  \/  / ___
+				${c2}\  \ \    / /  /
+				${c2} \  \/    \/  /
+				${c2}  \    /\    /
+				${c2}   \__/  \__/
 			EOF
         ;;
 
