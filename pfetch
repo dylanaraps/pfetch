@@ -192,6 +192,33 @@ get_title() {
     log "${user}@${host}" " " >&6
 }
 
+get_cpu() {
+    case $os in
+        Linux*)
+            cpu_model=$(grep 'model name' /proc/cpuinfo | uniq | sed 's/.*://')
+			case $cpu_model in
+				*Ryzen*)
+					;;
+				*)
+					;;
+			esac
+			;;
+        *)
+            cpu_model="unsupported"
+            ;;
+    esac
+
+    cpu_model=$(echo $cpu_model | sed -e s/"Dual-Core Processor"//)
+    cpu_model=$(echo $cpu_model | sed -e s/"Quad-Core Processor"//)
+    cpu_model=$(echo $cpu_model | sed -e s/"Six-Core Processor"//)
+    cpu_model=$(echo $cpu_model | sed -e s/"Eight-Core Processor"//)
+    cpu_model=$(echo $cpu_model | sed -e s/"(TM)"//)
+    cpu_model=$(echo $cpu_model | sed -e s/"(tm)"//)
+    cpu_model=$(echo $cpu_model | sed -e s/"(R)"//)
+    cpu_model=$(echo $cpu_model | sed -e s/"(r)"//)
+    log cpu "$cpu_model" >&6
+}
+
 get_os() {
     # This function is called twice, once to detect the distribution name
     # for the purposes of picking an ascii art early and secondly to display
