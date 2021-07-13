@@ -1037,7 +1037,8 @@ get_shell() {
 get_editor() {
     # Display the value of '$VISUAL', if it's empty, display the
     # value of '$EDITOR'.
-    log editor "${VISUAL:-$EDITOR}" >&6
+    editor="${VISUAL:-$EDITOR}"
+    log editor "${editor##*/}" >&6
 }
 
 get_palette() {
