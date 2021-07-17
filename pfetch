@@ -920,7 +920,7 @@ get_wm() {
             # atom..
             #
             # List of window managers which fail to set the name atom:
-            # catwm, fvwm, dwm, 2bwm, monster, wmaker and sowm [mine! ;)].
+            # catwm, fvwm, 2bwm, monster, wmaker and sowm [mine! ;)].
             #
             # The final downside to this approach is that it does _not_
             # support Wayland environments. The only solution which supports
@@ -1001,7 +1001,6 @@ get_wm() {
                         case $ps_line in
                             (*catwm*)     wm=catwm ;;
                             (*fvwm*)      wm=fvwm ;;
-                            (*dwm*)       wm=dwm ;;
                             (*2bwm*)      wm=2bwm ;;
                             (*monsterwm*) wm=monsterwm ;;
                             (*wmaker*)    wm='Window Maker' ;;
