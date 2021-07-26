@@ -1747,7 +1747,7 @@ main() {
     # Allow the user to execute their own script and modify or
     # extend pfetch's behavior.
     # shellcheck source=/dev/null
-    . "${PF_SOURCE:-/dev/null}" ||:
+    command . "${PF_SOURCE:-/dev/null}" ||:
 
     # Ensure that the 'TMPDIR' is writable as heredocs use it and
     # fail without the write permission. This was found to be the
