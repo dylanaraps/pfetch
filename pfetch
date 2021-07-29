@@ -169,7 +169,7 @@ get_title() {
     # Disable the warning about '$HOSTNAME' being undefined in POSIX sh as
     # the intention for using it is allowing the user to overwrite the
     # value on invocation.
-    # shellcheck disable=SC2039
+    # shellcheck disable=SC3028
     host=${HOSTNAME:-${host:-$(hostname)}}
 
     # If the hostname is still not found, fallback to the contents of the
