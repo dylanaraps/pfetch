@@ -113,7 +113,7 @@ PF_DE=""
 
 # The below environment variables control more
 # than just 'pfetch' and can be passed using
-# 'HOSTNAME=cool_pc pfetch' to restrict their
+# 'XDG_CURRENT_DESKTOP=cool_beans pfetch' to restrict their
 # usage solely to 'pfetch'.
 
 # Which user to display.
