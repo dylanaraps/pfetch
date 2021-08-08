@@ -170,7 +170,11 @@ get_title() {
     # the intention for using it is allowing the user to overwrite the
     # value on invocation.
     # shellcheck disable=SC3028
-    host=${HOSTNAME:-${host:-$(hostname)}}
+    
+    # CHANGE: Allow User to set this
+    [ "$PF_HOSTNAME" ] && host="$PF_HOSTNAME" || host=${HOSTNAME:-${host:-$(hostname)}}
+    # CHANGE: macOS adds '.local'. Let's remove this 
+    host=${host%.local}
 
     # If the hostname is still not found, fallback to the contents of the
     # /etc/hostname file.
@@ -434,6 +438,9 @@ get_host() {
         ;;
     esac
 
+    # CHANGE: Allow user to set this. If PF_MODEL is set then use that
+    [[ $PF_MODEL ]] && host=$PF_MODEL || :
+
     # Turn the host string into an argument list so we can iterate
     # over it and remove OEM strings and other information which
     # shouldn't be displayed.
@@ -581,7 +588,6 @@ get_pkgs() {
                 has apk        && apk info
                 has guix       && guix package --list-installed
                 has opkg       && opkg list-installed
-
                 # Directories containing packages.
                 has kiss       && printf '%s\n' /var/db/kiss/installed/*/
                 has cpt-list   && printf '%s\n' /var/db/cpt/installed/*/
@@ -589,22 +595,18 @@ get_pkgs() {
                 has emerge     && printf '%s\n' /var/db/pkg/*/*/
                 has pkgtool    && printf '%s\n' /var/log/packages/*
                 has eopkg      && printf '%s\n' /var/lib/eopkg/package/*
-
                 # 'nix' requires two commands.
                 has nix-store  && {
                     nix-store -q --requisites /run/current-system/sw
                     nix-store -q --requisites ~/.nix-profile
                 }
             ;;
-
             (Darwin*)
                 # Commands which print packages one per line.
                 has pkgin      && pkgin list
                 has dpkg       && dpkg-query -f '.\n' -W
-
                 # Directories containing packages.
                 has brew       && printf '%s\n' /usr/local/Cellar/*
-
                 # 'port' prints a single line of output to 'stdout'
                 # when no packages are installed and exits with
                 # success causing a false-positive of 1 package
@@ -615,44 +617,35 @@ get_pkgs() {
                 # this behavior.
                 has port       && {
                     pkg_list=$(port installed)
-
                     case "$pkg_list" in
                         ("No ports are installed.")
                             # do nothing
                         ;;
-
                         (*)
                             printf '%s\n' "$pkg_list"
                         ;;
                     esac
                 }
             ;;
-
             (FreeBSD*|DragonFly*)
                 pkg info
             ;;
-
             (OpenBSD*)
                 printf '%s\n' /var/db/pkg/*/
             ;;
-
             (NetBSD*)
                 pkg_info
             ;;
-
             (Haiku)
                 printf '%s\n' /boot/system/package-links/*
             ;;
-
             (Minix)
                 printf '%s\n' /usr/pkg/var/db/pkg/*/
             ;;
-
             (SunOS)
                 has pkginfo && pkginfo -i
                 has pkg     && pkg list
             ;;
-
             (IRIX)
                 versions -b
             ;;
@@ -907,7 +900,11 @@ get_memory() {
 get_wm() {
     case $os in
         (Darwin*)
-            # Don't display window manager on macOS.
+            # CHANGE: Checks for common macOS WMs
+            # haven't tested chunkwm and amethyst
+            [[ $(pgrep chunkwm) ]] && wm="ChunkWM" || :
+            [[ $(pgrep yabai) ]] && wm="Yabai" || :
+            [[ $(pgrep amethyst) ]] && wm="Amethyst" || :
         ;;
 
         (*)
@@ -1026,7 +1023,9 @@ get_de() {
     #
     # Display the value of '$XDG_CURRENT_DESKTOP', if it's empty,
     # display the value of '$DESKTOP_SESSION'.
-    log de "${XDG_CURRENT_DESKTOP:-$DESKTOP_SESSION}" >&6
+    # CHANGE: Maybe the macOS peeps love aqua and defintely aren't 
+    # jealous :) Allow Users to set this.
+    [ $PF_DE ] && log de "${PF_DE}"  >&6 || log de "${XDG_CURRENT_DESKTOP:-$DESKTOP_SESSION}" >&6
 }
 
 get_shell() {
@@ -1037,7 +1036,9 @@ get_shell() {
 get_editor() {
     # Display the value of '$VISUAL', if it's empty, display the
     # value of '$EDITOR'.
-    log editor "${VISUAL:-$EDITOR}" >&6
+    # CHANGE: Allow users to customize the editor shown 
+    [[ $PF_EDITOR ]] && log editor $PF_EDITOR >&6 || log editor "${VISUAL:-$EDITOR}" >&6
+
 }
 
 get_palette() {
