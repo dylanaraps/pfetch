@@ -169,7 +169,7 @@ get_title() {
     # Disable the warning about '$HOSTNAME' being undefined in POSIX sh as
     # the intention for using it is allowing the user to overwrite the
     # value on invocation.
-    # shellcheck disable=SC3028
+    # shellcheck disable=3028,2039
     host=${HOSTNAME:-${host:-$(hostname)}}
 
     # If the hostname is still not found, fallback to the contents of the
@@ -1329,7 +1329,7 @@ get_ascii() {
 				       ${c3}|_|
 			EOF
         ;;
-		
+
         ([Hh]ydroOS*)
 			read_ascii 4 <<-EOF
 				${c1}╔╗╔╗──╔╗───╔═╦══╗
