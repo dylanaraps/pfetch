@@ -225,6 +225,11 @@ get_os() {
             # not based on another distribution or follow different
             # standards.
             #
+            # Special cases for (independent) distributions which
+            # don't follow any os-release/lsb standards whatsoever.
+            has crux && distro=$(crux)
+            has guix && distro='Guix System'
+
             # This applies only to distributions which follow the standard
             # by shipping unmodified identification files and packages
             # from their respective upstreams.
@@ -255,11 +260,6 @@ get_os() {
             # around the distribution name, strip them.
             distro=${distro##[\"\']}
             distro=${distro%%[\"\']}
-
-            # Special cases for (independent) distributions which
-            # don't follow any os-release/lsb standards whatsoever.
-            has crux && distro=$(crux)
-            has guix && distro='Guix System'
 
             # Check to see if we're running Bedrock Linux which is
             # very unique. This simply checks to see if the user's
