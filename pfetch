@@ -170,11 +170,11 @@ get_title() {
     # the intention for using it is allowing the user to overwrite the
     # value on invocation.
     # shellcheck disable=3028,2039
-    host=${HOSTNAME:-${host:-$(hostname)}}
+    hostname=${HOSTNAME:-${hostname:-$(hostname)}}
 
     # If the hostname is still not found, fallback to the contents of the
     # /etc/hostname file.
-    [ "$host" ] || read -r host < /etc/hostname
+    [ "$hostname" ] || read -r hostname < /etc/hostname
 
     # Add escape sequences for coloring to user and host name. As we embed
     # them directly in the arguments passed to log(), we cannot use esc_p().
@@ -185,11 +185,11 @@ get_title() {
     esc SGR 1
     user=$user$e
     esc SGR 1
-    host=$e$host
+    hostname=$e$hostname
     esc SGR "3${PF_COL3:-1}"
-    host=$e$host
+    hostname=$e$hostname
 
-    log "${user}@${host}" " " >&6
+    log "${user}@${hostname}" " " >&6
 }
 
 get_os() {
@@ -379,7 +379,7 @@ get_os() {
             distro="$distro $openbsd_ver"
         ;;
 
-        FreeBSD)
+        (FreeBSD)
             distro="$os $(freebsd-version)"
         ;;
 
@@ -487,7 +487,7 @@ get_uptime() {
             IFS=. read -r s _ < /proc/uptime
         ;;
 
-        Darwin* | *BSD* | DragonFly*)
+        (Darwin* | *BSD* | DragonFly*)
             s=$(sysctl -n kern.boottime)
 
             # Extract the uptime in seconds from the following output:
@@ -560,16 +560,7 @@ get_pkgs() {
     # The output from this is then piped to 'wc -l' to count each
     # line, giving us the total package count of whatever package
     # managers are installed.
-    #
-    # Backticks are *required* here as '/bin/sh' on macOS is
-    # 'bash 3.2' and it can't handle the following:
-    #
-    # var=$(
-    #    code here
-    # )
-    #
-    # shellcheck disable=2006
-    packages=`
+    packages=$(
         case $os in
             (Linux*)
                 # Commands which print packages one per line.
@@ -658,7 +649,14 @@ get_pkgs() {
                 versions -b
             ;;
         esac | wc -l
-    `
+    )
+
+    # 'wc -l' can have leading and/or trailing whitespace
+    # depending on the implementation, so strip them.
+    # Procedure explained at https://github.com/dylanaraps/pure-sh-bible
+    # (trim-leading-and-trailing-white-space-from-string)
+    packages=${packages#"${packages%%[![:space:]]*}"}
+    packages=${packages%"${packages##*[![:space:]]}"}
 
     case $os in
         # IRIX's package manager adds 3 lines of extra
@@ -1677,7 +1675,7 @@ get_ascii() {
 			EOF
         ;;
 
-		([Xx]eonix*)
+        ([Xx]eonix*)
             read_ascii 2 <<-EOF
 				${c2}    ___  ___
 				${c2}___ \  \/  / ___
