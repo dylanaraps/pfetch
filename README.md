@@ -38,6 +38,7 @@ picture"!
 - **Minix**
 - **Solaris**
 - **IRIX**
+- **SerenityOS**
 
 ## Configuration
 
