@@ -483,7 +483,7 @@ get_uptime() {
     # converting that data into days, hours and minutes using simple
     # math.
     case $os in
-        (Linux* | Minix*)
+        (Linux* | Minix* | SerenityOS*)
             IFS=. read -r s _ < /proc/uptime
         ;;
 
@@ -647,6 +647,13 @@ get_pkgs() {
 
             (IRIX)
                 versions -b
+            ;;
+
+            (SerenityOS)
+                while IFS=" " read -r type _; do
+                    [ "$type" != dependency ] &&
+                        printf "\n"
+                done < /usr/Ports/packages.db
             ;;
         esac | wc -l
     )
@@ -897,6 +904,33 @@ get_memory() {
 			EOF
 
             mem_used=$((mem_full - mem_free))
+        ;;
+
+        (SerenityOS)
+            IFS='{}' read -r _ memstat _ < /proc/memstat
+
+            set -f -- "$IFS"
+            IFS=,
+
+            for pair in $memstat; do
+                case $pair in
+                    (*user_physical_allocated*)
+                        mem_used=${pair##*:}
+                    ;;
+
+                    (*user_physical_available*)
+                        mem_free=${pair##*:}
+                    ;;
+                esac
+            done
+
+            IFS=$1
+            set +f --
+
+            mem_used=$((mem_used * 4096 / 1024 / 1024))
+            mem_free=$((mem_free * 4096 / 1024 / 1024))
+
+            mem_full=$((mem_used + mem_free))
         ;;
     esac
 
@@ -1627,6 +1661,18 @@ get_ascii() {
 				${c1}(_(_)(_)_)
 				${c1} (_(__)_)
 				${c1}   (__)
+			EOF
+        ;;
+
+        ([Ss]erenity[Oo][Ss]*)
+            read_ascii 4 <<-EOF
+				${c7}    _____
+				${c1}  ,-${c7}     -,
+				${c1} ;${c7} (       ;
+				${c1}| ${c7}. \_${c1}.,${c7}    |
+				${c1}|  ${c7}o  _${c1} ',${c7}  |
+				${c1} ;   ${c7}(_)${c1} )${c7} ;
+				${c1}  '-_____-${c7}'
 			EOF
         ;;
 
