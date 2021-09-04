@@ -238,7 +238,7 @@ get_os() {
             elif [ -d /system/app ] && [ -d /system/priv-app ]; then
                 distro="Android $(getprop ro.build.version.release)"
 
-            else
+            elif [ -f /etc/os-release ]; then
                 # This used to be a simple '. /etc/os-release' but I believe
                 # this is insecure as we blindly executed whatever was in the
                 # file. This parser instead simply handles 'key=val', treating
@@ -250,17 +250,18 @@ get_os() {
                         ;;
                     esac
                 done < /etc/os-release
+
+            else
+                # Special cases for (independent) distributions which
+                # don't follow any os-release/lsb standards whatsoever.
+                has crux && distro=$(crux)
+                has guix && distro='Guix System'
             fi
 
             # 'os-release' and 'lsb_release' sometimes add quotes
             # around the distribution name, strip them.
             distro=${distro##[\"\']}
             distro=${distro%%[\"\']}
-
-            # Special cases for (independent) distributions which
-            # don't follow any os-release/lsb standards whatsoever.
-            has crux && distro=$(crux)
-            has guix && distro='Guix System'
 
             # Check to see if we're running Bedrock Linux which is
             # very unique. This simply checks to see if the user's
