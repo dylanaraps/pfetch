@@ -1823,7 +1823,7 @@ EOF
     # Allow the user to execute their own script and modify or
     # extend pfetch's behavior.
     # shellcheck source=/dev/null
-    ! [ -x "$PF_SOURCE" ] || . "$PF_SOURCE"
+    ! [ -f "$PF_SOURCE" ] || . "$PF_SOURCE"
 
     # Ensure that the 'TMPDIR' is writable as heredocs use it and
     # fail without the write permission. This was found to be the
