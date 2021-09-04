@@ -1742,16 +1742,29 @@ get_ascii() {
 }
 
 main() {
-    [ "$1" = --version ] && {
-        printf 'pfetch 0.7.0\n'
-        exit 0
-    }
+    case $* in
+        -v)
+            printf '%s 0.7.0\n' "${0##*/}"
+            return 0
+        ;;
 
-    # Hide 'stderr' unless the first argument is '-v'. This saves
-    # polluting the script with '2>/dev/null'.
-    [ "$1" = -v ] || {
-        exec 2>/dev/null
-    }
+        -d)
+            # Below exec is not run, stderr is shown.
+        ;;
+
+        '')
+            exec 2>/dev/null
+        ;;
+
+        *)
+            cat <<EOF
+${0##*/}     show system information
+${0##*/} -d  show stderr (debug mode)
+${0##*/} -v  show version information
+EOF
+            return 0
+        ;;
+    esac
 
     # Hide 'stdout' and selectively print to it using '>&6'.
     # This gives full control over what it displayed on the screen.
