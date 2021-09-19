@@ -1243,6 +1243,20 @@ get_ascii() {
 			EOF
         ;;
 
+        ([Cc]rystal*[Ll]inux)
+            read_ascii 5 5 <<-EOF
+				${c5}          -//.     
+				${c5}        -//.       
+				${c5}      -//. .       
+				${c5}    -//.  '//-     
+				${c5}   /+:      :+/    
+				${c5}    .//'  .//.     
+				${c5}      . .//.       
+				${c5}      .//.         
+				${c5}    .//.           
+			EOF
+        ;;
+
         ([Dd]ahlia*)
             read_ascii 1 <<-EOF
 				${c1}      _
