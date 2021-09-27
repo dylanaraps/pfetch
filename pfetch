@@ -412,9 +412,11 @@ get_host() {
             # Despite what these files are called, version doesn't
             # always contain the version nor does name always contain
             # the name.
-            read -r name    < /sys/devices/virtual/dmi/id/product_name
-            read -r version < /sys/devices/virtual/dmi/id/product_version
-            read -r model   < /sys/firmware/devicetree/base/model
+			# NOTE: Using `printf` in order to prevent `read` from reading stdout
+			# when some of these files do not exist.
+            name=$(printf "%s" "$(< /sys/devices/virtual/dmi/id/product_name)")
+            version=$(printf "%s" "$(< /sys/devices/virtual/dmi/id/product_version)")
+            model=$(printf "%s" "$(< /sys/firmware/devicetree/base/model)")
 
             host="$name $version $model"
         ;;
