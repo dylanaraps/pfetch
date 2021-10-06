@@ -150,7 +150,7 @@ log() {
 
     # Print the info data, color it and strip all leading whitespace
     # from the string.
-    esc_p SGR "3${PF_COL2-7}"
+    esc_p SGR "3${PF_COL2-9}"
     printf '%s' "$info"
     esc_p SGR 0
     printf '\n'

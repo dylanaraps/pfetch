@@ -82,7 +82,7 @@ PF_COL1=4
 # Color of info data:
 # Default: unset (auto)
 # Valid: 0-9
-PF_COL2=7
+PF_COL2=9
 
 # Color of title data:
 # Default: unset (auto)
