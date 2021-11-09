@@ -1282,6 +1282,18 @@ get_ascii() {
 			EOF
         ;;
 
+		([Dd]evuan*)
+			read_ascii 6 <<-EOF
+				${c4} ..:::.      
+				${c4}    ..-==-   
+				${c4}        .+#: 
+				${c4}         =@@ 
+				${c4}      :+%@#: 
+				${c4}.:=+#@@%*:   
+				${c4}#@@@#=:      
+			EOF
+		;;
+
         ([Dd]ragon[Ff]ly*)
             read_ascii 1 <<-EOF
 				    ,${c1}_${c7},
