@@ -1718,6 +1718,18 @@ get_ascii() {
 			EOF
         ;;
 
+        ([Ss]olus*)
+            read_ascii 4 <<-EOF
+				${c6} 
+				${c6}     /|
+				${c6}    / |\\
+				${c6}   /  | \\ _
+				${c6}  /___|__\\_\\
+				${c6} \\         /
+				${c6}  \`-------´
+			EOF
+        ;;
+
         ([Ss]un[Oo][Ss]|[Ss]olaris*)
             read_ascii 3 <<-EOF
 				${c3}       .   .;   .
