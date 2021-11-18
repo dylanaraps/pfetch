@@ -1050,7 +1050,15 @@ get_wm() {
         ;;
     esac
 
-    log wm "$wm" >&6
+    # Wlroots based compositors are usually window managers. 
+    # Some are usually set in XDG_CURRENT_DESKTOP such as sway
+    # or river.
+    if [ "$wm" = "wlroots wm" ]
+    then
+        log wm "${XDG_CURRENT_DESKTOP:-$wm}" >&6
+    else 
+        log wm "$wm" >&6 
+    fi
 }
 
 
