@@ -1353,6 +1353,17 @@ get_ascii() {
 			EOF
         ;;
 
+        ([Gg]allium[Oo][Ss])
+            read_ascii 4 <<-EOF
+				${c4}\\ooooo/::::
+				y\\ooo/\\::::
+				yy\\o/${c7}MM${c4}\\:::
+				yyy\\${c7}MM${c4}/.\\::
+				yyyyy/...\\:
+				yyyy/.....\\
+			EOF
+        ;;
+
         ([Gg]entoo*)
             read_ascii 5 <<-EOF
 				${c5} _-----_
