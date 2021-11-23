@@ -1094,7 +1094,7 @@ get_palette() {
         palette="$palette$e"
     }
 
-    # Print the palette with a new-line before and afterwards but no seperator.
+    # Print the palette with a new-line before and afterwards but no separator.
     printf '\n' >&6
     log "$palette
         " " " " " >&6
@@ -1350,6 +1350,17 @@ get_ascii() {
 				${c1}|           |
 				 ${c1};         ;
 				  ${c1}'-_____-'
+			EOF
+        ;;
+
+        ([Gg]allium[Oo][Ss])
+            read_ascii 4 <<-EOF
+				${c4}\\ooooo/::::
+				y\\ooo/\\::::
+				yy\\o/${c7}MM${c4}\\:::
+				yyy\\${c7}MM${c4}/.\\::
+				yyyyy/...\\:
+				yyyy/.....\\
 			EOF
         ;;
 
@@ -1810,7 +1821,7 @@ get_ascii() {
     # This ensures that any variables defined in the while loop
     # are still accessible in the script.
     done <<-EOF
- 		$(printf %s "$ascii" | sed 's/\[3.m//g')
+		$(printf %s "$ascii" | sed 's/\[3.m//g')
 	EOF
 
     # Add a gap between the ascii art and the information.
@@ -1863,7 +1874,7 @@ EOF
     # shellcheck source=/dev/null
     ! [ -f "$PF_SOURCE" ] || . "$PF_SOURCE"
 
-    # Ensure that the 'TMPDIR' is writable as heredocs use it and
+    # Ensure that the 'TMPDIR' is writeable as heredocs use it and
     # fail without the write permission. This was found to be the
     # case on Android where the temporary directory requires root.
     [ -w "${TMPDIR:-/tmp}" ] || export TMPDIR=~
