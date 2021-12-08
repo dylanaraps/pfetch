@@ -1041,6 +1041,7 @@ get_wm() {
                             (*monsterwm*) wm=monsterwm ;;
                             (*wmaker*)    wm='Window Maker' ;;
                             (*sowm*)      wm=sowm ;;
+							(*penrose*)   wm=penrose ;;
                         esac
                     done <<-EOF
                         $(ps x)
