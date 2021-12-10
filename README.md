@@ -99,19 +99,26 @@ PF_ALIGN=""
 # Valid: string
 PF_ASCII="openbsd"
 
+# Which hostname to display.
+PF_HOSTNAME=""
+
+# Which editor to display.
+PF_EDITOR=""
+
+# Host Copmputer Model or Hardware
+PF_Model=""
+
+# Explicitly Set The DE for eg: for MacOS users
+# Falls back to XDG_CURRENT_DESKTOP
+PF_DE=""
+
 # The below environment variables control more
 # than just 'pfetch' and can be passed using
-# 'HOSTNAME=cool_pc pfetch' to restrict their
+# 'XDG_CURRENT_DESKTOP=cool_beans pfetch' to restrict their
 # usage solely to 'pfetch'.
 
 # Which user to display.
 USER=""
-
-# Which hostname to display.
-HOSTNAME=""
-
-# Which editor to display.
-EDITOR=""
 
 # Which shell to display.
 SHELL=""
