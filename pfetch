@@ -279,7 +279,12 @@ get_os() {
             # If the kernel version string ends in "-Microsoft",
             # we're very likely running under Windows 10 in WSL1.
             if [ "$WSLENV" ]; then
-                distro="${distro}${WSLENV+ on Windows 10 [WSL2]}"
+                # If we are on WSL2 then we can use interop to
+                # find out if it is win 10 or win 11
+                # FIXME: we are assuming windows is mount on /c/
+                # and system have 'tr'
+                winver=$(/mnt/c/Windows/System32/wbem/wmic.exe os get Caption | grep -i windows | tr -d '\r')
+                distro="${distro}${WSLENV+ on ${winver} [WSL2]}"
 
             # Check to see if Linux is running in Windows 10 under
             # WSL2 (Windows subsystem for Linux [version 2]) and
