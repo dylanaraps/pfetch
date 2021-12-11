@@ -99,7 +99,7 @@ log() {
     # and it allows for easy swapping of info order and amount.
     #
     # $[2] ___      $[3] goldie@KISS
-    # $[4](.· |     $[5] os KISS Linux
+    # $[4](.. |     $[5] os KISS Linux
     #     (<> |
     #    / __  \
     #   ( /  \ /|
@@ -206,7 +206,7 @@ get_os() {
     }
 
     case $os in
-        (Linux*)
+        (Linux*|GNU*)
             # Some Linux distributions (which are based on others)
             # fail to identify as they **do not** change the upstream
             # distribution's identification packages or files.
@@ -485,7 +485,7 @@ get_uptime() {
     # converting that data into days, hours and minutes using simple
     # math.
     case $os in
-        (Linux* | Minix* | SerenityOS*)
+        (Linux* | Minix* | GNU*| SerenityOS*)
             IFS=. read -r s _ < /proc/uptime
         ;;
 
@@ -564,7 +564,7 @@ get_pkgs() {
     # managers are installed.
     packages=$(
         case $os in
-            (Linux*)
+            (Linux*|GNU*)
                 # Commands which print packages one per line.
                 has bonsai     && bonsai list
                 has crux       && pkginfo -i
@@ -693,7 +693,7 @@ get_memory() {
         # Used memory is calculated using the following "formula":
         # MemUsed = MemTotal + Shmem - MemFree - Buffers - Cached - SReclaimable
         # Source: https://github.com/KittyKatt/screenFetch/issues/386
-        (Linux*)
+        (Linux*|GNU*)
             # Parse the '/proc/meminfo' file splitting on ':' and 'k'.
             # The format of the file is 'key:   000kB' and an additional
             # split is used on 'k' to filter out 'kB'.
@@ -1379,19 +1379,14 @@ get_ascii() {
 			EOF
         ;;
 
-        ([Gg][Nn][Uu]*)
-            read_ascii 3 <<-EOF
-				${c2}    _-\`\`-,   ,-\`\`-_
-				${c2}  .'  _-_|   |_-_  '.
-				${c2}./    /_._   _._\\    \\.
-				${c2}:    _/_._\`:'_._\\_    :
-				${c2}\\:._/  ,\`   \\   \\ \\_.:/
-				${c2}   ,-';'.@)  \\ @) \\
-				${c2}   ,'/'  ..- .\\,-.|
-				${c2}   /'/' \\(( \\\` ./ )
-				${c2}    '/''  \\_,----'
-				${c2}      '/''   ,;/''
-				${c2}         \`\`;'
+        ([Gg][Nn][Uu]*|[Hh]urd*)
+            read_ascii 7 <<-EOF
+				${c7} ---${c3}[ ]${c7}<----
+				${c7} v   |      |
+				${c3}[ ]${c7}  --->${c3}[ ]${c7}|
+				${c7} ^        | |
+				${c7} |  ${c3}[ ]${c7}---|--
+				${c7}  ---------
 			EOF
         ;;
 
@@ -1420,7 +1415,7 @@ get_ascii() {
 			EOF
         ;;
 
-        ([Hh]ydroOS*)
+        ([Hh]ydro[Oo][Ss]*)
 			read_ascii 4 <<-EOF
 				${c1}╔╗╔╗──╔╗───╔═╦══╗
 				${c1}║╚╝╠╦╦╝╠╦╦═╣║║══╣
