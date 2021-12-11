@@ -597,7 +597,7 @@ get_pkgs() {
                 has dpkg       && dpkg-query -f '.\n' -W
 
                 # Directories containing packages.
-                has brew       && printf '%s\n' /usr/local/Cellar/*
+                has brew       && printf '%s\n' "$(brew --cellar)/"*
 
                 # 'port' prints a single line of output to 'stdout'
                 # when no packages are installed and exits with
