@@ -1208,6 +1208,21 @@ get_ascii() {
 			EOF
         ;;
 
+		([Aa]mog[Oo][Ss]*)
+			read_ascii 4 <<-EOF
+				${c7}      -///:.
+				${c7}     smhhhhmh\`
+				${c7}    :NA${c4}mogO${c7}SNs
+				${c7}    hNNmmmmNNN
+				${c7}    NNNNNNNNNN
+				${c7}   :NNNNNNNNNN
+				${c7}   mNNssussNNN
+				${c7}  sNn:    sNNo
+				${c7}+ooo+     sNNo
+				${c7}        +oooo\`
+			EOF
+		;;
+
         ([Bb]uildroot*)
             read_ascii 3 <<-EOF
 				${c3}   ___
@@ -1246,15 +1261,15 @@ get_ascii() {
 
         ([Cc]rystal*[Ll]inux)
             read_ascii 5 5 <<-EOF
-				${c5}        -//.     
-				${c5}      -//.       
-				${c5}    -//. .       
-				${c5}  -//.  '//-     
-				${c5} /+:      :+/    
-				${c5}  .//'  .//.     
-				${c5}    . .//.       
-				${c5}    .//.         
-				${c5}  .//.           
+				${c5}        -//.
+				${c5}      -//.
+				${c5}    -//. .
+				${c5}  -//.  '//-
+				${c5} /+:      :+/
+				${c5}  .//'  .//.
+				${c5}    . .//.
+				${c5}    .//.
+				${c5}  .//.
 			EOF
         ;;
 
@@ -1285,13 +1300,13 @@ get_ascii() {
 
 		([Dd]evuan*)
 			read_ascii 6 <<-EOF
-				${c4} ..:::.      
-				${c4}    ..-==-   
-				${c4}        .+#: 
-				${c4}         =@@ 
-				${c4}      :+%@#: 
-				${c4}.:=+#@@%*:   
-				${c4}#@@@#=:      
+				${c4} ..:::.
+				${c4}    ..-==-
+				${c4}        .+#:
+				${c4}         =@@
+				${c4}      :+%@#:
+				${c4}.:=+#@@%*:
+				${c4}#@@@#=:
 			EOF
 		;;
 
@@ -1734,7 +1749,7 @@ get_ascii() {
 
         ([Ss]olus*)
             read_ascii 4 <<-EOF
-				${c6} 
+				${c6}
 				${c6}     /|
 				${c6}    / |\\
 				${c6}   /  | \\ _
