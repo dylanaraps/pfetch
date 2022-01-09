@@ -1217,9 +1217,9 @@ get_ascii() {
 				${c7}    NNNNNNNNNN
 				${c7}   :NNNNNNNNNN
 				${c7}   mNNssussNNN
-				${c7}  :Nm:    :NNo
-				${c7}+ooo+   .smNNo
-				${c7} ^^^\`    ^^^^\`
+				${c7}  sNn:    sNNo
+				${c7}+ooo+     sNNo
+				${c7}        +oooo\`
 			EOF
 		;;
 
