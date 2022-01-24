@@ -1,27 +1,32 @@
 <p align="center"><img src="https://user-images.githubusercontent.com/6799467/65944518-68834d80-e421-11e9-9b14-6ca26a16108a.png" width="350px"></p>
 <h1 align="center">pfetch</h1>
-<p align="center">A pretty system information tool written in POSIX sh</p><br>
+<p align="center">A minimal yet pretty system profiler written in POSIX sh</p><br>
 
 <img src="https://user-images.githubusercontent.com/6799467/65945384-5bfff480-e423-11e9-863e-4e7cf16eb648.png" width="40%" align="right">
 
-The goal of this project is to implement a simple system
-information tool in POSIX `sh` using features built into
-the language itself (*where possible*).
+The goal of this project is to implement
+a simple system information tool in POSIX `sh`
+using features built into the language itself
+(*where possible*).
 
-The source code is highly documented and I hope it will
-act as a learning resource for POSIX `sh` and simple
-information detection across various different operating
-systems.
+The source code is extensively documented
+and I hope it will act as a learning resource 
+for POSIX `sh` and simple information detection
+across various different operating systems.
 
-If anything in the source code is unclear or is lacking
-in its explanation, open an issue. Sometimes you get too
-close to something and you fail to see the "bigger
-picture"!
+If anything in the source code is unclear
+or is lacking in its explanation, open an issue.
+Sometimes you get too close to something
+and you fail to see the "bigger picture"!
 
-<br>
-<br>
-<br>
-<br>
+Installation is as simple as
+copying the script into your PATH
+and making it executable, e.g.:
+```sh
+cd /usr/local/bin
+sudo wget https://raw.githubusercontent.com/dylanaraps/pfetch/master/pfetch
+sudo chmod +x pfetch
+```
 
 ## OS support
 
