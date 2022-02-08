@@ -1054,6 +1054,11 @@ get_wm() {
     log wm "$wm" >&6
 }
 
+get_battery(){
+    battery_level=$(cat /sys/class/power_supply/BAT*/capacity)
+    battery_status=$(cat /sys/class/power_supply/BAT*/status)
+    log battery "${battery_level}% (${battery_status})" >&6
+}
 
 get_de() {
     # This only supports Xorg related desktop environments though
