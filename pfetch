@@ -2,6 +2,8 @@
 #
 # pfetch - Simple POSIX sh fetch script.
 
+#PF_ASCII="arch"
+
 # Wrapper around all escape sequences used by pfetch to allow for
 # greater control over which sequences are used (if any at all).
 esc() {
@@ -293,6 +295,19 @@ get_os() {
             fi
         ;;
 
+        (CYGWIN*|MSYS*|MINGW*)
+            # Grab everything after the first instance of
+            # white-space in the command output of 'wmic'.
+            #
+            # The format of 'wmic' is as follows:
+            # Caption=Microsoft Windows 7 Enterprise
+            #
+            # This extracts:    ^^^^^^^^^^^^^^^^^^^^
+            read -r _ distro <<-EOF
+    			$(wmic os get Caption | head -n 2 | tail -n +2)
+			EOF
+        ;;
+
         (Darwin*)
             # Parse the SystemVersion.plist file to grab the macOS
             # version. The file is in the following format:
@@ -435,6 +450,12 @@ get_host() {
         (*BSD* | Minix)
             host=$(sysctl -n hw.vendor hw.product)
         ;;
+		(CYGWIN*|MSYS*|MINGW*)
+			host=$(wmic computersystem get model \
+			| tail -n +2 \
+			| sed 's/.*=//g'
+			)
+		;;
     esac
 
     # Turn the host string into an argument list so we can iterate
@@ -485,7 +506,7 @@ get_uptime() {
     # converting that data into days, hours and minutes using simple
     # math.
     case $os in
-        (Linux* | Minix* | SerenityOS*)
+        (Linux* | Minix* | SerenityOS*|CYGWIN*|MSYS*|MINGW*)
             IFS=. read -r s _ < /proc/uptime
         ;;
 
@@ -564,7 +585,7 @@ get_pkgs() {
     # managers are installed.
     packages=$(
         case $os in
-            (Linux*)
+            (Linux*|CYGWIN*|MSYS*|MINGW*)
                 # Commands which print packages one per line.
                 has bonsai     && bonsai list
                 has crux       && pkginfo -i
@@ -575,6 +596,7 @@ get_pkgs() {
                 has apk        && apk info
                 has guix       && guix package --list-installed
                 has opkg       && opkg list-installed
+				has scoop      && scoop list
 
                 # Directories containing packages.
                 has kiss       && printf '%s\n' /var/db/kiss/installed/*/
@@ -679,6 +701,9 @@ get_pkgs() {
         (OpenBSD)
             packages=$((packages))
         ;;
+		(CYGWIN*|MSYS*|MINGW*)
+			packages=$((packages - 3))
+		;;
     esac
 
     case $packages in
@@ -693,7 +718,7 @@ get_memory() {
         # Used memory is calculated using the following "formula":
         # MemUsed = MemTotal + Shmem - MemFree - Buffers - Cached - SReclaimable
         # Source: https://github.com/KittyKatt/screenFetch/issues/386
-        (Linux*)
+        (Linux*|CYGWIN*|MSYS*|MINGW*)
             # Parse the '/proc/meminfo' file splitting on ':' and 'k'.
             # The format of the file is 'key:   000kB' and an additional
             # split is used on 'k' to filter out 'kB'.
@@ -939,10 +964,81 @@ get_memory() {
     log memory "${mem_used:-?}M / ${mem_full:-?}M" >&6
 }
 
+get_disk() {
+    # Store the version of the 'df' command as the available
+    # flags, options and implementation differs between operating
+    # systems and we need to handle these edge-cases.
+    df_version=$(df --version 2>&1)
+
+    case $df_version in
+        # The 'df' command is from AIX.
+        *IMitv*)
+            set -- -P -g
+        ;;
+
+        # The 'df' command is from IRIX.
+        *befhikm*)
+            set -- -P -k
+        ;;
+
+        # The 'df' command is from OpenBSD.
+        *hiklnP*)
+            set -- -h
+        ;;
+
+        # The 'df' command is from Haiku and is wildly
+        # different and provides no workable output,
+        # end here.
+        *Tracker*) # Haiku
+            return
+        ;;
+
+        # From testing it is saffe to assume that
+        # any other 'df' version provides these flags.
+        *)
+            set -- -P -h
+		;;
+    esac
+
+    # Read the output of 'df' line by line. The first line
+    # contains header information for the "table" so it is
+    # skipped.
+    #
+    # The next lines are then split to grab the relevant
+    # information and thankfully the output remains the
+    # same between all but one 'df' implementation.
+    #
+    # TODO: Configure disks to send to 'df'. Do we need to
+    #       do this? I'd love to _not_ do it.
+	df "$@" / | while read -r name full used _ perc _; do
+		[ "$header" ] || { header=1; continue; }
+
+		case $df_version in
+			# The 'df' command is from IRIX.
+			*befhikm*)
+				used=$((used/1024/1024))G
+				full=$((full/1024/1024))G
+			;;
+		esac
+		#
+		# probably a better way to do this, but a simple fixs
+		case $os in
+			CYGWIN*|MSYS*|MINGW*)
+				windisk=$(df -h | tail -n +2 | awk 'NR==1{print $4" / "$3,"("$6")"}')
+				log disk "$windisk" >&6
+			;;
+			*)
+				log disk "$used / $full ($perc)" >&6
+			;;
+		esac
+	done
+
+}
+
 get_wm() {
     case $os in
-        (Darwin*)
-            # Don't display window manager on macOS.
+        (Darwin*|CYGWIN*|MSYS*|MINGW*)
+            # Don't display window manager on macOS and Windows.
         ;;
 
         (*)
@@ -1257,6 +1353,19 @@ get_ascii() {
 				${c5}  .//.           
 			EOF
         ;;
+		
+		CYGWIN*|MSYS*|MINGW*)
+		    read_ascii 4 <<-EOF
+				${c4}
+				######  ######
+				######  ######
+				######  ######
+				
+				######  ######
+				######  ######
+				######  ######
+			EOF
+		;;
 
         ([Dd]ahlia*)
             read_ascii 1 <<-EOF
@@ -1824,7 +1933,7 @@ get_ascii() {
     # This ensures that any variables defined in the while loop
     # are still accessible in the script.
     done <<-EOF
- 		$(printf %s "$ascii" | sed 's/\[3.m//g')
+ 		$(printf %s "$ascii" | awk '{gsub("\\[3.m","");print}')
 	EOF
 
     # Add a gap between the ascii art and the information.
@@ -1914,8 +2023,7 @@ EOF
         # Disable globbing and set the positional parameters to the
         # contents of 'PF_INFO'.
         set -f
-        set +f -- ${PF_INFO-ascii title os host kernel uptime pkgs memory}
-
+        set +f -- ${PF_INFO-ascii title os host kernel uptime pkgs memory disk}
         # Iterate over the info functions to determine the lengths of the
         # "info names" for output alignment. The option names and subtitles
         # match 1:1 so this is thankfully simple.
