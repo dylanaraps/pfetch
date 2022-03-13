@@ -1163,6 +1163,15 @@ get_ascii() {
 			EOF
         ;;
 
+        ([Aa]perio*)
+            read_ascii 4 <<-EOF 
+				${c7} _.._  _ ._.. _ 
+				${c7}(_][_)(/,[  |(_)
+				${c7}   |   GNU/Linux
+			EOF
+        ;;
+
+
         ([Aa]rch*)
             read_ascii 4 <<-EOF
 				${c6}       /\\
