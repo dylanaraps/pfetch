@@ -1125,12 +1125,12 @@ get_ascii() {
 			EOF
         ;;
 
-	(Aperio*)
+        ([Aa]perio*)
             read_ascii 4 <<-EOF 
- _.._  _ ._.. _
-(_][_)(/,[  |(_)
-   |   GNU/Linux
-EOF
+				${c7} _.._  _ ._.. _ 
+				${c7}(_][_)(/,[  |(_)
+				${c7}   |   GNU/Linux
+			EOF
         ;;
 
 
