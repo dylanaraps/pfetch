@@ -112,8 +112,9 @@ log() {
     # End here if no data was found.
     [ "$2" ] || return
 
-    # Store the value of '$1' as we reset the argument list below.
+    # Store the values of '$1' and '$3' as we reset the argument list below.
     name=$1
+    use_seperator=$3
 
     # Use 'set --' as a means of stripping all leading and trailing
     # white-space from the info string. This also normalizes all
@@ -138,8 +139,8 @@ log() {
     printf '%s' "$name"
     esc_p SGR 0
 
-    # Print the info name and info data separator.
-    printf %s "$PF_SEP"
+    # Print the info name and info data separator, if applicable.
+    [ "$use_seperator" ] || printf %s "$PF_SEP"
 
     # Move the cursor backward the length of the *current* info name and
     # then move it forwards the length of the *longest* info name. This
@@ -149,7 +150,7 @@ log() {
 
     # Print the info data, color it and strip all leading whitespace
     # from the string.
-    esc_p SGR "3${PF_COL2-7}"
+    esc_p SGR "3${PF_COL2-9}"
     printf '%s' "$info"
     esc_p SGR 0
     printf '\n'
@@ -169,12 +170,12 @@ get_title() {
     # Disable the warning about '$HOSTNAME' being undefined in POSIX sh as
     # the intention for using it is allowing the user to overwrite the
     # value on invocation.
-    # shellcheck disable=SC2039
-    host=${HOSTNAME:-${host:-$(hostname)}}
+    # shellcheck disable=3028,2039
+    hostname=${HOSTNAME:-${hostname:-$(hostname)}}
 
     # If the hostname is still not found, fallback to the contents of the
     # /etc/hostname file.
-    [ "$host" ] || read -r host < /etc/hostname
+    [ "$hostname" ] || read -r hostname < /etc/hostname
 
     # Add escape sequences for coloring to user and host name. As we embed
     # them directly in the arguments passed to log(), we cannot use esc_p().
@@ -185,11 +186,11 @@ get_title() {
     esc SGR 1
     user=$user$e
     esc SGR 1
-    host=$e$host
+    hostname=$e$hostname
     esc SGR "3${PF_COL3:-1}"
-    host=$e$host
+    hostname=$e$hostname
 
-    log "${user}@${host}" " " >&6
+    log "${user}@${hostname}" " " " " >&6
 }
 
 get_os() {
@@ -237,7 +238,7 @@ get_os() {
             elif [ -d /system/app ] && [ -d /system/priv-app ]; then
                 distro="Android $(getprop ro.build.version.release)"
 
-            else
+            elif [ -f /etc/os-release ]; then
                 # This used to be a simple '. /etc/os-release' but I believe
                 # this is insecure as we blindly executed whatever was in the
                 # file. This parser instead simply handles 'key=val', treating
@@ -249,17 +250,18 @@ get_os() {
                         ;;
                     esac
                 done < /etc/os-release
+
+            else
+                # Special cases for (independent) distributions which
+                # don't follow any os-release/lsb standards whatsoever.
+                has crux && distro=$(crux)
+                has guix && distro='Guix System'
             fi
 
             # 'os-release' and 'lsb_release' sometimes add quotes
             # around the distribution name, strip them.
             distro=${distro##[\"\']}
             distro=${distro%%[\"\']}
-
-            # Special cases for (independent) distributions which
-            # don't follow any os-release/lsb standards whatsoever.
-            has crux && distro=$(crux)
-            has guix && distro='Guix System'
 
             # Check to see if we're running Bedrock Linux which is
             # very unique. This simply checks to see if the user's
@@ -337,6 +339,7 @@ get_os() {
                 (10.14*) distro='macOS Mojave' ;;
                 (10.15*) distro='macOS Catalina' ;;
                 (11*)    distro='macOS Big Sur' ;;
+                (12*)    distro='macOS Monterey' ;;
                 (*)      distro='macOS' ;;
             esac
 
@@ -378,7 +381,7 @@ get_os() {
             distro="$distro $openbsd_ver"
         ;;
 
-        FreeBSD)
+        (FreeBSD)
             distro="$os $(freebsd-version)"
         ;;
 
@@ -482,11 +485,11 @@ get_uptime() {
     # converting that data into days, hours and minutes using simple
     # math.
     case $os in
-        (Linux* | Minix*)
+        (Linux* | Minix* | SerenityOS*)
             IFS=. read -r s _ < /proc/uptime
         ;;
 
-        Darwin* | *BSD* | DragonFly*)
+        (Darwin* | *BSD* | DragonFly*)
             s=$(sysctl -n kern.boottime)
 
             # Extract the uptime in seconds from the following output:
@@ -559,16 +562,7 @@ get_pkgs() {
     # The output from this is then piped to 'wc -l' to count each
     # line, giving us the total package count of whatever package
     # managers are installed.
-    #
-    # Backticks are *required* here as '/bin/sh' on macOS is
-    # 'bash 3.2' and it can't handle the following:
-    #
-    # var=$(
-    #    code here
-    # )
-    #
-    # shellcheck disable=2006
-    packages=`
+    packages=$(
         case $os in
             (Linux*)
                 # Commands which print packages one per line.
@@ -656,8 +650,22 @@ get_pkgs() {
             (IRIX)
                 versions -b
             ;;
+
+            (SerenityOS)
+                while IFS=" " read -r type _; do
+                    [ "$type" != dependency ] &&
+                        printf "\n"
+                done < /usr/Ports/packages.db
+            ;;
         esac | wc -l
-    `
+    )
+
+    # 'wc -l' can have leading and/or trailing whitespace
+    # depending on the implementation, so strip them.
+    # Procedure explained at https://github.com/dylanaraps/pure-sh-bible
+    # (trim-leading-and-trailing-white-space-from-string)
+    packages=${packages#"${packages%%[![:space:]]*}"}
+    packages=${packages%"${packages##*[![:space:]]}"}
 
     case $os in
         # IRIX's package manager adds 3 lines of extra
@@ -899,6 +907,33 @@ get_memory() {
 
             mem_used=$((mem_full - mem_free))
         ;;
+
+        (SerenityOS)
+            IFS='{}' read -r _ memstat _ < /proc/memstat
+
+            set -f -- "$IFS"
+            IFS=,
+
+            for pair in $memstat; do
+                case $pair in
+                    (*user_physical_allocated*)
+                        mem_used=${pair##*:}
+                    ;;
+
+                    (*user_physical_available*)
+                        mem_free=${pair##*:}
+                    ;;
+                esac
+            done
+
+            IFS=$1
+            set +f --
+
+            mem_used=$((mem_used * 4096 / 1024 / 1024))
+            mem_free=$((mem_free * 4096 / 1024 / 1024))
+
+            mem_full=$((mem_used + mem_free))
+        ;;
     esac
 
     log memory "${mem_used:-?}M / ${mem_full:-?}M" >&6
@@ -1006,6 +1041,7 @@ get_wm() {
                             (*monsterwm*) wm=monsterwm ;;
                             (*wmaker*)    wm='Window Maker' ;;
                             (*sowm*)      wm=sowm ;;
+							(*penrose*)   wm=penrose ;;
                         esac
                     done <<-EOF
                         $(ps x)
@@ -1037,7 +1073,9 @@ get_shell() {
 get_editor() {
     # Display the value of '$VISUAL', if it's empty, display the
     # value of '$EDITOR'.
-    log editor "${VISUAL:-$EDITOR}" >&6
+    editor=${VISUAL:-"$EDITOR"}
+
+    log editor "${editor##*/}" >&6
 }
 
 get_palette() {
@@ -1057,10 +1095,10 @@ get_palette() {
         palette="$palette$e"
     }
 
-    # Print the palette with a new-line before and afterwards.
+    # Print the palette with a new-line before and afterwards but no seperator.
     printf '\n' >&6
     log "$palette
-        " " " >&6
+        " " " " " >&6
 }
 
 get_ascii() {
@@ -1189,6 +1227,20 @@ get_ascii() {
 			EOF
         ;;
 
+        ([Cc]el[Oo][Ss]*)
+            read_ascii 5 0 <<-EOF
+				${c5}      .////\\\\\//\\.
+				${c5}     //_         \\\\
+				${c5}    /_  ${c7}##############
+				${c5}   //              *\\
+				${c7}###############    ${c5}|#
+				${c5}   \/              */
+				${c5}    \*   ${c7}##############
+				${c5}     */,        .//
+				${c5}      '_///\\\\\//_'
+			EOF
+        ;;
+
         ([Cc]ent[Oo][Ss]*)
             read_ascii 5 <<-EOF
 				${c2} ____${c3}^${c5}____
@@ -1198,6 +1250,20 @@ get_ascii() {
 				${c4} | / ${c2}|${c3} \\ |
 				${c4} |/__${c2}|${c3}__\\|
 				${c2}     v
+			EOF
+        ;;
+
+        ([Cc]rystal*[Ll]inux)
+            read_ascii 5 5 <<-EOF
+				${c5}        -//.     
+				${c5}      -//.       
+				${c5}    -//. .       
+				${c5}  -//.  '//-     
+				${c5} /+:      :+/    
+				${c5}  .//'  .//.     
+				${c5}    . .//.       
+				${c5}    .//.         
+				${c5}  .//.           
 			EOF
         ;;
 
@@ -1226,6 +1292,18 @@ get_ascii() {
 			EOF
         ;;
 
+		([Dd]evuan*)
+			read_ascii 6 <<-EOF
+				${c4} ..:::.      
+				${c4}    ..-==-   
+				${c4}        .+#: 
+				${c4}         =@@ 
+				${c4}      :+%@#: 
+				${c4}.:=+#@@%*:   
+				${c4}#@@@#=:      
+			EOF
+		;;
+
         ([Dd]ragon[Ff]ly*)
             read_ascii 1 <<-EOF
 				    ,${c1}_${c7},
@@ -1251,7 +1329,7 @@ get_ascii() {
 
         ([Ee]ndeavour*)
             read_ascii 4 <<-EOF
-						      ${c1}/${c4}\\
+				      ${c1}/${c4}\\
 				    ${c1}/${c4}/  \\${c6}\\
 				   ${c1}/${c4}/    \\ ${c6}\\
 				 ${c1}/ ${c4}/     _) ${c6})
@@ -1262,14 +1340,15 @@ get_ascii() {
 
         ([Ff]edora*)
             read_ascii 4 <<-EOF
-				${c7}      _____
-				     /   __)${c4}\\${c7}
-				     |  /  ${c4}\\ \\${c7}
-				  ${c4}__${c7}_|  |_${c4}_/ /${c7}
-				 ${c4}/ ${c7}(_    _)${c4}_/${c7}
-				${c4}/ /${c7}  |  |
-				${c4}\\ \\${c7}__/  |
-				 ${c4}\\${c7}(_____/
+				        ${c4},'''''.
+				       ${c4}|   ,.  |
+				       ${c4}|  |  '_'
+				${c4}  ,....|  |..
+				${c4}.'  ,_;|   ..'
+				${c4}|  |   |  |
+				${c4}|  ',_,'  |
+				${c4} '.     ,'
+				   ${c4}'''''
 			EOF
         ;;
 
@@ -1281,6 +1360,19 @@ get_ascii() {
 				${c1}|           |
 				 ${c1};         ;
 				  ${c1}'-_____-'
+			EOF
+        ;;
+
+        ([Gg]aruda*)
+            read_ascii 4 <<-EOF
+				${c3}         _______
+				${c3}      __/       \\_
+				${c3}    _/     /      \\_
+				${c7}  _/      /_________\\
+				${c7}_/                  |
+				${c2}\\     ____________
+				${c2} \\_            __/
+				${c2}   \\__________/
 			EOF
         ;;
 
@@ -1337,6 +1429,16 @@ get_ascii() {
 			EOF
         ;;
 
+        ([Hh]ydroOS*)
+			read_ascii 4 <<-EOF
+				${c1}╔╗╔╗──╔╗───╔═╦══╗
+				${c1}║╚╝╠╦╦╝╠╦╦═╣║║══╣
+				${c1}║╔╗║║║╬║╔╣╬║║╠══║
+				${c1}╚╝╚╬╗╠═╩╝╚═╩═╩══╝
+				${c1}───╚═╝
+			EOF
+        ;;
+
         ([Hh]yperbola*)
             read_ascii <<-EOF
 				${c7}    |\`__.\`/
@@ -1346,6 +1448,23 @@ get_ascii() {
 				 ${c7} /  ___ \\
 				 ${c7}/ .\`   \`.\\
 				${c7}/.\`      \`.\\
+			EOF
+        ;;
+
+        ([Ii]glunix*)
+            read_ascii <<-EOF
+				${c0}       |
+				${c0}       |          |
+				${c0}                  |
+				${c0}  |    ________
+				${c0}  |  /\\   |    \\
+				${c0}    /  \\  |     \\  |
+				${c0}   /    \\        \\ |
+				${c0}  /      \\________\\
+				${c0}  \\      /        /
+				${c0}   \\    /        /
+				${c0}    \\  /        /
+				${c0}     \\/________/
 			EOF
         ;;
 
@@ -1598,6 +1717,18 @@ get_ascii() {
 			EOF
         ;;
 
+        ([Ss]erenity[Oo][Ss]*)
+            read_ascii 4 <<-EOF
+				${c7}    _____
+				${c1}  ,-${c7}     -,
+				${c1} ;${c7} (       ;
+				${c1}| ${c7}. \_${c1}.,${c7}    |
+				${c1}|  ${c7}o  _${c1} ',${c7}  |
+				${c1} ;   ${c7}(_)${c1} )${c7} ;
+				${c1}  '-_____-${c7}'
+			EOF
+        ;;
+
         ([Ss]lackware*)
             read_ascii 4 <<-EOF
 				${c4}   ________
@@ -1607,6 +1738,18 @@ get_ascii() {
 				${c4}   ______| |
 				${c4}| |________/
 				${c4}|____________
+			EOF
+        ;;
+
+        ([Ss]olus*)
+            read_ascii 4 <<-EOF
+				${c6} 
+				${c6}     /|
+				${c6}    / |\\
+				${c6}   /  | \\ _
+				${c6}  /___|__\\_\\
+				${c6} \\         /
+				${c6}  \`-------´
 			EOF
         ;;
 
@@ -1643,7 +1786,7 @@ get_ascii() {
 			EOF
         ;;
 
-		([Xx]eonix*)
+        ([Xx]eonix*)
             read_ascii 2 <<-EOF
 				${c2}    ___  ___
 				${c2}___ \  \/  / ___
@@ -1707,16 +1850,29 @@ get_ascii() {
 }
 
 main() {
-    [ "$1" = --version ] && {
-        printf 'pfetch 0.7.0\n'
-        exit 0
-    }
+    case $* in
+        -v)
+            printf '%s 0.7.0\n' "${0##*/}"
+            return 0
+        ;;
 
-    # Hide 'stderr' unless the first argument is '-v'. This saves
-    # polluting the script with '2>/dev/null'.
-    [ "$1" = -v ] || {
-        exec 2>/dev/null
-    }
+        -d)
+            # Below exec is not run, stderr is shown.
+        ;;
+
+        '')
+            exec 2>/dev/null
+        ;;
+
+        *)
+            cat <<EOF
+${0##*/}     show system information
+${0##*/} -d  show stderr (debug mode)
+${0##*/} -v  show version information
+EOF
+            return 0
+        ;;
+    esac
 
     # Hide 'stdout' and selectively print to it using '>&6'.
     # This gives full control over what it displayed on the screen.
@@ -1728,7 +1884,7 @@ main() {
     # Allow the user to execute their own script and modify or
     # extend pfetch's behavior.
     # shellcheck source=/dev/null
-    . "${PF_SOURCE:-/dev/null}" ||:
+    ! [ -f "$PF_SOURCE" ] || . "$PF_SOURCE"
 
     # Ensure that the 'TMPDIR' is writable as heredocs use it and
     # fail without the write permission. This was found to be the

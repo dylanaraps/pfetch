@@ -26,7 +26,7 @@ picture"!
 ## OS support
 
 - **Linux**
-    - Alpine Linux, Arch Linux, Arco Linux, Artix Linux, CentOS, Dahlia, Debian, Elementary, Fedora, Gentoo, Guix, Hyperbola, instantOS, KISS Linux, Linux Lite, Linux Mint, Mageia, Manjaro, MX Linux, NixOS, OpenSUSE, Parabola, Pop!\_OS, PureOS, Slackware, Ubuntu and Void Linux.
+    - Alpine Linux, Arch Linux, Arco Linux, Artix Linux, CentOS, Dahlia, Debian, Devuan, Elementary, EndeavourOS, Fedora, Garuda Linux, Gentoo, Guix, Hyperbola, instantOS, KISS Linux, Linux Lite, Linux Mint, Mageia, Manjaro, MX Linux, NixOS, OpenSUSE, Parabola, Pop!\_OS, PureOS, Slackware, Solus, Ubuntu and Void Linux.
     - All other distributions are supported with a generic penguin logo.
 - **Android**
 - **BSD**
@@ -38,6 +38,7 @@ picture"!
 - **Minix**
 - **Solaris**
 - **IRIX**
+- **SerenityOS**
 
 ## Configuration
 
@@ -81,7 +82,7 @@ PF_COL1=4
 # Color of info data:
 # Default: unset (auto)
 # Valid: 0-9
-PF_COL2=7
+PF_COL2=9
 
 # Color of title data:
 # Default: unset (auto)
