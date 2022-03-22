@@ -711,26 +711,10 @@ get_memory() {
                     (MemFree | Buffers | Cached | SReclaimable)
                         mem_used=$((mem_used - val))
                     ;;
-
-                    # If detected this will be used over the above calculation
-                    # for mem_used. Available since Linux 3.14rc.
-                    # See kernel commit 34e431b0ae398fc54ea69ff85ec700722c9da773
-                    (MemAvailable)
-                        mem_avail=$val
-                    ;;
                 esac
             done < /proc/meminfo
 
-            case $mem_avail in
-                (*[0-9]*)
-                    mem_used=$(((mem_full - mem_avail) / 1024))
-                ;;
-
-                *)
-                    mem_used=$((mem_used / 1024))
-                ;;
-            esac
-
+            mem_used=$((mem_used / 1024))
             mem_full=$((mem_full / 1024))
         ;;
 
