@@ -110,7 +110,7 @@ log() {
     # $[6] /home/goldie $
 
     # End here if no data was found.
-    [ "$2" ] || return
+    [ -n "$2" ] || return
 
     # Store the values of '$1' and '$3' as we reset the argument list below.
     name=$1
@@ -140,7 +140,7 @@ log() {
     esc_p SGR 0
 
     # Print the info name and info data separator, if applicable.
-    [ "$use_seperator" ] || printf %s "$PF_SEP"
+    [ -n "$use_seperator" ] || printf %s "$PF_SEP"
 
     # Move the cursor backward the length of the *current* info name and
     # then move it forwards the length of the *longest* info name. This
@@ -175,7 +175,7 @@ get_title() {
 
     # If the hostname is still not found, fallback to the contents of the
     # /etc/hostname file.
-    [ "$hostname" ] || read -r hostname < /etc/hostname
+    [ -n "$hostname" ] || read -r hostname < /etc/hostname
 
     # Add escape sequences for coloring to user and host name. As we embed
     # them directly in the arguments passed to log(), we cannot use esc_p().
@@ -200,7 +200,7 @@ get_os() {
     #
     # On first run, this function displays _nothing_, only on the second
     # invocation is 'log()' called.
-    [ "$distro" ] && {
+    [ -n "$distro" ] && {
         log os "$distro" >&6
         return
     }
@@ -278,7 +278,7 @@ get_os() {
             #
             # If the kernel version string ends in "-Microsoft",
             # we're very likely running under Windows 10 in WSL1.
-            if [ "$WSLENV" ]; then
+            if [ -n "$WSLENV" ]; then
                 distro="${distro}${WSLENV+ on Windows 10 [WSL2]}"
 
             # Check to see if Linux is running in Windows 10 under
@@ -995,7 +995,7 @@ get_wm() {
             # Wayland) though it's a lot more complicated!
 
             # Don't display window manager if X isn't running.
-            [ "$DISPLAY" ] || return
+            [ -n "$DISPLAY" ] || return
 
             # This is a two pass call to xprop. One call to get the window
             # manager's ID and another to print its properties.
@@ -1792,7 +1792,7 @@ get_ascii() {
             # On no match of a distribution ascii art, this function calls
             # itself again, this time to look for a more generic OS related
             # ascii art (KISS Linux -> Linux).
-            [ "$1" ] || {
+            [ -n "$1" ] || {
                 get_ascii "$os"
                 return
             }
