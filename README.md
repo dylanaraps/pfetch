@@ -51,7 +51,7 @@ For users using pwsh on Windows, add this to your $Profile
 Function pfetch {sh $env:UserProfile\pfetch\pfetch}
 ```
 
-For users using cmd o Windows, do this:
+For users using cmd on Windows, do this:
 - Make a doskey macro file, preferablly in `C:\bat\macros.doskey` <-- macros file
 - Go to Registry Editor
 - Go to Computer\HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Conmand Processor
@@ -62,6 +62,7 @@ For users using cmd o Windows, do this:
 DOSKEY /MACROFILE="C:\bat\macros.doskey"
 ```
 - Tada! Just run a new instance of cmd!
+
 
 `pfetch` is configured through environment variables.
 
