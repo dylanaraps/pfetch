@@ -58,9 +58,14 @@ For users using cmd on Windows, do this:
 - Make a new string value called `Autorun`
 - Right click on it and click `Modify...`
 - Change the value path to:
-```
+```cmd
 DOSKEY /MACROFILE="C:\bat\macros.doskey"
 ```
+- Edit the macros.doskey file to something like this:
+```cmd
+pfetch=sh %UserProfile%\pfetch\pfetch
+```
+
 - Tada! Just run a new instance of cmd!
 
 
