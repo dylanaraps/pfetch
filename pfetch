@@ -508,6 +508,13 @@ get_uptime() {
             s=$(($(system_time) / 1000000))
         ;;
 
+        (MorphOS)
+            IFS=':, ' read -r _ _ _ _ h m _ <<-EOF
+				$(uptime)
+			EOF
+            s=$((${h:-0}*3600 + ${m:-0}*60))
+        ;;
+
         (SunOS)
             # Split the output of 'kstat' on '.' and any white-space
             # which exists in the command output.
@@ -853,6 +860,20 @@ get_memory() {
 
             mem_used=$(((mem_full - mem_free) / 1024))
             mem_full=$(( mem_full / 1024))
+        ;;
+
+        (MorphOS)
+            while read -r line _ mem_used mem_full _; do
+                case $line in
+                    (total)
+                        mem_used=$(( mem_used / 1024 / 1024))
+                        mem_full=$(( mem_full / 1024 / 1024))
+                        break
+                    ;;
+                esac
+            done <<-EOF
+                $(avail)
+			EOF
         ;;
 
         (SunOS)
@@ -1576,6 +1597,17 @@ get_ascii() {
 				${c4};  ${c7};${c4};${c7}',,'${c4};${c7};${c4}  ;
 				${c4}', ${c7};${c4};;  ;;${c7};${c4} ,'
 				 ${c4} '${c7};${c4}'    '${c7};${c4}'
+			EOF
+        ;;
+
+        ([Mm]orphOS*)
+            read_ascii 1 <<-EOF
+				${c4}  __ \/ __
+				${c4} /o \{}/ o\\
+				${c4} \   ()   /
+				${c4}  \`> /\ <\`
+				${c4}  (o/\/\o)
+				${c4}   )    (
 			EOF
         ;;
 
