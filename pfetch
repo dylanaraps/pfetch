@@ -415,6 +415,10 @@ get_kernel() {
         (*BSD*|Haiku|Minix)
             return
         ;;
+	# Use wmic to get the OS version
+        (CYGWIN*|MSYS*|MINGW*)
+	    kernel=$(wmic os get Version)
+	    kernel=$(echo $kernel | awk '{print $3}')
     esac
 
     # '$kernel' is the cached output of 'uname -r'.
