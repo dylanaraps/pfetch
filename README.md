@@ -33,6 +33,8 @@ picture"!
     - DragonflyBSD, FreeBSD, NetBSD and OpenBSD.
 - **Windows**
     - Windows subsystem for Linux.
+    - Windows Powershell (Requires extra tinkering for easy use)
+    - Windows CMD (Requires extra tinkering for easy use)
 - **Haiku**
 - **MacOS**
 - **Minix**
@@ -41,6 +43,31 @@ picture"!
 - **SerenityOS**
 
 ## Configuration
+
+For users using pwsh on Windows, add this to your $Profile
+
+```powershell
+# I would just git clone the repo in the home directoy
+Function pfetch {sh $env:UserProfile\pfetch\pfetch}
+```
+
+For users using cmd on Windows, do this:
+- Make a doskey macro file, preferablly in `C:\bat\macros.doskey` <-- macros file
+- Go to Registry Editor
+- Go to Computer\HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Conmand Processor
+- Make a new string value called `Autorun`
+- Right click on it and click `Modify...`
+- Change the value path to:
+```cmd
+DOSKEY /MACROFILE="C:\bat\macros.doskey"
+```
+- Edit the macros.doskey file to something like this:
+```cmd
+pfetch=sh %UserProfile%\pfetch\pfetch
+```
+
+- Tada! Just run a new instance of cmd!
+
 
 `pfetch` is configured through environment variables.
 
