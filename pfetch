@@ -1329,7 +1329,7 @@ get_ascii() {
 			EOF
         ;;
 
-        ([Ff]edora*)
+        ([Ff]edora*|[Nn]obara*)
             read_ascii 4 <<-EOF
 				        ${c4},'''''.
 				       ${c4}|   ,.  |
