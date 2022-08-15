@@ -120,6 +120,12 @@ SHELL=""
 XDG_CURRENT_DESKTOP=""
 ```
 
+## Install
+
+```
+sudo make install
+```
+
 ## Credit
 
 - [ufetch](https://gitlab.com/jschx/ufetch): Lots of ASCII logos.
