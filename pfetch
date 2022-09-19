@@ -735,17 +735,19 @@ get_memory() {
         ;;
 
         # Used memory is calculated using the following "formula":
-        # (wired + active + occupied) * 4 / 1024
+        # (app + wired + occupied) * pagesize / 1024 / 1024
         (Darwin*)
+            hw_pagesize="$(sysctl -n hw.pagesize)"
             mem_full=$(($(sysctl -n hw.memsize) / 1024 / 1024))
+            pages_used="$(($(sysctl -n vm.page_pageable_internal_count) - $(sysctl -n vm.page_purgeable_count)))"
 
             # Parse the 'vmstat' file splitting on ':' and '.'.
             # The format of the file is 'key:   000.' and an additional
             # split is used on '.' to filter it out.
             while IFS=:. read -r key val; do
                 case $key in
-                    (*' wired'*|*' active'*|*' occupied'*)
-                        mem_used=$((mem_used + ${val:-0}))
+                    (*' wired'*|*' occupied'*)
+                        pages_used=$((pages_used + ${val:-0}))
                     ;;
                 esac
 
@@ -757,7 +759,7 @@ get_memory() {
                 $(vm_stat)
 			EOF
 
-            mem_used=$((mem_used * 4 / 1024))
+            mem_used=$((pages_used * hw_pagesize / 1024 / 1024))
         ;;
 
         (OpenBSD*)
