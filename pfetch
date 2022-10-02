@@ -1764,6 +1764,16 @@ get_ascii() {
 				    ${c3} ---(_)
 			EOF
         ;;
+		
+		        ([Ww]indows*)
+            read_ascii 3 <<-EOF
+				${c3} ____ ____ 
+				${c3}|    |    |
+				${c3}|____|____|
+				${c3}|    |    |
+				${c3}|____|____|
+			EOF
+        ;;
 
         ([Vv]oid*)
             read_ascii 2 <<-EOF
