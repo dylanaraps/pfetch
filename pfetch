@@ -1765,7 +1765,7 @@ get_ascii() {
 			EOF
         ;;
 		
-		        ([Ww]indows*)
+		        ([Ww][Ii][Nn][Dd][Oo][Ww][Ss]*|[Cc][Yy][Gg][Ww][Ii][Nn]*)
             read_ascii 3 <<-EOF
 				${c4} ____ ____ 
 				${c4}|    |    |
