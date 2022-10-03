@@ -486,7 +486,13 @@ get_uptime() {
     # math.
     case $os in
         (Linux* | Minix* | SerenityOS*)
-            IFS=. read -r s _ < /proc/uptime
+            if ! [ -r /proc/uptime ] || [ "$PF_FORCEALTUPTIME" -eq 1 ]; then
+                boot=$(date -d"$(uptime -s)" +%s)
+                now=$(date +%s)
+                s=$((now - boot))
+            else
+                IFS=. read -r s _ < /proc/uptime
+            fi
         ;;
 
         (Darwin* | *BSD* | DragonFly*)
