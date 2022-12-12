@@ -385,6 +385,23 @@ get_os() {
             distro="$os $(freebsd-version)"
         ;;
 
+        (Fiwix*)
+            if [ -f /etc/os-release ]; then
+                while IFS='=' read -r key val; do
+                    case $key in
+                        (PRETTY_NAME)
+                            distro=$val
+                        ;;
+                    esac
+                done < /etc/os-release
+            fi
+
+            # 'os-release' comes with quotes around
+            # the distribution name, strip them.
+            distro=${distro##[\"\']}
+            distro=${distro%%[\"\']}
+        ;;
+
         (*)
             # Catch all to ensure '$distro' is never blank.
             # This also handles the BSDs.
@@ -485,7 +502,7 @@ get_uptime() {
     # converting that data into days, hours and minutes using simple
     # math.
     case $os in
-        (Linux* | Minix* | SerenityOS*)
+        (Linux* | Minix* | SerenityOS* | Fiwix*)
             IFS=. read -r s _ < /proc/uptime
         ;;
 
@@ -934,6 +951,32 @@ get_memory() {
 
             mem_full=$((mem_used + mem_free))
         ;;
+
+        # Used memory is calculated using the following "formula":
+        # MemUsed = MemTotal + Shmem - MemFree - Buffers
+        (Fiwix*)
+            # Parse the '/proc/meminfo' file splitting on ':' and 'k'.
+            # The format of the file is 'key:   000kB' and an additional
+            # split is used on 'k' to filter out 'kB'.
+            while IFS=':k '  read -r key val _; do
+                case $key in
+                    (MemTotal)
+                        mem_used=$((mem_used + val))
+                        mem_full=$val
+                    ;;
+
+                    (Shmem)
+                        mem_used=$((mem_used + val))
+                    ;;
+
+                    (MemFree | Buffers)
+                        mem_used=$((mem_used - val))
+                    ;;
+                esac
+            done < /proc/meminfo
+
+            mem_used=$((mem_used / 1024))
+            mem_full=$((mem_full / 1024))
     esac
 
     log memory "${mem_used:-?}M / ${mem_full:-?}M" >&6
@@ -1340,6 +1383,20 @@ get_ascii() {
 				${c4}|  ',_,'  |
 				${c4} '.     ,'
 				   ${c4}'''''
+			EOF
+        ;;
+
+        ([Ff]iwix*)
+            read_ascii 12 <<-EOF
+				 ${c6}_____  ${c4}_____
+				 ${c6}\\    \\ ${c4}\\    \\
+				  ${c6}\\    \\ ${c4}\\    \\
+				 ${c6}/ \\    \\ ${c4}\\    \\
+				${c6}(   \\    \\ ${c4}\\    \\
+				${c6}(   /    / ${c4}/    /
+				 ${c6}\\ /    / ${c4}/    /
+				  ${c6}/    / ${c4}/    /
+				 ${c6}/____/ ${c4}/____/
 			EOF
         ;;
 
