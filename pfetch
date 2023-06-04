@@ -340,6 +340,7 @@ get_os() {
                 (10.15*) distro='macOS Catalina' ;;
                 (11*)    distro='macOS Big Sur' ;;
                 (12*)    distro='macOS Monterey' ;;
+				(13*)	 distro='macOS Ventura' ;;
                 (*)      distro='macOS' ;;
             esac
 
@@ -939,6 +940,67 @@ get_memory() {
     log memory "${mem_used:-?}M / ${mem_full:-?}M" >&6
 }
 
+get_disk() {
+    # Store the version of the 'df' command as the available
+    # flags, options and implementation differs between operating
+    # systems and we need to handle these edge-cases.
+    df_version=$(df --version 2>&1)
+
+    case $df_version in
+        # The 'df' command is from AIX.
+        *IMitv*)
+            set -- -P -g
+        ;;
+
+        # The 'df' command is from IRIX.
+        *befhikm*)
+            set -- -P -k
+        ;;
+
+        # The 'df' command is from OpenBSD.
+        *hiklnP*)
+            set -- -h
+        ;;
+
+        # The 'df' command is from Haiku and is wildly
+        # different and provides no workable output,
+        # end here.
+        *Tracker*) # Haiku
+            return
+        ;;
+
+        # From testing it is saffe to assume that
+        # any other 'df' version provides these flags.
+        *)
+            set -- -P -h
+        ;;
+    esac
+
+    # Read the output of 'df' line by line. The first line
+    # contains header information for the "table" so it is
+    # skipped.
+    #
+    # The next lines are then split to grab the relevant
+    # information and thankfully the output remains the
+    # same between all but one 'df' implementation.
+    #
+    # TODO: Configure disks to send to 'df'. Do we need to
+    #       do this? I'd love to _not_ do it.
+    df "$@" / | while read -r name full used _ perc _; do
+        [ "$header" ] || { header=1; continue; }
+
+        case $df_version in
+            # The 'df' command is from IRIX.
+            *befhikm*)
+                used=$((used/1024/1024))G
+                full=$((full/1024/1024))G
+            ;;
+        esac
+
+        log disk "$name [$used / $full ($perc)]" >&6
+    done
+}
+
 get_wm() {
     case $os in
         (Darwin*)
@@ -1065,10 +1127,130 @@ get_de() {
     log de "${XDG_CURRENT_DESKTOP:-$DESKTOP_SESSION}" >&6
 }
 
+get_term() {
+    # Workaround for macOS systems that don't support the
+    # "algorithm" of obtaining the terminal program name.
+    #
+    # This also doubles as a means of allowing the user to
+    # set whatever value they like here through the
+    # '$TERM_PROGRAM' environment variable.
+    case $TERM_PROGRAM in
+        iTerm.app)    term=iTerm2 ;;
+        Terminal.app) term='Apple Terminal' ;;
+        Hyper)        term=HyperTerm ;;
+        *)            term=${TERM_PROGRAM%%.app} ;;
+    esac
+
+    # Special case for TosWin2 (FreeMiNT) which doesn't
+    # support the "algorithm" of obtaining the terminal
+    # program name.
+    [ "$TERM" = tw52 ] || [ "$TERM" = tw100 ] &&
+        term=TosWin2
+
+    # Special case for when 'pfetch' is run over SSH.
+    [ "$SSH_CONNECTION" ] &&
+        term=$SSH_TTY
+
+    # This surprisingly reliable method of detecting the current
+    # terminal emulator is kinda neat.
+    #
+    # It works by looping through each parent of each process
+    # starting with '$PPID' (the parent process ID) until we
+    # find a match or hit PID 1 (init).
+    #
+    # On each iteration the name of the current parent process
+    # is checked against a list of good values and bad values.
+    # If no match is found we check the parent of the parent
+    # and so on.
+    #
+    # Using this method *no* terminal emulator names are
+    # hardcoded and the list remains small and general. In short
+    # it's basically a list of what *isn't* a terminal emulator
+    # and a list of places we should *stop*.
+    while [ -z "$term" ]; do
+        # This block is OS-specific and handles the fetching of
+        # the parent process (of the parent) and the fetching of
+        # said process' name.
+        case $os in
+            Linux*)
+                # On Linux some implementation of 'ps' aren't POSIX
+                # compliant, thankfully Linux provides this information
+                # though the '/proc' filesystem.
+                #
+                # This loops line by line over the '/proc/PID/status'
+                # file splitting at ':' and '<TAB>', we then look for
+                # the key containing 'PPid' and grab the value.
+                while IFS=':	' read -r key val; do
+                    case $key in
+                        PPid)
+                            ppid=$val
+                            break
+                        ;;
+                    esac
+                done < "/proc/${ppid:-$PPID}/status"
+
+                # Get the name of the parent process.
+                read -r name < "/proc/$ppid/comm"
+            ;;
+
+            Windows*)
+                # I need some assistance to add Windows support
+                # as the 'ps' command used in MINGW, MSYS and CYGWIN
+                # isn't POSIX compliant(?).
+                return
+            ;;
+
+            *)
+                # POSIX compliant 'ps' makes this really easy,
+                # just two simple commands to grab the parent
+                # process ID and the ID's name.
+                ppid=$(ps -p "${ppid:-$PPID}" -o ppid=)
+                name=$(ps -p "$ppid"          -o comm=)
+            ;;
+        esac
+
+        # Check the parent process name against a list of good and bad
+        # values. On a bad value we either keep iterating up the parent
+        # process list or we stop altogether (PID 1 for example).
+        case $name in
+            # If the parent process name matches the user's shell (or
+            # anything that looks like a shell), do another iteration.
+            #
+            # This also includes 'screen' and anything that looks like
+            # 'su' or 'sudo'.
+            ${SHELL##*/} | *sh | screen | su* ) ;;
+
+            # If the parent process name matches 'login', 'init' or
+            # '*Login*' we're most likely in the TTY and not a graphical
+            # session. In this case 'term' is set to the current TTY and
+            # we end here.
+            login* | *Login* | init)
+                term=$(tty)
+            ;;
+
+            # If the parent process name matches anything in this list
+            # we can no longer continue. We've either hit PID 1 or a parent
+            # which *won't* lead to the terminal emulator's PID.
+            ruby      | systemd  | python*  | 1  | sshd* | tmux* |\
+            USER*PID* | kdeinit* | launchd* | '' )
+                break
+            ;;
+
+            # If none of the above have matched we've reached the terminal
+            # emulator's PID and we can end here.
+            *)
+                term=${name##*/}
+            ;;
+        esac
+    done
+
+    [ "$term" ] && log term "$term" >&6
+}
+
 get_shell() {
-    # Display the basename of the '$SHELL' environment variable.
     log shell "${SHELL##*/}" >&6
 }
+
 
 get_editor() {
     # Display the value of '$VISUAL', if it's empty, display the
@@ -1914,7 +2096,7 @@ EOF
         # Disable globbing and set the positional parameters to the
         # contents of 'PF_INFO'.
         set -f
-        set +f -- ${PF_INFO-ascii title os host kernel uptime pkgs memory}
+        set +f -- ${PF_INFO-ascii title os host kernel term uptime pkgs memory disk}
 
         # Iterate over the info functions to determine the lengths of the
         # "info names" for output alignment. The option names and subtitles
