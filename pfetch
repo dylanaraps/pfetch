@@ -74,7 +74,7 @@ log() {
     #
     # When 'log()' has executed, the cursor is then located at marker $[4].
     # When 'log()' is run a second time, the next line of information is
-    # printed, moving the cursor to marker $[5].f
+    # printed, moving the cursor to marker $[5].
     #
     # Markers $[4] and $[5] repeat all the way down through the ascii art
     # until there is no more information left to print.
@@ -1184,8 +1184,6 @@ get_ascii() {
                 ${c4}  /  /  \  \
                 ${c4} /  / ___\  \
                 ${c4}/__/   `--.__\
-                  
-
 			EOF
         ;;
 

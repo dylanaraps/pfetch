@@ -40,6 +40,8 @@ picture"!
 - **IRIX**
 - **SerenityOS**
 
+## Installation
+
 ## Configuration
 
 `pfetch` is configured through environment variables.
