@@ -616,7 +616,7 @@ get_pkgs() {
                         ;;
 
                         (*)
-                            printf '%s\n' "$pkg_list"
+                            printf '%s' "$pkg_list"
                         ;;
                     esac
                 }
